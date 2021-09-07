@@ -34,8 +34,7 @@ async function bootstrap() {
   });
 
   SwaggerModule.setup('/', app, document); // swagger_options
-   const PORT = 3000;
-  await app.listen(PORT,'0.0.0.0', async () => {
+  await app.listen(process.env.PORT,'0.0.0.0', async () => {
     console.log(`Listening on : ${await app.getUrl()}`);
   });
 }
