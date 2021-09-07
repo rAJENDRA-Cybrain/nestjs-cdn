@@ -6,10 +6,11 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   PrimaryGeneratedColumn,
+  OneToMany,
 } from 'typeorm';
+import { UserEntity } from './user.entity';
 
 @Entity('tbl_Role')
-@Unique('role_unique_constraint', ['role'])
 export class RoleEntity {
   @PrimaryGeneratedColumn('uuid')
   roleId: string;
@@ -32,4 +33,7 @@ export class RoleEntity {
 
   @UpdateDateColumn()
   public updatedAt: Date;
+
+  @OneToMany(() => UserEntity, (userEntity) => userEntity.role)
+  roles: UserEntity[];
 }

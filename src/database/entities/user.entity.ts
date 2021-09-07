@@ -2,22 +2,15 @@ import { IsNotEmpty, Length, IsEmail, IsString } from 'class-validator';
 import {
   Entity,
   Column,
-  Unique,
   CreateDateColumn,
   UpdateDateColumn,
   PrimaryGeneratedColumn,
   JoinColumn,
-  OneToOne,
   OneToMany,
+  ManyToOne,
 } from 'typeorm';
 import { RoleEntity, IntakeEntity } from 'src/database';
 @Entity('tbl_CRMUser')
-@Unique('user_unique_constraint', [
-  'emailId',
-  'contactNo',
-  'userName',
-  'password',
-])
 export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
   userId: string;
@@ -58,7 +51,7 @@ export class UserEntity {
   @IsNotEmpty()
   password: string;
 
-  @OneToOne(() => RoleEntity)
+  @ManyToOne(() => RoleEntity, (roleEntity) => roleEntity.roles)
   @JoinColumn({ name: 'roleId' })
   role: RoleEntity;
 
