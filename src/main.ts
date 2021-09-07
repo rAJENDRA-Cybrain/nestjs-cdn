@@ -26,12 +26,7 @@ async function bootstrap() {
   // const swagger_options = {
   //   customCss: '.swagger-ui .topbar { display: none }',
   // };
-  app.enableCors({
-    origin: ['http://localhost:4600'],
-    allowedHeaders:
-      'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Observe, Origin',
-    methods: 'GET,PUT,POST,DELETE,UPDATE,OPTIONS',
-  });
+  app.enableCors();
 
   SwaggerModule.setup('/', app, document); // swagger_options
   await app.listen(process.env.PORT,'0.0.0.0', async () => {
