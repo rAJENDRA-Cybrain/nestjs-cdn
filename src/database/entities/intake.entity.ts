@@ -179,6 +179,9 @@ export class IntakeEntity {
   @Length(0, 20)
   tpQuestionToParentThirdAns: string;
 
+  @Column({ nullable: true, type: 'date' })
+  tpCompletedDate: Date;
+
   @Column({ default: true })
   @IsBoolean()
   isActive: boolean;

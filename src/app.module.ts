@@ -11,6 +11,7 @@ import { IntakeModule } from './api/intake/intake.module';
 import { ServiceCoordinatorModule } from './api/service-coordinator/service-coordinator.module';
 import { TransitionPlanModule } from './api/transition-plan/transition-plan.module';
 import { ExitPlanModule } from './api/exit-plan/exit-plan.module';
+import { ManageChildModule } from './api/manage-child/manage-child.module';
 
 const production = false; // fasle : development env and true : production env
 
@@ -40,6 +41,7 @@ const production = false; // fasle : development env and true : production env
     ServiceCoordinatorModule,
     TransitionPlanModule,
     ExitPlanModule,
+    ManageChildModule,
   ],
   controllers: [AppController],
   providers: [AppService],

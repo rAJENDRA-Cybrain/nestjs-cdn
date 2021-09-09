@@ -60,6 +60,7 @@ export class TransitionPlanService {
       tpQuestionToParentThirdAns: dto.tpQuestionToParentThirdAns,
       tpEarlyStartFamillySpecialist: dto.tpEarlyStartFamillySpecialist,
       tpEarlyStartFamillySpecialistDate: dto.tpEarlyStartFamillySpecialistDate,
+      tpCompletedDate: dto.tpCompletedDate,
     });
   }
 }
