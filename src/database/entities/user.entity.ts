@@ -9,7 +9,7 @@ import {
   OneToMany,
   ManyToOne,
 } from 'typeorm';
-import { RoleEntity, IntakeEntity } from 'src/database';
+import { RoleEntity, IntakeEntity, ManageChildNotesEntity } from 'src/database';
 @Entity('tbl_CRMUser')
 export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
@@ -68,4 +68,10 @@ export class UserEntity {
 
   @OneToMany(() => IntakeEntity, (intakeEntity) => intakeEntity.efcEmployee)
   efcEmployee: IntakeEntity[];
+
+  @OneToMany(
+    () => ManageChildNotesEntity,
+    (manageChildNotesEntity) => manageChildNotesEntity.notesAddedBy,
+  )
+  notesAddedBy: ManageChildNotesEntity[];
 }

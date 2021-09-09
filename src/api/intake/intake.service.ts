@@ -131,16 +131,10 @@ export class IntakeService {
       efcEmployee: efcEmployee,
     });
   }
-
-  async tpStatus(el: any): Promise<boolean> {
-    if (
-      (el.tpQuestionToParentOneAns &&
-        el.tpQuestionToParentTwoAns &&
-        el.tpQuestionToParentThirdAns) == ''
-    ) {
-      return false;
-    } else {
-      return true;
-    }
+  public async findById(id): Promise<IntakeEntity> {
+    return await this.intakeRepository.findOne({
+      intakeId: id,
+      isActive: true,
+    });
   }
 }

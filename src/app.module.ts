@@ -12,6 +12,7 @@ import { ServiceCoordinatorModule } from './api/service-coordinator/service-coor
 import { TransitionPlanModule } from './api/transition-plan/transition-plan.module';
 import { ExitPlanModule } from './api/exit-plan/exit-plan.module';
 import { ManageChildModule } from './api/manage-child/manage-child.module';
+import { ConversationTypeModule } from './api/conversation-type/conversation-type.module';
 
 const production = false; // fasle : development env and true : production env
 
@@ -29,7 +30,7 @@ const production = false; // fasle : development env and true : production env
       password: process.env.DB_PASS || 'admin@123',
       database: process.env.DB_NAME || 'devChildCareCRM',
       entities: [join(__dirname, '**', '*.{ts,js}')], // don't remove this line
-      synchronize: !production ? true : false,
+      synchronize: !production ? false : false,
       // 1st one is for development and 2nd one is for production
       // only when migration needed then call it to true
       logging: false,
@@ -42,6 +43,7 @@ const production = false; // fasle : development env and true : production env
     TransitionPlanModule,
     ExitPlanModule,
     ManageChildModule,
+    ConversationTypeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

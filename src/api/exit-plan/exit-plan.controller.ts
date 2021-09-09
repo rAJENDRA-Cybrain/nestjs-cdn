@@ -1,6 +1,16 @@
-import { Controller, Get, Version } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  InternalServerErrorException,
+  Param,
+  ParseUUIDPipe,
+  Put,
+  Version,
+} from '@nestjs/common';
 import { ExitPlanService } from './exit-plan.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { UpdateExitPlanDto } from '../../dto';
 
 @Controller('exit-plan')
 @ApiTags('Exist Plan 3 Years APIs')
@@ -35,6 +45,31 @@ export class ExitPlanController {
         message: 'No Data Found',
         data: [],
       };
+    }
+  }
+
+  @Put(':intakeId')
+  @Version('1')
+  @ApiOperation({
+    summary: 'Update exit plan details by intakeId.',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'successful operation',
+  })
+  public async updateExitPlan(
+    @Param('intakeId', new ParseUUIDPipe({ version: '4' }))
+    intakeId: string,
+    @Body() updateExitPlanDto: UpdateExitPlanDto,
+  ) {
+    const data = await this.exitPlanService.update(intakeId, updateExitPlanDto);
+    if (data.affected > 0) {
+      return {
+        statusCode: 201,
+        message: `Updated Succesfully.`,
+      };
+    } else {
+      throw new InternalServerErrorException();
     }
   }
 }

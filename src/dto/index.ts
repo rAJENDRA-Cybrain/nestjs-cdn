@@ -16,9 +16,17 @@ export * from './sign-in.dto';
 
 export * from './create-intake.dto';
 export * from './update-intake.dto';
+
 export * from './update-transition-plan.dto';
-//export * from  './update-service-coordinator.dto';
+export * from './update-exit-plan.dto';
 
 export * from './create-service-coordinator.dto';
 export * from  './update-service-coordinator.dto';
+
+export * from './create-conversation-type.dto';
+
+export * from './create-manage-child.dto';
+export * from './update-manage-child.dto';
+
+
 

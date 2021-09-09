@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getManager } from 'typeorm';
 import { IntakeEntity } from '../../database';
 import { AuthService } from '../auth/auth.service';
-
+import { UpdateExitPlanDto } from '../../dto';
 @Injectable()
 export class ExitPlanService {
   constructor(
@@ -47,5 +47,12 @@ export class ExitPlanService {
       `,
       );
     }
+  }
+
+  public async update(intakeId: string, dto: UpdateExitPlanDto) {
+    return await this.intakeRepository.update(intakeId, {
+      epContinueStatus: dto.epContinueStatus,
+      epCompletedDate: dto.epCompletedDate,
+    });
   }
 }

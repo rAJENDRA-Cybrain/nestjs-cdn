@@ -10,52 +10,46 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ManageChildService } from './manage-child.service';
-
+import { ConversationTypeService } from '../conversation-type/conversation-type.service';
+import { IntakeService } from '../intake/intake.service';
+import {
+  CreateManageChildNotesDto,
+  UpdateManageChildNotesDto,
+} from '../../dto';
 @Controller('manage-child')
 @ApiTags('Manage Child APIs')
 export class ManageChildController {
-  constructor(private readonly manageChildService: ManageChildService) {}
+  constructor(
+    private readonly manageChildService: ManageChildService,
+    private readonly conversationTypeService: ConversationTypeService,
+    private readonly intakeService: IntakeService,
+  ) {}
 
+  @Post()
   @Version('1')
-  @Get('conversation-type')
-  @ApiOperation({
-    summary: 'Get list of conversation type.',
-  })
+  @ApiOperation({ summary: 'Create child notes.' })
   @ApiResponse({
     status: 200,
     description: 'successful operation',
   })
-  public async getAllConversationType() {
-    return {
-      statusCode: 200,
-      message: `Success.`,
-      data: [
-        { id: 1, type: 'FF', description: 'FF-Face to face home visit' },
-        { id: 2, type: 'TC', description: 'TC-Telephone call' },
-        { id: 3, type: 'IH', description: 'IH-Intake- home visit' },
-        { id: 4, type: 'IP', description: 'IP-Intake -phone call/zoom' },
-        {
-          id: 5,
-          type: 'T',
-          description: 'T-Trainings you are participating in',
-        },
-        { id: 6, type: 'PP', description: 'PP-Parent to parent meetings' },
-        {
-          id: 7,
-          type: 'PA',
-          description:
-            'PA-Public Awareness-information dissemination (participating in events such as resource fairs)',
-        },
-        {
-          id: 8,
-          type: 'FP',
-          description:
-            'FP-Family professional collaboration (meetings with Kern Regional Center, Schools other agencies)',
-        },
-        { id: 9, type: 'TA', description: 'TA-Transition Assistance' },
-        { id: 10, type: 'W', description: 'W-Webinars' },
-        { id: 11, type: 'Other', description: 'Other' },
-      ],
-    };
+  //@ApiExcludeEndpoint()
+  public async createConversationType(
+    @Body() createManageChildNotesDto: CreateManageChildNotesDto,
+  ) {
+    const { conversationTypeId, intakeId } = createManageChildNotesDto;
+    const convData = await this.conversationTypeService.findById(
+      conversationTypeId,
+    );
+    const childData = await this.intakeService.findById(intakeId);
+
+    return { childData };
+    // const data: ConversationTypeEntity =
+    //   await this.conversationTypeService.save(createConversationTypeDto);
+    // if (data) {
+    //   return {
+    //     statusCode: 200,
+    //     message: `Saved Succesfully.`,
+    //   };
+    // }
   }
 }

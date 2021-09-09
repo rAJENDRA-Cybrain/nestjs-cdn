@@ -14,8 +14,13 @@ import {
   OneToOne,
   JoinColumn,
   ManyToOne,
+  OneToMany,
 } from 'typeorm';
-import { ServiceCoordinatorEntity, UserEntity } from 'src/database';
+import {
+  ManageChildNotesEntity,
+  ServiceCoordinatorEntity,
+  UserEntity,
+} from 'src/database';
 
 @Entity('tbl_CRMIntake')
 export class IntakeEntity {
@@ -182,6 +187,14 @@ export class IntakeEntity {
   @Column({ nullable: true, type: 'date' })
   tpCompletedDate: Date;
 
+  @Column({ nullable: true, default: '' })
+  @IsString()
+  @Length(0, 20)
+  epContinueStatus: string;
+
+  @Column({ nullable: true, type: 'date' })
+  epCompletedDate: Date;
+
   @Column({ default: true })
   @IsBoolean()
   isActive: boolean;
@@ -200,4 +213,10 @@ export class IntakeEntity {
   @Column()
   @UpdateDateColumn()
   public updatedAt: Date;
+
+  @OneToMany(
+    () => ManageChildNotesEntity,
+    (manageChildNotesEntity) => manageChildNotesEntity.intakeChild,
+  )
+  childNotes: ManageChildNotesEntity[];
 }
