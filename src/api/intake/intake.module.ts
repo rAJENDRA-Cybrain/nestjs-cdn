@@ -9,7 +9,6 @@ import {
   IntakeEntity,
   ServiceCoordinatorEntity,
 } from 'src/database';
-import { AuthService } from '../auth/auth.service';
 
 @Module({
   imports: [

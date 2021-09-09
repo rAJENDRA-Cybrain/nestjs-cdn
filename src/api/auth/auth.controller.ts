@@ -59,11 +59,12 @@ export class AuthController {
           emailId: findUser.emailId,
           role: findUser.role,
         };
-        const access_token: string = await this.authService.generateJWT(
-          payload,
+        res.cookie(
+          'access_token',
+          await this.authService.generateJWT(payload),
+          { httpOnly: true, domain: 'http://localhost:5677/' },
         );
-        const auth_cookie = { access_token, refresh_token: findUser.userId };
-        res.cookie('auth-cookie', auth_cookie, { httpOnly: true });
+        res.cookie('refresh_token', findUser.userId, { httpOnly: true });
         return {
           statusCode: 200,
           message: 'Success.',

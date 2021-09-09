@@ -1,14 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Not, Repository } from 'typeorm';
 import { RoleEntity } from '../../database';
 import { CreateRoleDto, UpdateRoleDto } from '../../dto';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class RoleService {
   constructor(
     @InjectRepository(RoleEntity)
     private roleRepository: Repository<RoleEntity>,
+    @Inject(forwardRef(() => AuthService))
+    private authService: AuthService,
   ) {}
 
   public async save(createRoleDto: CreateRoleDto) {

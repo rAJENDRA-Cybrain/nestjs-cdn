@@ -1,9 +1,11 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Not, Equal, Repository, Raw } from 'typeorm';
+import { Not, Equal, Repository, Raw, getManager } from 'typeorm';
 import { CreateIntakeDto, UpdateIntakeDto } from '../../dto';
 import { IntakeEntity } from '../../database';
 import { AuthService } from '../auth/auth.service';
+import * as moment from 'moment';
+import { find } from 'rxjs';
 
 @Injectable()
 export class IntakeService {
@@ -130,5 +132,50 @@ export class IntakeService {
       serviceCoordinator: serviceCoordinator,
       efcEmployee: efcEmployee,
     });
+  }
+
+  public async findTransitionPlan(id: string): Promise<IntakeEntity[]> {
+    const user = await this.authService.findRoleByUserId(id);
+    if (user.role.role == 'Operator') {
+      return await getManager().query(
+        `
+      SELECT age("dateOfBirth"),"tbl_CRMIntake".*,"tbl_CRMServiceCordinator"."serviceCoordinatorId",
+      "tbl_CRMServiceCordinator"."name" as serviceCoordinator FROM "tbl_CRMIntake"
+      INNER JOIN "tbl_CRMServiceCordinator" ON "tbl_CRMServiceCordinator"."serviceCoordinatorId" = "tbl_CRMIntake"."serviceCoordinatorId"
+      Where "tbl_CRMIntake"."isActive" = true  AND "tbl_CRMIntake"."addedBy" = '${id}'
+      Order By  "tbl_CRMIntake"."createdAt"  DESC
+      `,
+      );
+    } else if (user.role.role == 'Efc Employee') {
+      return await getManager().query(
+        `
+      SELECT age("dateOfBirth"),"tbl_CRMIntake".*,"tbl_CRMServiceCordinator"."serviceCoordinatorId",
+      "tbl_CRMServiceCordinator"."name" as serviceCoordinator FROM "tbl_CRMIntake"
+      INNER JOIN "tbl_CRMServiceCordinator" ON "tbl_CRMServiceCordinator"."serviceCoordinatorId" = "tbl_CRMIntake"."serviceCoordinatorId"
+      Where "tbl_CRMIntake"."isActive" = true AND "tbl_CRMIntake"."userId" = '${id}'
+      Order By  "tbl_CRMIntake"."createdAt"  DESC
+      `,
+      );
+    } else {
+      return await getManager().query(
+        `
+      SELECT age("dateOfBirth"),"tbl_CRMIntake".*,
+      "tbl_CRMServiceCordinator"."serviceCoordinatorId","tbl_CRMServiceCordinator"."name" as serviceCoordinator
+      FROM "tbl_CRMIntake"
+      INNER JOIN "tbl_CRMServiceCordinator" ON "tbl_CRMServiceCordinator"."serviceCoordinatorId" = "tbl_CRMIntake"."serviceCoordinatorId"
+      Where "tbl_CRMIntake"."isActive" = true 
+      Order By  "tbl_CRMIntake"."createdAt"  DESC
+      `,
+      );
+    }
+    // return await this.intakeRepository
+    //   .createQueryBuilder('intake')
+    //   .select(['intake'])
+    //   .where('intake.isActive = :isActive AND intake.isDelete = :isDelete', {
+    //     isActive: true,
+    //     isDelete: false,
+    //   })
+    //   .orderBy({ 'intake.createdAt': 'ASC' })
+    //   .getMany();
   }
 }

@@ -9,11 +9,11 @@ import {
   ParseUUIDPipe,
   Put,
   InternalServerErrorException,
-  forwardRef,
-  Inject,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { IntakeService } from './intake.service';
-import { AuthService } from '../auth/auth.service';
 import { ServiceCoordinatorService } from '../service-coordinator/service-coordinator.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateIntakeDto, UpdateIntakeDto } from '../../dto';
@@ -79,7 +79,7 @@ export class IntakeController {
     }
   }
 
-  @Get()
+  @Get('')
   @Version('1')
   @ApiOperation({ summary: 'Get list of intake children.' })
   @ApiResponse({
@@ -154,6 +154,35 @@ export class IntakeController {
       };
     } else {
       throw new InternalServerErrorException();
+    }
+  }
+  @Get('2.5-years')
+  @Version('1')
+  @ApiOperation({ summary: 'Get list of intake children above 2.5 years.' })
+  @ApiResponse({
+    status: 200,
+    description: 'successful operation',
+  })
+  @UseGuards(AuthGuard('jwt'))
+  public async findAllChildrenAboveTwoPointFiveYears(@Req() req) {
+    const data = await this.intakeService.findTransitionPlan(
+      req.cookies.refresh_token,
+    );
+    const filteredData = data.filter(function (el) {
+      return el['age']['years'] <= 2 && el['age']['months'] > 5;
+    });
+    if (filteredData.length > 0) {
+      return {
+        statusCode: 200,
+        message: `Success.`,
+        data: filteredData,
+      };
+    } else {
+      return {
+        statusCode: 200,
+        message: 'No Data Found',
+        data: [],
+      };
     }
   }
 }

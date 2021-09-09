@@ -150,6 +150,13 @@ export class AuthService {
     });
   }
 
+  public async findRoleByUserId(id: string) {
+    return await this.userRepository.findOne({
+      where: { userId: Equal(id), status: 'Active' },
+      relations: ['role'],
+    });
+  }
+
   async hashPassword(password: string): Promise<string> {
     return await bcrypt.hash(password, 12);
   }
