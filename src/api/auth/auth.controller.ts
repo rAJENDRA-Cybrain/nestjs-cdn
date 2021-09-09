@@ -62,9 +62,12 @@ export class AuthController {
         res.cookie(
           'access_token',
           await this.authService.generateJWT(payload),
-          { httpOnly: true, domain: 'http://localhost:5677/' },
+          { sameSite: true },
         );
-        res.cookie('refresh_token', findUser.userId, { httpOnly: true });
+        res.cookie('refresh_token', findUser.userId, {
+          sameSite: true,
+          httpOnly: true,
+        });
         return {
           statusCode: 200,
           message: 'Success.',

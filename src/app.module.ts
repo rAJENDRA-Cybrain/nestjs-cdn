@@ -9,6 +9,8 @@ import { RoleModule } from './api/role/role.module';
 import { AuthModule } from './api/auth/auth.module';
 import { IntakeModule } from './api/intake/intake.module';
 import { ServiceCoordinatorModule } from './api/service-coordinator/service-coordinator.module';
+import { TransitionPlanModule } from './api/transition-plan/transition-plan.module';
+import { ExitPlanModule } from './api/exit-plan/exit-plan.module';
 
 const production = false; // fasle : development env and true : production env
 
@@ -36,6 +38,8 @@ const production = false; // fasle : development env and true : production env
     AuthModule,
     IntakeModule,
     ServiceCoordinatorModule,
+    TransitionPlanModule,
+    ExitPlanModule,
   ],
   controllers: [AppController],
   providers: [AppService],
