@@ -62,7 +62,12 @@ export class AuthController {
         res.cookie(
           'access_token',
           await this.authService.generateJWT(payload),
-          { sameSite: true },
+          {
+            sameSite: 'strict',
+            path: '/',
+            httpOnly: true,
+            expires: new Date(new Date().getTime() + 5 * 1000),
+          },
         );
         res.cookie('refresh_token', findUser.userId, {
           sameSite: true,
@@ -71,6 +76,7 @@ export class AuthController {
         return {
           statusCode: 200,
           message: 'Success.',
+          data: { access_token: await this.authService.generateJWT(payload) },
         };
       } else {
         throw new UnauthorizedException('InValid Password.');
