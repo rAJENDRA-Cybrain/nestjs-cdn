@@ -8,7 +8,9 @@ import {
   ConflictException,
   ParseUUIDPipe,
   Put,
+  Req,
 } from '@nestjs/common';
+import { Request } from 'express';
 import { RoleService } from './role.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateRoleDto, UpdateRoleDto } from '../../dto';

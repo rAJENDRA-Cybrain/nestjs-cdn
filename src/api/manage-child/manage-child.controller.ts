@@ -8,6 +8,7 @@ import {
   Delete,
   Version,
   ParseUUIDPipe,
+  Req,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ManageChildService } from './manage-child.service';
@@ -31,6 +32,24 @@ export class ManageChildController {
     private readonly conversationTypeService: ConversationTypeService,
     private readonly intakeService: IntakeService,
   ) {}
+
+  @Get(':userId')
+  @Version('1')
+  @ApiOperation({ summary: 'Get all children.' })
+  @ApiResponse({
+    status: 200,
+    description: 'successful operation',
+  })
+  public async findChildren(
+    @Param('userId', new ParseUUIDPipe({ version: '4' })) userId: string,
+  ) {
+    const data = await this.manageChildService.findChild(userId);
+    return {
+      statusCode: 200,
+      message: `Success.`,
+      data: data,
+    };
+  }
 
   @Post('/notes')
   @Version('1')

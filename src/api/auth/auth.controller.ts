@@ -9,9 +9,9 @@ import {
   ParseUUIDPipe,
   Put,
   UseGuards,
-  Request,
   Res,
   UnauthorizedException,
+  Req,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -20,7 +20,7 @@ import { SignUpDto, SignInDto, UpdateSignUpDto } from '../../dto';
 import { UserEntity, RoleEntity } from '../../database';
 import { RoleService } from '../role/role.service';
 import { BadRequestException } from '@nestjs/common';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
 @Controller('auth')
 @ApiTags('Authentication APIs')
@@ -38,6 +38,7 @@ export class AuthController {
     description: 'successful operation',
   })
   public async signIn(
+    @Req() req: Request,
     @Body() signInDto: SignInDto,
     @Res({ passthrough: true }) res: Response,
   ) {
@@ -70,7 +71,8 @@ export class AuthController {
           },
         );
         res.cookie('refresh_token', findUser.userId, {
-          sameSite: true,
+          sameSite: 'strict',
+          path: '/',
           httpOnly: true,
         });
         return {
