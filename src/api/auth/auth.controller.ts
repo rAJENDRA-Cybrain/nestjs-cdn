@@ -136,9 +136,9 @@ export class AuthController {
     @Param('userId', new ParseUUIDPipe({ version: '4' })) userId: string,
     @Body() updatePasswordDto: UpdatePasswordDto,
   ) {
-    const findUser: UserEntity = await this.authService.findUserAccount(userId);
+    const findUser: UserEntity = await this.authService.isUserExistById(userId);
     if (!findUser) {
-      throw new UnauthorizedException('InValid User.');
+      throw new UnauthorizedException('User Not Exist.');
     } else {
       const hashPassword = await this.authService.hashPassword(
         updatePasswordDto.newPassword,

@@ -5,4 +5,5 @@ export * from './entities/intake.entity';
 export * from './entities/manage-child.entity';
 export * from './entities/conversation-type.entity';
 export * from './entities/service-coordinator.entity';
+export * from './entities/smtp-detail.entity';
 

@@ -13,7 +13,7 @@ export class UpdatePasswordDto {
   @IsString()
   @MinLength(8)
   @MaxLength(12)
-  @ApiPropertyOptional({ minLength: 8, maxLength: 12, default: '' })
+  @ApiPropertyOptional({ minLength: 0, maxLength: 12, default: '' })
   oldPassword: string;
 
   @IsString()

@@ -29,5 +29,8 @@ export * from './create-conversation-type.dto';
 export * from './create-manage-child.dto';
 export * from './update-manage-child.dto';
 
+export * from './create-smtp-detail.dto';
+export * from './update-smtp-detail.dto';
+
 
 
