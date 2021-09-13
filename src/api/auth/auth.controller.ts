@@ -16,7 +16,12 @@ import {
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { SignUpDto, SignInDto, UpdateSignUpDto } from '../../dto';
+import {
+  SignUpDto,
+  SignInDto,
+  UpdateSignUpDto,
+  UpdatePasswordDto,
+} from '../../dto';
 import { UserEntity, RoleEntity } from '../../database';
 import { RoleService } from '../role/role.service';
 import { BadRequestException } from '@nestjs/common';
@@ -85,6 +90,7 @@ export class AuthController {
       }
     }
   }
+
   @Post('sign-up')
   @Version('1')
   @ApiOperation({ summary: 'SignUp : Create Employee' })
@@ -116,6 +122,58 @@ export class AuthController {
       }
     } else {
       throw new ConflictException('User Already Exist.');
+    }
+  }
+
+  @Put('/change-password/:userId')
+  @Version('1')
+  @ApiOperation({ summary: 'Change user password.' })
+  @ApiResponse({
+    status: 201,
+    description: 'successful operation',
+  })
+  public async changePassword(
+    @Param('userId', new ParseUUIDPipe({ version: '4' })) userId: string,
+    @Body() updatePasswordDto: UpdatePasswordDto,
+  ) {
+    const findUser: UserEntity = await this.authService.findUserAccount(userId);
+    if (!findUser) {
+      throw new UnauthorizedException('InValid User.');
+    } else {
+      const hashPassword = await this.authService.hashPassword(
+        updatePasswordDto.newPassword,
+      );
+      if (updatePasswordDto.source == 'Super-Admin') {
+        if (hashPassword) {
+          const data = await this.authService.updatePassword(
+            userId,
+            hashPassword,
+          );
+          if (data) {
+            return {
+              statusCode: 200,
+              message: `Password Updated Succesfully.`,
+            };
+          }
+        }
+      } else {
+        const checkPassword: boolean = await this.authService.comparePassword(
+          updatePasswordDto.oldPassword,
+          findUser.password,
+        );
+        if (checkPassword && hashPassword) {
+          const data = await this.authService.updatePassword(
+            userId,
+            hashPassword,
+          );
+          if (data) {
+            return {
+              statusCode: 200,
+              message: `Password Updated Succesfully.`,
+            };
+          }
+        }
+      }
     }
   }
 
@@ -179,11 +237,11 @@ export class AuthController {
     @Param('userId', new ParseUUIDPipe({ version: '4' })) userId: string,
     @Body() updateSignUpDto: UpdateSignUpDto,
   ) {
-    const isExist: UserEntity = await this.authService.isAccountExistById(
+    const isExist = await this.authService.isAccountExistById(
       userId,
       updateSignUpDto,
     );
-    if (!isExist) {
+    if (isExist) {
       const findRole: RoleEntity = await this.roleService.isRoleExistById(
         updateSignUpDto.roleId,
       );
@@ -202,8 +260,6 @@ export class AuthController {
       } else {
         throw new BadRequestException('Please provide valid roleId');
       }
-    } else {
-      throw new ConflictException('User Already Exist.');
     }
   }
 }

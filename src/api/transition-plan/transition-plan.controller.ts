@@ -6,11 +6,14 @@ import {
   Param,
   ParseUUIDPipe,
   Put,
+  Request,
+  UseGuards,
   Version,
 } from '@nestjs/common';
 import { TransitionPlanService } from './transition-plan.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UpdateTransitionPlanDto } from '../../dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('transition-plan')
 @ApiTags('Transition Plan 2.5 Years APIs')
@@ -25,11 +28,10 @@ export class TransitionPlanController {
     status: 200,
     description: 'successful operation',
   })
-  public async findAllChildrenAboveTwoPointFiveYears() {
-    const data = await this.transitionPlanService.findChildren(
-      'eb2c0cec-506d-4368-b7f1-e8bf350029e9', //SA
-      //'2029dc78-6e96-4bd0-bd07-1d25022204dd', //OP
-    );
+  @UseGuards(AuthGuard('jwt'))
+  public async findAllChildrenAboveTwoPointFiveYears(@Request() req) {
+    const { userId, role } = req.user['payload'];
+    const data = await this.transitionPlanService.findChildren(userId, role);
     const filteredData = data.filter(function (el) {
       el['tp_status'] =
         (el.tpQuestionToParentOneAns &&

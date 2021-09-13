@@ -26,7 +26,10 @@ async function bootstrap() {
   const swagger_options = {
     customCss: '.swagger-ui .topbar { display: none }',
   };
-  app.enableCors({ credentials: true, origin: true });
+  app.enableCors({
+    origin: true,
+    credentials: true,
+  });
 
   SwaggerModule.setup('/', app, document, swagger_options); // swagger_options
 

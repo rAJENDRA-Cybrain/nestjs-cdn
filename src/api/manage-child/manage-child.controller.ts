@@ -8,7 +8,10 @@ import {
   Delete,
   Version,
   ParseUUIDPipe,
-  Req,
+  Request,
+  Put,
+  Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ManageChildService } from './manage-child.service';
@@ -24,6 +27,7 @@ import {
   ConversationTypeEntity,
   ManageChildNotesEntity,
 } from '../../database';
+import { AuthGuard } from '@nestjs/passport';
 @Controller('manage-child')
 @ApiTags('Manage Child APIs')
 export class ManageChildController {
@@ -33,22 +37,56 @@ export class ManageChildController {
     private readonly intakeService: IntakeService,
   ) {}
 
-  @Get(':userId')
+  @Get('')
   @Version('1')
   @ApiOperation({ summary: 'Get all children.' })
   @ApiResponse({
     status: 200,
     description: 'successful operation',
   })
-  public async findChildren(
-    @Param('userId', new ParseUUIDPipe({ version: '4' })) userId: string,
+  @UseGuards(AuthGuard('jwt'))
+  public async findChildren(@Request() req) {
+    const { userId, role } = req.user['payload'];
+    const data = await this.manageChildService.findChild(userId, role);
+    if (data.length > 0) {
+      return {
+        statusCode: 200,
+        message: `Success.`,
+        data: data,
+      };
+    } else {
+      return {
+        statusCode: 200,
+        message: `No Data Found..`,
+        data: [],
+      };
+    }
+  }
+
+  @Get('/notes/:intakeId')
+  @Version('1')
+  @ApiOperation({ summary: 'Get individual children notes by intakeId.' })
+  @ApiResponse({
+    status: 200,
+    description: 'successful operation',
+  })
+  public async find(
+    @Param('intakeId', new ParseUUIDPipe({ version: '4' })) intakeId: string,
   ) {
-    const data = await this.manageChildService.findChild(userId);
-    return {
-      statusCode: 200,
-      message: `Success.`,
-      data: data,
-    };
+    const notesData = await this.manageChildService.findNotes(intakeId);
+    if (notesData) {
+      return {
+        statusCode: 200,
+        message: `Success.`,
+        data: notesData,
+      };
+    } else {
+      return {
+        statusCode: 200,
+        message: `No Data Found..`,
+        data: [],
+      };
+    }
   }
 
   @Post('/notes')
@@ -58,11 +96,13 @@ export class ManageChildController {
     status: 200,
     description: 'successful operation',
   })
-  //@ApiExcludeEndpoint()
+  @UseGuards(AuthGuard('jwt'))
   public async createConversationType(
     @Body() notesDto: CreateManageChildNotesDto,
+    @Request() req,
   ) {
-    const { conversationTypeId, intakeId, addedBy } = notesDto;
+    const { userId } = req.user['payload'];
+    const { conversationTypeId, intakeId } = notesDto;
 
     const convData: ConversationTypeEntity =
       await this.conversationTypeService.findById(conversationTypeId);
@@ -70,7 +110,7 @@ export class ManageChildController {
     const childData = await this.intakeService.findById(intakeId);
 
     const userData: UserEntity = await this.intakeService.findEfcEmployee(
-      addedBy,
+      userId,
     );
 
     if (convData && childData && userData) {
@@ -89,21 +129,41 @@ export class ManageChildController {
     }
   }
 
-  @Get('/notes/:intakeId')
+  @Put('/notes/:notesId')
   @Version('1')
-  @ApiOperation({ summary: 'Get individual children notes by intakeId.' })
+  @ApiOperation({ summary: 'Update child notes.' })
   @ApiResponse({
     status: 200,
     description: 'successful operation',
   })
-  public async find(
-    @Param('intakeId', new ParseUUIDPipe({ version: '4' })) intakeId: string,
+  //@ApiExcludeEndpoint()
+  public async updateChildNotes(
+    @Param('notesId', new ParseUUIDPipe({ version: '4' })) notesId: string,
+    @Body() updateManageChildNotesDto: UpdateManageChildNotesDto,
   ) {
-    const notesData = await this.manageChildService.findAll(intakeId);
-    return {
-      statusCode: 200,
-      message: `Success.`,
-      data: notesData,
-    };
+    const { conversationTypeId } = updateManageChildNotesDto;
+
+    const convData: ConversationTypeEntity =
+      await this.conversationTypeService.findById(conversationTypeId);
+
+    // const childData = await this.intakeService.findById(intakeId);
+
+    // const userData: UserEntity = await this.intakeService.findEfcEmployee(
+    //   addedBy,
+    // );
+
+    if (convData) {
+      const data = await this.manageChildService.update(
+        notesId,
+        updateManageChildNotesDto,
+        convData,
+      );
+      if (data.affected > 0) {
+        return {
+          statusCode: 200,
+          message: `Updated Succesfully.`,
+        };
+      }
+    }
   }
 }

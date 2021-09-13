@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/database';
 import { Equal, Not, Repository } from 'typeorm';
@@ -118,19 +118,53 @@ export class AuthService {
   }
 
   public async isAccountExistById(id, updateSignUpDto: UpdateSignUpDto) {
-    return await this.userRepository
-      .createQueryBuilder('user')
-      .where(
-        'user.userName = :UserName OR user.emailId = :EmailId OR user.contactNo = :ContactNo AND user.status = :Status',
-        {
-          UserName: updateSignUpDto.userName,
-          EmailId: updateSignUpDto.emailId,
-          ContactNo: updateSignUpDto.contactNo,
-          Status: 'Active',
+    const { emailId, userName, contactNo } = updateSignUpDto;
+    if (
+      (
+        await this.userRepository.find({
+          emailId: emailId,
+          status: 'Active',
           userId: Not(id),
-        },
-      )
-      .getOne();
+        })
+      ).length > 0
+    ) {
+      throw new ConflictException('Email Already Exist.');
+    } else if (
+      (
+        await this.userRepository.find({
+          userName: userName,
+          status: 'Active',
+          userId: Not(id),
+        })
+      ).length > 0
+    ) {
+      throw new ConflictException('UserName Already Exist.');
+    } else if (
+      (
+        await this.userRepository.find({
+          contactNo: contactNo,
+          status: 'Active',
+          userId: Not(id),
+        })
+      ).length > 0
+    ) {
+      throw new ConflictException('Mobile No Already Exist.');
+    } else {
+      return true;
+    }
+    // return await this.userRepository
+    //   .createQueryBuilder('user')
+    //   .where(
+    //     'user.userName = :UserName OR user.emailId = :EmailId OR user.contactNo = :ContactNo AND user.status = :Status AND user.userId != :UserId',
+    //     {
+    //       UserName: updateSignUpDto.userName,
+    //       EmailId: updateSignUpDto.emailId,
+    //       ContactNo: updateSignUpDto.contactNo,
+    //       Status: 'Active',
+    //       UserId: id,
+    //     },
+    //   )
+    //   .getOne();
   }
   public async isUserExistById(id): Promise<UserEntity> {
     return await this.userRepository.findOne({
@@ -147,6 +181,12 @@ export class AuthService {
       dateOfJoining: updateSignUpDto.dateOfJoining,
       userName: updateSignUpDto.userName,
       role: Role,
+    });
+  }
+
+  public async updatePassword(userId: string, hash: string): Promise<any> {
+    return await this.userRepository.update(userId, {
+      password: hash,
     });
   }
 

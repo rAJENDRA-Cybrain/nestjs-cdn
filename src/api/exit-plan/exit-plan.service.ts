@@ -13,9 +13,8 @@ export class ExitPlanService {
     private authService: AuthService,
   ) {}
 
-  public async findChildren(id: string): Promise<IntakeEntity[]> {
-    const user = await this.authService.findRoleByUserId(id);
-    if (user.role.role == 'Operator') {
+  public async findChildren(id: string, role: any): Promise<IntakeEntity[]> {
+    if (role.role == 'Operator') {
       return await getManager().query(
         `
       SELECT age("dateOfBirth"),"tbl_CRMIntake".*,"tbl_CRMServiceCordinator"."serviceCoordinatorId",
@@ -25,7 +24,7 @@ export class ExitPlanService {
       Order By  "tbl_CRMIntake"."createdAt"  DESC
       `,
       );
-    } else if (user.role.role == 'Efc Employee') {
+    } else if (role.role == 'Efc Employee') {
       return await getManager().query(
         `
       SELECT age("dateOfBirth"),"tbl_CRMIntake".*,"tbl_CRMServiceCordinator"."serviceCoordinatorId",
