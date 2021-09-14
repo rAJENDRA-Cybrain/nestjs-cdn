@@ -223,6 +223,14 @@ export class IntakeController {
   }
 
   @Delete('addtional-children/:additionalChildrenId')
+  @Version('1')
+  @ApiOperation({
+    summary: 'Archive the additional children by additionalChildrenId.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'successful operation',
+  })
   async deleteAddChildren(
     @Param('additionalChildrenId', new ParseUUIDPipe({ version: '4' }))
     id: string,
@@ -231,7 +239,7 @@ export class IntakeController {
     if (data.affected > 0) {
       return {
         statusCode: 201,
-        message: `Children Archived Succesfully.`,
+        message: `Archived Succesfully.`,
       };
     } else {
       throw new InternalServerErrorException();
