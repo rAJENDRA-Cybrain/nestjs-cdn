@@ -5,11 +5,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   PrimaryGeneratedColumn,
-  OneToMany,
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { ConversationTypeEntity } from '../../database';
+import { ConversationTypeEntity, UserEntity } from '../../database';
 
 @Entity('tbl_CRMRecordConversation')
 export class RecordConversationEntity {
@@ -35,6 +34,13 @@ export class RecordConversationEntity {
   @Length(0, 1500)
   @IsNotEmpty()
   conversationDescriptions: string;
+
+  @ManyToOne(
+    () => UserEntity,
+    (userEntity) => userEntity.conversationsRecordedBy,
+  )
+  @JoinColumn([{ name: 'addedBy', referencedColumnName: 'userId' }])
+  conversationAddedBy: UserEntity;
 
   @Column({ default: true })
   @IsBoolean()

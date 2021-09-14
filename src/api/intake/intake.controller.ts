@@ -9,11 +9,8 @@ import {
   ParseUUIDPipe,
   Put,
   InternalServerErrorException,
-  UseGuards,
-  Req,
   Delete,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { IntakeService } from './intake.service';
 import { ServiceCoordinatorService } from '../service-coordinator/service-coordinator.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -21,7 +18,7 @@ import {
   CreateIntakeDto,
   UpdateIntakeDto,
   CreateAdditionalChildrenDto,
-  //UpdateAdditionalChildrenDto,
+  UpdateAdditionalChildrenDto,
 } from '../../dto';
 import {
   IntakeEntity,
@@ -217,6 +214,33 @@ export class IntakeController {
       return {
         statusCode: 200,
         message: 'No Data Found',
+        data: [],
+      };
+    }
+  }
+
+  @Put('addtional-children/:additionalChildrenId')
+  @Version('1')
+  @ApiOperation({
+    summary: 'Update additional children by additionalChildrenId.',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'successful operation',
+  })
+  public async updateConversation(
+    @Param('additionalChildrenId', new ParseUUIDPipe({ version: '4' }))
+    additionalChildrenId: string,
+    @Body() updateAdditionalChildrenDto: UpdateAdditionalChildrenDto,
+  ) {
+    const data = await this.intakeService.updateAdditionalChildren(
+      additionalChildrenId,
+      updateAdditionalChildrenDto,
+    );
+    if (data) {
+      return {
+        statusCode: 201,
+        message: `Updated Succesfully.`,
         data: [],
       };
     }

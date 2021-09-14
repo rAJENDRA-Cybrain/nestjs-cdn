@@ -1,26 +1,80 @@
-import { Injectable } from '@nestjs/common';
-import { CreateRecordConversationDto } from './dto/create-record-conversation.dto';
-import { UpdateRecordConversationDto } from './dto/update-record-conversation.dto';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import {
+  CreateRecordConversationDto,
+  UpdateRecordConversationDto,
+} from '../../dto';
+import {
+  RecordConversationEntity,
+  ConversationTypeEntity,
+} from '../../database';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { ConversationTypeService } from '../conversation-type/conversation-type.service';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class RecordConversationService {
-  create(createRecordConversationDto: CreateRecordConversationDto) {
-    return 'This action adds a new recordConversation';
+  constructor(
+    @InjectRepository(RecordConversationEntity)
+    private recordConvRepository: Repository<RecordConversationEntity>,
+    @InjectRepository(ConversationTypeEntity)
+    private convTypeRepository: Repository<ConversationTypeEntity>,
+    private readonly conversationTypeService: ConversationTypeService,
+    private authService: AuthService,
+  ) {}
+
+  public async saveConversation(userId, data: CreateRecordConversationDto) {
+    return this.recordConvRepository.save({
+      conversationDate: data.conversationDate,
+      conversationTimestamp: data.conversationTimestamp,
+      conversationDescriptions: data.conversationDescriptions,
+      conversationType: await this.conversationTypeService.findById(
+        data.conversationTypeId,
+      ),
+      conversationAddedBy: await this.authService.isUserExistById(userId),
+    });
   }
 
-  findAll() {
-    return `This action returns all recordConversation`;
+  public async findRecoddedConversations(): Promise<
+    RecordConversationEntity[]
+  > {
+    return await this.recordConvRepository
+      .createQueryBuilder('Record')
+      .select([
+        'Record',
+        'conversationType.conversationTypeId',
+        'conversationType.type',
+        'conversationType.description',
+        'conversationAddedBy.userId',
+        'conversationAddedBy.firstName',
+        'conversationAddedBy.lastName',
+        'conversationAddedBy.emailId',
+        'conversationAddedBy.contactNo',
+      ])
+      .leftJoin('Record.conversationType', 'conversationType')
+      .leftJoin('Record.conversationAddedBy', 'conversationAddedBy')
+      .where({ isActive: true })
+      .orderBy({ 'Record.createdAt': 'DESC' })
+      .getMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} recordConversation`;
+  public async updateConversation(
+    conversationId,
+    data: UpdateRecordConversationDto,
+  ) {
+    return this.recordConvRepository.update(conversationId, {
+      conversationDate: data.conversationDate,
+      conversationTimestamp: data.conversationTimestamp,
+      conversationDescriptions: data.conversationDescriptions,
+      conversationType: await this.conversationTypeService.findById(
+        data.conversationTypeId,
+      ),
+    });
   }
 
-  update(id: number, updateRecordConversationDto: UpdateRecordConversationDto) {
-    return `This action updates a #${id} recordConversation`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} recordConversation`;
+  async deleteConversation(id: string) {
+    return this.recordConvRepository.update(id, {
+      isActive: false,
+    });
   }
 }

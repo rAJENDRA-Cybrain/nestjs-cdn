@@ -5,6 +5,7 @@ import {
   CreateIntakeDto,
   UpdateIntakeDto,
   CreateAdditionalChildrenDto,
+  UpdateAdditionalChildrenDto,
 } from '../../dto';
 import { IntakeEntity, AdditionalChildrenEntity } from '../../database';
 import { AuthService } from '../auth/auth.service';
@@ -195,5 +196,15 @@ export class IntakeService {
     //   isActive: false,
     //   isDelete: true,
     // });
+  }
+
+  public async updateAdditionalChildren(
+    id: string,
+    data: UpdateAdditionalChildrenDto,
+  ) {
+    return this.addChildRepository.update(id, {
+      childName: data.childName,
+      childAge: data.childAge,
+    });
   }
 }
