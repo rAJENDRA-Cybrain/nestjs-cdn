@@ -11,7 +11,6 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   PrimaryGeneratedColumn,
-  OneToOne,
   JoinColumn,
   ManyToOne,
   OneToMany,
@@ -19,6 +18,7 @@ import {
 import {
   ManageChildNotesEntity,
   ServiceCoordinatorEntity,
+  AdditionalChildrenEntity,
   UserEntity,
 } from 'src/database';
 
@@ -213,6 +213,12 @@ export class IntakeEntity {
   @Column()
   @UpdateDateColumn()
   public updatedAt: Date;
+
+  @OneToMany(
+    () => AdditionalChildrenEntity,
+    (additionalChildrenEntity) => additionalChildrenEntity.intake,
+  )
+  additionalChild: AdditionalChildrenEntity[];
 
   @OneToMany(
     () => ManageChildNotesEntity,

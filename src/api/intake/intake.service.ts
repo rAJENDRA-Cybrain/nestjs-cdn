@@ -1,8 +1,12 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Not, Equal, Repository, Raw, getManager } from 'typeorm';
-import { CreateIntakeDto, UpdateIntakeDto } from '../../dto';
-import { IntakeEntity } from '../../database';
+import {
+  CreateIntakeDto,
+  UpdateIntakeDto,
+  CreateAdditionalChildrenDto,
+} from '../../dto';
+import { IntakeEntity, AdditionalChildrenEntity } from '../../database';
 import { AuthService } from '../auth/auth.service';
 
 @Injectable()
@@ -12,6 +16,8 @@ export class IntakeService {
     private intakeRepository: Repository<IntakeEntity>,
     @Inject(forwardRef(() => AuthService))
     private authService: AuthService,
+    @InjectRepository(AdditionalChildrenEntity)
+    private addChildRepository: Repository<AdditionalChildrenEntity>,
   ) {}
   async isChildExist(createIntakeDto: CreateIntakeDto): Promise<IntakeEntity> {
     return await this.intakeRepository.findOne({
@@ -136,5 +142,58 @@ export class IntakeService {
       intakeId: id,
       isActive: true,
     });
+  }
+
+  public async isAdditionalChildrenExist(
+    data: CreateAdditionalChildrenDto,
+  ): Promise<AdditionalChildrenEntity> {
+    return await this.addChildRepository.findOne({
+      relations: ['intake'],
+      where: {
+        childName: data.childName,
+        isActive: true,
+        intake: { intakeId: data.intakeId },
+      },
+    });
+  }
+
+  public async saveAdditionalChildren(data: CreateAdditionalChildrenDto) {
+    return this.addChildRepository.save({
+      childName: data.childName,
+      childAge: data.childAge,
+      intake: await this.findById(data.intakeId),
+    });
+  }
+
+  public async findAdditionalChildren(
+    id: string,
+  ): Promise<AdditionalChildrenEntity[]> {
+    return await this.addChildRepository.find({
+      select: [
+        'additionalChildrenId',
+        'childName',
+        'childAge',
+        'isActive',
+        'createdAt',
+        'updatedAt',
+      ],
+      relations: ['intake'],
+      where: {
+        isActive: true,
+        isDelete: false,
+        intake: { intakeId: id },
+      },
+      order: {
+        createdAt: 'ASC',
+      },
+    });
+  }
+
+  async deleteAddChildren(id: string) {
+    return this.addChildRepository.delete(id);
+    // return this.addChildRepository.update(id, {
+    //   isActive: false,
+    //   isDelete: true,
+    // });
   }
 }

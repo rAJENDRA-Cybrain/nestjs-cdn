@@ -8,6 +8,7 @@ import {
   UserEntity,
   IntakeEntity,
   ServiceCoordinatorEntity,
+  AdditionalChildrenEntity,
 } from 'src/database';
 
 @Module({
@@ -15,6 +16,7 @@ import {
     TypeOrmModule.forFeature([
       UserEntity,
       IntakeEntity,
+      AdditionalChildrenEntity,
       ServiceCoordinatorEntity,
     ]),
     forwardRef(() => AuthModule),

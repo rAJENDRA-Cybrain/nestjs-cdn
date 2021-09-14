@@ -8,6 +8,7 @@ import {
   IntakeEntity,
   ManageChildNotesEntity,
   UserEntity,
+  AdditionalChildrenEntity,
 } from 'src/database';
 import { IntakeService } from '../intake/intake.service';
 import { ConversationTypeService } from '../conversation-type/conversation-type.service';
@@ -19,6 +20,7 @@ import { ConversationTypeService } from '../conversation-type/conversation-type.
       IntakeEntity,
       ConversationTypeEntity,
       ManageChildNotesEntity,
+      AdditionalChildrenEntity,
     ]),
     forwardRef(() => AuthModule),
   ],

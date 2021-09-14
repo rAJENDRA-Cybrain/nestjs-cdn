@@ -32,5 +32,8 @@ export * from './update-manage-child.dto';
 export * from './create-smtp-detail.dto';
 export * from './update-smtp-detail.dto';
 
+export * from './create-add-child.dto';
+export * from './update-add-child.dto';
+
 
 

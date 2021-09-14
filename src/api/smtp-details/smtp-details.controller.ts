@@ -1,15 +1,13 @@
 import {
   Controller,
+  Put,
   Get,
   Post,
   Body,
-  Patch,
   Param,
-  Delete,
   Version,
-  ConflictException,
-  Put,
   ParseUUIDPipe,
+  ConflictException,
 } from '@nestjs/common';
 import { SmtpDetailEntity } from '../../database';
 import { SmtpDetailsService } from './smtp-details.service';
@@ -120,7 +118,7 @@ export class SmtpDetailsController {
     const { isActive, isDelete } = updateSmtpDetailStatusDto;
     if (isActive) {
       const activeSmtp = await this.smtpDetailsService.findActiveSmtp();
-      console.log('====== > ', activeSmtp);
+      //console.log('====== > ', activeSmtp);
       if (activeSmtp) {
         await this.smtpDetailsService.updateStatus(
           activeSmtp.smtpId,

@@ -1,7 +1,11 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
-import { ManageChildNotesEntity, IntakeEntity } from '../../database';
+import {
+  ManageChildNotesEntity,
+  IntakeEntity,
+  UserEntity,
+} from '../../database';
 import {
   CreateManageChildNotesDto,
   UpdateManageChildNotesDto,
@@ -15,6 +19,8 @@ export class ManageChildService {
     private notesRepository: Repository<ManageChildNotesEntity>,
     @InjectRepository(IntakeEntity)
     private intakeRepository: Repository<IntakeEntity>,
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
     @Inject(forwardRef(() => AuthService))
     private authService: AuthService,
   ) {}
@@ -92,5 +98,14 @@ export class ManageChildService {
       // tpEarlyStartFamillySpecialistDate: dto.tpEarlyStartFamillySpecialistDate,
       // tpCompletedDate: dto.tpCompletedDate,
     });
+  }
+  async findReport() {
+    return await this.notesRepository.find({ relations: ['notesAddedBy'] });
+    // .innerJoinAndSelect(
+    //   'intake.childNotes',
+    //   'childNotes',
+    //   'childNotes.isActive = :isActive',
+    //   { isActive: true },
+    // )
   }
 }

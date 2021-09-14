@@ -11,16 +11,23 @@ import {
   InternalServerErrorException,
   UseGuards,
   Req,
+  Delete,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { IntakeService } from './intake.service';
 import { ServiceCoordinatorService } from '../service-coordinator/service-coordinator.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CreateIntakeDto, UpdateIntakeDto } from '../../dto';
+import {
+  CreateIntakeDto,
+  UpdateIntakeDto,
+  CreateAdditionalChildrenDto,
+  //UpdateAdditionalChildrenDto,
+} from '../../dto';
 import {
   IntakeEntity,
   ServiceCoordinatorEntity,
   UserEntity,
+  AdditionalChildrenEntity,
 } from '../../database';
 
 @Controller('intake-children')
@@ -151,6 +158,80 @@ export class IntakeController {
       return {
         statusCode: 201,
         message: `Updated Succesfully.`,
+      };
+    } else {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  @Post('addtional-children')
+  @Version('1')
+  @ApiOperation({ summary: 'Add new additional children' })
+  @ApiResponse({
+    status: 200,
+    description: 'successful operation',
+  })
+  public async createAdditionalChild(
+    @Body() addChildrenDto: CreateAdditionalChildrenDto,
+  ) {
+    const findAddChildrenExist: AdditionalChildrenEntity =
+      await this.intakeService.isAdditionalChildrenExist(addChildrenDto);
+
+    if (findAddChildrenExist) {
+      throw new ConflictException(
+        `${addChildrenDto.childName} is already exist.`,
+      );
+    }
+    const data: AdditionalChildrenEntity =
+      await this.intakeService.saveAdditionalChildren(addChildrenDto);
+    if (data) {
+      return {
+        statusCode: 200,
+        message: `Saved Succesfully.`,
+      };
+    }
+  }
+
+  @Get('addtional-children/:intakeId')
+  @Version('1')
+  @ApiOperation({
+    summary: 'Get list of addtional children for particular child by intakeId.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'successful operation',
+  })
+  public async findAddChildren(
+    @Param('intakeId', new ParseUUIDPipe({ version: '4' }))
+    intakeId: string,
+  ) {
+    const data: AdditionalChildrenEntity[] =
+      await this.intakeService.findAdditionalChildren(intakeId as string);
+    if (data.length > 0) {
+      return {
+        statusCode: 200,
+        message: `Success.`,
+        data: data,
+      };
+    } else {
+      return {
+        statusCode: 200,
+        message: 'No Data Found',
+        data: [],
+      };
+    }
+  }
+
+  @Delete('addtional-children/:additionalChildrenId')
+  async deleteAddChildren(
+    @Param('additionalChildrenId', new ParseUUIDPipe({ version: '4' }))
+    id: string,
+  ): Promise<any> {
+    const data = await this.intakeService.deleteAddChildren(id);
+    if (data.affected > 0) {
+      return {
+        statusCode: 201,
+        message: `Children Archived Succesfully.`,
       };
     } else {
       throw new InternalServerErrorException();

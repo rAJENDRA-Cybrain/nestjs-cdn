@@ -166,4 +166,14 @@ export class ManageChildController {
       }
     }
   }
+  @Get('/data')
+  @Version('1')
+  @ApiOperation({ summary: 'Generate Report' })
+  @ApiResponse({
+    status: 200,
+    description: 'successful operation',
+  })
+  public async generateReport() {
+    return await this.manageChildService.findReport();
+  }
 }
