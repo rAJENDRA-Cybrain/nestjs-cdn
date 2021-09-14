@@ -7,7 +7,10 @@ import {
   PrimaryGeneratedColumn,
   OneToMany,
 } from 'typeorm';
-import { ManageChildNotesEntity } from './manage-child.entity';
+import {
+  ManageChildNotesEntity,
+  RecordConversationEntity,
+} from '../../database';
 
 @Entity('tbl_CRMConversationType')
 export class ConversationTypeEntity {
@@ -25,6 +28,10 @@ export class ConversationTypeEntity {
 
   @Column({ default: true })
   @IsBoolean()
+  options: boolean;
+
+  @Column({ default: true })
+  @IsBoolean()
   isActive: boolean;
 
   @CreateDateColumn()
@@ -38,4 +45,10 @@ export class ConversationTypeEntity {
     (manageChildNotesEntity) => manageChildNotesEntity.conversationType,
   )
   conversations: ManageChildNotesEntity[];
+
+  @OneToMany(
+    () => RecordConversationEntity,
+    (recordConversationEntity) => recordConversationEntity.conversationType,
+  )
+  recordConversations: RecordConversationEntity[];
 }

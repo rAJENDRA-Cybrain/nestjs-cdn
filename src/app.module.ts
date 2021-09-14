@@ -14,6 +14,7 @@ import { ExitPlanModule } from './api/exit-plan/exit-plan.module';
 import { ManageChildModule } from './api/manage-child/manage-child.module';
 import { ConversationTypeModule } from './api/conversation-type/conversation-type.module';
 import { SmtpDetailsModule } from './api/smtp-details/smtp-details.module';
+import { RecordConversationModule } from './api/record-conversation/record-conversation.module';
 
 const production = false; // fasle : development env and true : production env
 
@@ -46,6 +47,7 @@ const production = false; // fasle : development env and true : production env
     ManageChildModule,
     ConversationTypeModule,
     SmtpDetailsModule,
+    RecordConversationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
