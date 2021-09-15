@@ -25,6 +25,10 @@ export class ManageChildNotesEntity {
   @JoinColumn({ name: 'conversationTypeId' })
   conversationType: ConversationTypeEntity;
 
+  @Column({ type: 'date' })
+  @IsNotEmpty()
+  date: Date;
+
   @Column()
   @IsNotEmpty()
   timestamp: string;

@@ -8,6 +8,10 @@ export class UpdateManageChildNotesDto {
   conversationTypeId: string;
 
   @IsString()
+  @ApiProperty({ minLength: 0, maxLength: 50, default: new Date() })
+  date: Date;
+
+  @IsString()
   @ApiProperty({ minLength: 0, maxLength: 100, default: '' })
   timestamp: string;
 

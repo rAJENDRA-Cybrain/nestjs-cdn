@@ -54,6 +54,7 @@ export class ManageChildService {
   ) {
     return this.notesRepository.save({
       conversationType: convData,
+      date: createNotesDto.date,
       timestamp: createNotesDto.timestamp,
       notes: createNotesDto.notes,
       intakeChild: childData,
@@ -86,26 +87,10 @@ export class ManageChildService {
       conversationType: convData,
       timestamp: dto.timestamp,
       notes: dto.notes,
-      //intakeChild: childData,
-      //notesAddedBy: userData,
-
-      // preSchool: dto.preSchool,
-      // dayCare: dto.dayCare,
-      // tpQuestionToParentOneAns: dto.tpQuestionToParentOneAns,
-      // tpQuestionToParentTwoAns: dto.tpQuestionToParentTwoAns,
-      // tpQuestionToParentThirdAns: dto.tpQuestionToParentThirdAns,
-      // tpEarlyStartFamillySpecialist: dto.tpEarlyStartFamillySpecialist,
-      // tpEarlyStartFamillySpecialistDate: dto.tpEarlyStartFamillySpecialistDate,
-      // tpCompletedDate: dto.tpCompletedDate,
+      date: dto.date,
     });
   }
   async findReport() {
     return await this.notesRepository.find({ relations: ['notesAddedBy'] });
-    // .innerJoinAndSelect(
-    //   'intake.childNotes',
-    //   'childNotes',
-    //   'childNotes.isActive = :isActive',
-    //   { isActive: true },
-    // )
   }
 }

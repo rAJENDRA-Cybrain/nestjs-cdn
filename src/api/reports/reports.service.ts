@@ -43,6 +43,7 @@ export class ReportsService {
         'additionalChild.childAge',
         'additionalChild.createdAt',
         'childNotes.notesId',
+        'childNotes.date',
         'childNotes.timestamp',
         'childNotes.notes',
         'childNotes.createdAt',
