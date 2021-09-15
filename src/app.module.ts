@@ -15,6 +15,7 @@ import { ManageChildModule } from './api/manage-child/manage-child.module';
 import { ConversationTypeModule } from './api/conversation-type/conversation-type.module';
 import { SmtpDetailsModule } from './api/smtp-details/smtp-details.module';
 import { RecordConversationModule } from './api/record-conversation/record-conversation.module';
+import { ReportsModule } from './api/reports/reports.module';
 
 const production = false; // fasle : development env and true : production env
 
@@ -35,7 +36,7 @@ const production = false; // fasle : development env and true : production env
       synchronize: !production ? true : false,
       // 1st one is for development and 2nd one is for production
       // only when migration needed then call it to true
-      logging: false,
+      logging: true,
     }),
     SharedModule,
     RoleModule,
@@ -48,6 +49,7 @@ const production = false; // fasle : development env and true : production env
     ConversationTypeModule,
     SmtpDetailsModule,
     RecordConversationModule,
+    ReportsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

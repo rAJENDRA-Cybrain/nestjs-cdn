@@ -117,7 +117,7 @@ export class RecordConversationController {
     description: 'successful operation',
   })
   async deleteConversation(
-    @Param('additionalChildrenId', new ParseUUIDPipe({ version: '4' }))
+    @Param('conversationId', new ParseUUIDPipe({ version: '4' }))
     id: string,
   ): Promise<any> {
     const data = await this.recordConversationService.deleteConversation(id);
