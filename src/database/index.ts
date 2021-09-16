@@ -8,3 +8,5 @@ export * from './entities/service-coordinator.entity';
 export * from './entities/smtp-detail.entity';
 export * from './entities/additional-chldren.entity';
 export * from './entities/record-conversation.entity';
+export * from './entities/email-template.entity';
+export * from './entities/email-template-attachments.entity';

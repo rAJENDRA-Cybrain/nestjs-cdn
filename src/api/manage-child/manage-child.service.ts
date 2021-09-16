@@ -90,6 +90,12 @@ export class ManageChildService {
       date: dto.date,
     });
   }
+  async updateStatus(id: string) {
+    return await this.notesRepository.update(id, {
+      isActive: false,
+    });
+  }
+
   async findReport() {
     return await this.notesRepository.find({ relations: ['notesAddedBy'] });
   }

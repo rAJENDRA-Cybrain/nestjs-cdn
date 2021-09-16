@@ -38,5 +38,8 @@ export * from './update-add-child.dto';
 export * from './create-record-conversation.dto';
 export * from './update-record-conversation.dto';
 
+export * from './create-email-template.dto';
+export * from './update-email-template.dto';
+
 
 

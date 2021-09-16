@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { SharedModule } from './shared/shared.module';
 import { RoleModule } from './api/role/role.module';
 import { AuthModule } from './api/auth/auth.module';
@@ -16,6 +17,7 @@ import { ConversationTypeModule } from './api/conversation-type/conversation-typ
 import { SmtpDetailsModule } from './api/smtp-details/smtp-details.module';
 import { RecordConversationModule } from './api/record-conversation/record-conversation.module';
 import { ReportsModule } from './api/reports/reports.module';
+import { EmailTemplateModule } from './api/email-template/email-template.module';
 
 const production = false; // fasle : development env and true : production env
 
@@ -38,6 +40,10 @@ const production = false; // fasle : development env and true : production env
       // only when migration needed then call it to true
       logging: false,
     }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'),
+      serveRoot: '/static',
+    }),
     SharedModule,
     RoleModule,
     AuthModule,
@@ -50,6 +56,7 @@ const production = false; // fasle : development env and true : production env
     SmtpDetailsModule,
     RecordConversationModule,
     ReportsModule,
+    EmailTemplateModule,
   ],
   controllers: [AppController],
   providers: [AppService],

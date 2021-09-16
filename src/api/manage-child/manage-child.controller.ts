@@ -9,6 +9,7 @@ import {
   Request,
   Put,
   UseGuards,
+  Delete,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ManageChildService } from './manage-child.service';
@@ -133,7 +134,6 @@ export class ManageChildController {
     status: 200,
     description: 'successful operation',
   })
-  //@ApiExcludeEndpoint()
   public async updateChildNotes(
     @Param('notesId', new ParseUUIDPipe({ version: '4' })) notesId: string,
     @Body() updateManageChildNotesDto: UpdateManageChildNotesDto,
@@ -163,14 +163,23 @@ export class ManageChildController {
       }
     }
   }
-  @Get('/data')
+
+  @Delete('/notes/:notesId')
   @Version('1')
-  @ApiOperation({ summary: 'Generate Report' })
+  @ApiOperation({ summary: 'Archive child notes.' })
   @ApiResponse({
     status: 200,
     description: 'successful operation',
   })
-  public async generateReport() {
-    return await this.manageChildService.findReport();
+  public async archiveChildNotes(
+    @Param('notesId', new ParseUUIDPipe({ version: '4' })) notesId: string,
+  ) {
+    const isStatusUpdated = await this.manageChildService.updateStatus(notesId);
+    if (isStatusUpdated.affected > 0) {
+      return {
+        statusCode: 201,
+        message: `Note archived succesfully.`,
+      };
+    }
   }
 }
