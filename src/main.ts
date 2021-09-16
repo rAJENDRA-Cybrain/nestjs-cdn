@@ -35,7 +35,7 @@ async function bootstrap() {
     customCss: '.swagger-ui .topbar { display: none }',
   };
   app.enableCors({
-    origin: '*',
+    origin: true,
     credentials: true,
   });
 
