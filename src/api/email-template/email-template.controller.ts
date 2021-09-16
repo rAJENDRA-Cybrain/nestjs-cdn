@@ -98,6 +98,35 @@ export class EmailTemplateController {
     }
   }
 
+  @Get(':templateId')
+  @Version('1')
+  @ApiOperation({ summary: 'Get individual email templates.' })
+  @ApiResponse({
+    status: 200,
+    description: 'successful operation',
+  })
+  public async findIndividualEmailTemplate(
+    @Param('templateId', new ParseUUIDPipe({ version: '4' }))
+    templateId: string,
+  ) {
+    const data = await this.emailTemplateService.findIndividualEmailTemplate(
+      templateId,
+    );
+    if (data.length > 0) {
+      return {
+        statusCode: 200,
+        message: `Success.`,
+        data: data,
+      };
+    } else {
+      return {
+        statusCode: 200,
+        message: `No Data Found..`,
+        data: [],
+      };
+    }
+  }
+
   @Put(':templateId')
   @Version('1')
   @ApiOperation({ summary: 'Update email template.' })

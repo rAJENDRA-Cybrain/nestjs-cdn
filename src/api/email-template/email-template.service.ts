@@ -110,4 +110,21 @@ export class EmailTemplateService {
       isActive: false,
     });
   }
+
+  async findIndividualEmailTemplate(id: string) {
+    return await this.emailTemplateRepository
+      .createQueryBuilder('template')
+      .innerJoinAndSelect(
+        'template.attachments',
+        'attachments',
+        'attachments.isActive = :isActive',
+        { isActive: true },
+      )
+      .where(
+        'template.isActive = :isActive AND template.templateId = :templateId',
+        { isActive: true, templateId: id },
+      )
+      .orderBy({ 'template.createdAt': 'DESC' })
+      .getMany();
+  }
 }
