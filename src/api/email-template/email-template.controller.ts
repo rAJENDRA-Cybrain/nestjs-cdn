@@ -59,11 +59,13 @@ export class EmailTemplateController {
     } else {
       const data = await this.emailTemplateService.saveEmailTemplate(template);
       if (data) {
-        await this.emailTemplateService.saveAttachments(
-          req,
-          data.templateId,
-          files,
-        );
+        if (Object.keys(files).length > 0) {
+          await this.emailTemplateService.saveAttachments(
+            req,
+            data.templateId,
+            files,
+          );
+        }
         return {
           statusCode: 200,
           message: `Saved Succesfully.`,
