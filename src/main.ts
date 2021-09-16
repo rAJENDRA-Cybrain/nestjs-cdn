@@ -9,7 +9,13 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(cookieParser());
   app.use(bodyParser.json({ limit: '50mb' }));
-  app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+  app.use(
+    bodyParser.urlencoded({
+      limit: '50mb',
+      extended: true,
+      parameterLimit: 50000,
+    }),
+  );
   const config = new DocumentBuilder()
     .setTitle('ChildCare CRM Api Project')
     .setDescription('An Api Project with NestJs, PostgresSQL, TypeORM')
@@ -28,7 +34,10 @@ async function bootstrap() {
   const swagger_options = {
     customCss: '.swagger-ui .topbar { display: none }',
   };
-  app.enableCors();
+  app.enableCors({
+    origin: '*',
+    credentials: true,
+  });
 
   SwaggerModule.setup('/', app, document, swagger_options); // swagger_options
 
