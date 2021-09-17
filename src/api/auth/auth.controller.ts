@@ -329,40 +329,32 @@ export class AuthController {
     }
   }
 
-  // @Put(':')
-  // @Version('1')
-  // @ApiOperation({ summary: 'Update individual employee by userId.' })
-  // @ApiResponse({
-  //   status: 201,
-  //   description: 'successful operation',
-  // })
-  // public async updateEmployee(
-  //   @Param('userId', new ParseUUIDPipe({ version: '4' })) userId: string,
-  //   @Body() updateSignUpDto: UpdateSignUpDto,
-  // ) {
-  //   const isExist = await this.authService.isAccountExistById(
-  //     userId,
-  //     updateSignUpDto,
-  //   );
-  //   if (isExist) {
-  //     const findRole: RoleEntity = await this.roleService.isRoleExistById(
-  //       updateSignUpDto.roleId,
-  //     );
-  //     if (findRole) {
-  //       const data = await this.authService.update(
-  //         userId,
-  //         updateSignUpDto,
-  //         findRole,
-  //       );
-  //       if (data) {
-  //         return {
-  //           statusCode: 200,
-  //           message: `User Updated Succesfully.`,
-  //         };
-  //       }
-  //     } else {
-  //       throw new BadRequestException('Please provide valid roleId');
-  //     }
-  //   }
-  // }
+  @Put(':userId/:password/reset-password')
+  @Version('1')
+  @ApiOperation({ summary: 'Reset password by userId.' })
+  @ApiResponse({
+    status: 201,
+    description: 'successful operation',
+  })
+  public async resetPassword(
+    @Param('userId', new ParseUUIDPipe({ version: '4' })) userId: string,
+    @Param('password') password: string,
+  ) {
+    const isExist: UserEntity = await this.authService.isUserExistById(userId);
+    if (isExist) {
+      const hashPassword = await this.authService.hashPassword(password);
+      if (hashPassword) {
+        const data = await this.authService.updatePassword(
+          userId,
+          hashPassword,
+        );
+        if (data.affected > 0) {
+          return {
+            statusCode: 200,
+            message: `Password Updated Succesfully.`,
+          };
+        }
+      }
+    }
+  }
 }
