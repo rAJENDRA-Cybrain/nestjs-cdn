@@ -197,6 +197,12 @@ export class AuthService {
     });
   }
 
+  async deleteEmployee(id: string) {
+    return await this.userRepository.update(id, {
+      status: 'InActive',
+    });
+  }
+
   async hashPassword(password: string): Promise<string> {
     return await bcrypt.hash(password, 12);
   }

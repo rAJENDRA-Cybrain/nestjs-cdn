@@ -198,6 +198,13 @@ export class IntakeService {
     // });
   }
 
+  async deleteChildren(id: string) {
+    return this.intakeRepository.update(id, {
+      isActive: false,
+      isDelete: true,
+    });
+  }
+
   public async updateAdditionalChildren(
     id: string,
     data: UpdateAdditionalChildrenDto,
@@ -205,6 +212,30 @@ export class IntakeService {
     return this.addChildRepository.update(id, {
       childName: data.childName,
       childAge: data.childAge,
+    });
+  }
+
+  async isAssignedOrNot(id: string) {
+    return await this.intakeRepository.find({
+      join: {
+        alias: 'intake',
+        leftJoinAndSelect: {
+          efcEmployee: 'intake.efcEmployee',
+        },
+      },
+      where: { isActive: true, efcEmployee: { userId: id } },
+    });
+  }
+
+  public async isNotesExist(id): Promise<IntakeEntity> {
+    return await this.intakeRepository.findOne({
+      join: {
+        alias: 'intake',
+        leftJoinAndSelect: {
+          childNotes: 'intake.childNotes',
+        },
+      },
+      where: { isActive: true, intakeId: id },
     });
   }
 }

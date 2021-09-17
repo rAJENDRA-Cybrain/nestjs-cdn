@@ -12,6 +12,7 @@ import {
   Res,
   UnauthorizedException,
   Req,
+  Delete,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -27,6 +28,7 @@ import { UserEntity, RoleEntity } from '../../database';
 import { RoleService } from '../role/role.service';
 import { BadRequestException } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { IntakeService } from '../intake/intake.service';
 
 @Controller('auth')
 @ApiTags('Authentication APIs')
@@ -34,6 +36,7 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly roleService: RoleService,
+    private readonly intakeService: IntakeService,
   ) {}
 
   @Post('sign-in')
@@ -264,6 +267,39 @@ export class AuthController {
     }
   }
 
+  @Delete(':userId')
+  @Version('1')
+  @ApiOperation({ summary: 'Archive individual employee by userId.' })
+  @ApiResponse({
+    status: 201,
+    description: 'successful operation',
+  })
+  public async archiveEmployee(
+    @Param('userId', new ParseUUIDPipe({ version: '4' })) userId: string,
+  ) {
+    const isExist: UserEntity = await this.authService.isUserExistById(userId);
+    if (!isExist) {
+      throw new ConflictException('User Not Found!.');
+    } else {
+      const isAssignedToIntake = await this.intakeService.isAssignedOrNot(
+        userId,
+      );
+      if (isAssignedToIntake.length > 0) {
+        throw new ConflictException(
+          'System Restricted. User alraedy assigned to children.',
+        );
+      } else {
+        const isStatusUpdated = await this.authService.deleteEmployee(userId);
+        if (isStatusUpdated.affected > 0) {
+          return {
+            statusCode: 201,
+            message: `User archived succesfully.`,
+          };
+        }
+      }
+    }
+  }
+
   @Post('forgot-password')
   @Version('1')
   @ApiOperation({ summary: 'Forgot Password' })
@@ -292,4 +328,41 @@ export class AuthController {
       throw new ConflictException('Invalid email address!.');
     }
   }
+
+  // @Put(':')
+  // @Version('1')
+  // @ApiOperation({ summary: 'Update individual employee by userId.' })
+  // @ApiResponse({
+  //   status: 201,
+  //   description: 'successful operation',
+  // })
+  // public async updateEmployee(
+  //   @Param('userId', new ParseUUIDPipe({ version: '4' })) userId: string,
+  //   @Body() updateSignUpDto: UpdateSignUpDto,
+  // ) {
+  //   const isExist = await this.authService.isAccountExistById(
+  //     userId,
+  //     updateSignUpDto,
+  //   );
+  //   if (isExist) {
+  //     const findRole: RoleEntity = await this.roleService.isRoleExistById(
+  //       updateSignUpDto.roleId,
+  //     );
+  //     if (findRole) {
+  //       const data = await this.authService.update(
+  //         userId,
+  //         updateSignUpDto,
+  //         findRole,
+  //       );
+  //       if (data) {
+  //         return {
+  //           statusCode: 200,
+  //           message: `User Updated Succesfully.`,
+  //         };
+  //       }
+  //     } else {
+  //       throw new BadRequestException('Please provide valid roleId');
+  //     }
+  //   }
+  // }
 }

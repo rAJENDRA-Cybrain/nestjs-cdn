@@ -161,6 +161,37 @@ export class IntakeController {
     }
   }
 
+  @Delete(':intakeId')
+  @Version('1')
+  @ApiOperation({
+    summary: 'Archive children by intakeId.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'successful operation',
+  })
+  async deleteChildren(
+    @Param('intakeId', new ParseUUIDPipe({ version: '4' }))
+    id: string,
+  ): Promise<any> {
+    const isNotesExists = this.intakeService.isNotesExist(id);
+    if ((await isNotesExists).childNotes.length > 0) {
+      throw new ConflictException(
+        `System Restricted.Notes are already present for this children.`,
+      );
+    } else {
+      const data = await this.intakeService.deleteChildren(id);
+      if (data.affected > 0) {
+        return {
+          statusCode: 201,
+          message: `Children Archived Succesfully.`,
+        };
+      } else {
+        throw new InternalServerErrorException();
+      }
+    }
+  }
+
   @Post('addtional-children')
   @Version('1')
   @ApiOperation({ summary: 'Add new additional children' })
