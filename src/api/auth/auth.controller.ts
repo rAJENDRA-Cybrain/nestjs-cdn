@@ -21,6 +21,7 @@ import {
   SignInDto,
   UpdateSignUpDto,
   UpdatePasswordDto,
+  ForgotPasswordDto,
 } from '../../dto';
 import { UserEntity, RoleEntity } from '../../database';
 import { RoleService } from '../role/role.service';
@@ -260,6 +261,35 @@ export class AuthController {
       } else {
         throw new BadRequestException('Please provide valid roleId');
       }
+    }
+  }
+
+  @Post('forgot-password')
+  @Version('1')
+  @ApiOperation({ summary: 'Forgot Password' })
+  @ApiResponse({
+    status: 200,
+    description: 'successful operation',
+  })
+  public async sendForgetPasswordLink(
+    @Body() forgotPasswordDto: ForgotPasswordDto,
+  ) {
+    const isExist: UserEntity = await this.authService.findUserByEmail(
+      forgotPasswordDto.emailId,
+    );
+    if (isExist) {
+      const expireIn = new Date(new Date().getTime() + 5 * 60000);
+      const token = await this.authService.generateJWT({
+        id: isExist.userId,
+        exp: expireIn,
+      });
+      return {
+        statusCode: 200,
+        message: 'Success.',
+        request_token: token,
+      };
+    } else {
+      throw new ConflictException('Invalid email address!.');
     }
   }
 }

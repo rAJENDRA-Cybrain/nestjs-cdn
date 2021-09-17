@@ -9,8 +9,10 @@ import {
 import {
   CreateManageChildNotesDto,
   UpdateManageChildNotesDto,
+  TriggerEmailDto,
 } from '../../dto';
 import { AuthService } from '../auth/auth.service';
+import { sendEmail } from 'src/shared/node-mailer';
 
 @Injectable()
 export class ManageChildService {
@@ -98,5 +100,34 @@ export class ManageChildService {
 
   async findReport() {
     return await this.notesRepository.find({ relations: ['notesAddedBy'] });
+  }
+
+  async triggerMail(req, files, smtp) {
+    if (Object.keys(files).length > 0) {
+      for (let i = 0; i < files.length; i++) {
+        let templateAttachmentsObj = {};
+        templateAttachmentsObj = {
+          filename: files[i].originalname,
+          path:
+            req.protocol +
+            '://' +
+            req.get('host') +
+            `/uploads/email-attachments/${files[i].filename}`,
+        };
+        if (Object.keys(templateAttachmentsObj).length > 0) {
+          req.body['templateAttachments'].push(templateAttachmentsObj);
+        }
+      }
+    }
+    for (let i = 0; i < req.body['intakes'].length; i++) {
+      const mailOptions = {
+        email: 'rajendra@cybrain.co.in',
+        subject: req.body.templateSubject,
+        body: req.body.templateBody,
+        attachments: req.body['templateAttachments'],
+      };
+      await sendEmail(smtp, mailOptions);
+    }
+    return true;
   }
 }

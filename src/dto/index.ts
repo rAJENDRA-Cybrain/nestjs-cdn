@@ -41,5 +41,7 @@ export * from './update-record-conversation.dto';
 export * from './create-email-template.dto';
 export * from './update-email-template.dto';
 
+export * from './trigger-email.dto';
+
 
 

@@ -10,22 +10,37 @@ import {
   Put,
   UseGuards,
   Delete,
+  UseInterceptors,
+  Req,
+  UploadedFiles,
+  ConflictException,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { diskStorage } from 'multer';
+import {
+  ApiConsumes,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { ManageChildService } from './manage-child.service';
 import { ConversationTypeService } from '../conversation-type/conversation-type.service';
 import { IntakeService } from '../intake/intake.service';
 import {
   CreateManageChildNotesDto,
   UpdateManageChildNotesDto,
+  TriggerEmailDto,
 } from '../../dto';
 import {
   UserEntity,
   IntakeEntity,
   ConversationTypeEntity,
   ManageChildNotesEntity,
+  SmtpDetailEntity,
 } from '../../database';
 import { AuthGuard } from '@nestjs/passport';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { extname } from 'path';
+import { SmtpDetailsService } from '../smtp-details/smtp-details.service';
 @Controller('manage-child')
 @ApiTags('Manage Child APIs')
 export class ManageChildController {
@@ -33,6 +48,7 @@ export class ManageChildController {
     private readonly manageChildService: ManageChildService,
     private readonly conversationTypeService: ConversationTypeService,
     private readonly intakeService: IntakeService,
+    private readonly smtpDetailsService: SmtpDetailsService,
   ) {}
 
   @Get('')
@@ -180,6 +196,54 @@ export class ManageChildController {
         statusCode: 201,
         message: `Note archived succesfully.`,
       };
+    }
+  }
+  // Email triggering.
+  @Post('trigger-email')
+  @Version('1')
+  @ApiOperation({ summary: 'Trigger mail from manage child.' })
+  @ApiResponse({
+    status: 200,
+    description: 'successful operation',
+  })
+  @UseInterceptors(
+    FilesInterceptor('attachments', 5, {
+      storage: diskStorage({
+        destination: './webroot/email-attachments',
+        filename: (req, file, cb) => {
+          const randomName = Array(32)
+            .fill(null)
+            .map(() => Math.round(Math.random() * 16).toString(16))
+            .join('');
+          return cb(null, `${randomName}${extname(file.originalname)}`);
+        },
+      }),
+    }),
+  )
+  @ApiConsumes('multipart/form-data')
+  async triggerEmail(
+    @Req() req: Request,
+    @UploadedFiles() files: Express.Multer.File,
+  ) {
+    req.body['intakes'] = JSON.parse(req.body['intakes']);
+    req.body['templateAttachments'] = JSON.parse(
+      req.body['templateAttachments'],
+    );
+    if (Object.keys(req.body['intakes']).length > 0) {
+      const smtp = await this.smtpDetailsService.findActiveSmtp();
+      if (Object.keys(smtp).length > 0) {
+        //   return triggerEmailDto;
+        const mail = await this.manageChildService.triggerMail(
+          req,
+          files,
+          smtp,
+        );
+        return { statusCode: 201, message: `Email send succesfully.` };
+      } else {
+        throw new ConflictException(`Please activate smtp configuration.`);
+      }
+    } else {
+      throw new ConflictException(`Please select the children.`);
     }
   }
 }

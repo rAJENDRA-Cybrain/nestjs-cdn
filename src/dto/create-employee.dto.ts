@@ -44,3 +44,10 @@ export class SignUpDto {
   @IsUUID()
   roleId: string;
 }
+
+export class ForgotPasswordDto {
+  @IsString()
+  @IsEmail()
+  @ApiProperty({ minLength: 0, maxLength: 100, default: '' })
+  emailId: string;
+}

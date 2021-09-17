@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, Options } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/database';
 import { Equal, Not, Repository } from 'typeorm';
@@ -202,7 +202,7 @@ export class AuthService {
   }
 
   async comparePassword(userPswd: string, hashPswd: string): Promise<boolean> {
-    return await bcrypt.compareSync(userPswd, hashPswd);
+    return bcrypt.compareSync(userPswd, hashPswd);
   }
 
   async validateUser(email: string, password: string): Promise<UserEntity> {
@@ -217,5 +217,9 @@ export class AuthService {
 
   async generateJWT(payload): Promise<string> {
     return await this.jwtService.signAsync({ payload });
+  }
+
+  async generateFPJwt(id: any): Promise<string> {
+    return this.jwtService.signAsync(id);
   }
 }

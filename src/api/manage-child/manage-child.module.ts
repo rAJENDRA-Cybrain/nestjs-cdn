@@ -9,8 +9,10 @@ import {
   ManageChildNotesEntity,
   UserEntity,
   AdditionalChildrenEntity,
+  SmtpDetailEntity,
 } from 'src/database';
 import { IntakeService } from '../intake/intake.service';
+import { SmtpDetailsService } from '../smtp-details/smtp-details.service';
 import { ConversationTypeService } from '../conversation-type/conversation-type.service';
 
 @Module({
@@ -21,10 +23,16 @@ import { ConversationTypeService } from '../conversation-type/conversation-type.
       ConversationTypeEntity,
       ManageChildNotesEntity,
       AdditionalChildrenEntity,
+      SmtpDetailEntity,
     ]),
     forwardRef(() => AuthModule),
   ],
   controllers: [ManageChildController],
-  providers: [ManageChildService, IntakeService, ConversationTypeService],
+  providers: [
+    ManageChildService,
+    IntakeService,
+    ConversationTypeService,
+    SmtpDetailsService,
+  ],
 })
 export class ManageChildModule {}
