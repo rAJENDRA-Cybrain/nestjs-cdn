@@ -14,11 +14,13 @@ import {
   Req,
   UploadedFiles,
   ConflictException,
+  Query,
 } from '@nestjs/common';
 import { diskStorage } from 'multer';
 import {
   ApiConsumes,
   ApiOperation,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -58,10 +60,57 @@ export class ManageChildController {
     status: 200,
     description: 'successful operation',
   })
+  @ApiQuery({
+    name: 'child_name',
+    type: String,
+    required: false,
+  })
+  @ApiQuery({
+    name: 'dob',
+    type: String,
+    required: false,
+  })
+  @ApiQuery({
+    name: 'relation',
+    type: String,
+    required: false,
+  })
+  @ApiQuery({
+    name: 'diagnosis',
+    type: String,
+    required: false,
+  })
+  @ApiQuery({
+    name: 'intake_start_date',
+    type: String,
+    required: false,
+  })
+  @ApiQuery({
+    name: 'intake_end_date',
+    type: String,
+    required: false,
+  })
   @UseGuards(AuthGuard('jwt'))
-  public async findChildren(@Request() req) {
+  public async findChildren(
+    @Request() req,
+    @Query('child_name') child_name: string,
+    @Query('dob') dob: string,
+    @Query('relation') relation: string,
+    @Query('diagnosis') diagnosis: string,
+    @Query('intake_start_date') intake_start_date: string,
+    @Query('intake_end_date') intake_end_date: string,
+  ) {
     const { userId, role } = req.user['payload'];
-    const data = await this.manageChildService.findChild(userId, role);
+    const data = await this.manageChildService.findChild(
+      userId,
+      role,
+      child_name,
+      dob,
+      relation,
+      diagnosis,
+      intake_start_date,
+      intake_end_date,
+    );
     if (data.length > 0) {
       return {
         statusCode: 200,

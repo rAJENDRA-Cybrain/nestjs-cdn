@@ -4,11 +4,13 @@ import { IntakeController } from './intake.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ServiceCoordinatorService } from '../service-coordinator/service-coordinator.service';
 import { AuthModule } from 'src/api/auth/auth.module';
+import { SmtpDetailsService } from '../smtp-details/smtp-details.service';
 import {
   UserEntity,
   IntakeEntity,
   ServiceCoordinatorEntity,
   AdditionalChildrenEntity,
+  SmtpDetailEntity,
 } from 'src/database';
 
 @Module({
@@ -16,12 +18,13 @@ import {
     TypeOrmModule.forFeature([
       UserEntity,
       IntakeEntity,
+      SmtpDetailEntity,
       AdditionalChildrenEntity,
       ServiceCoordinatorEntity,
     ]),
     forwardRef(() => AuthModule),
   ],
   controllers: [IntakeController],
-  providers: [IntakeService, ServiceCoordinatorService],
+  providers: [IntakeService, ServiceCoordinatorService, SmtpDetailsService],
 })
 export class IntakeModule {}

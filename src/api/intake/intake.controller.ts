@@ -26,7 +26,9 @@ import {
   UserEntity,
   AdditionalChildrenEntity,
 } from '../../database';
-
+import { sendEmail } from 'src/shared/node-mailer';
+import { mailer } from 'src/shared/htmlMailer/early-intake';
+import { SmtpDetailsService } from '../smtp-details/smtp-details.service';
 @Controller('intake-children')
 @ApiTags('Early Intake Form APIs')
 export class IntakeController {
@@ -35,6 +37,7 @@ export class IntakeController {
   constructor(
     private readonly intakeService: IntakeService,
     private readonly serviceCoordinatorService: ServiceCoordinatorService,
+    private readonly smtpDetailsService: SmtpDetailsService,
   ) {}
 
   @Post()
@@ -75,6 +78,22 @@ export class IntakeController {
       this.serviceCoordinator,
       this.efcEmployee,
     );
+
+    if (data) {
+      const smtp = await this.smtpDetailsService.findActiveSmtp();
+      const data = {
+        timestamp: '',
+        childName: '',
+        parentsName: '',
+      };
+      const mailOptions = {
+        email: 'rajendra@cybrain.co.in',
+        subject: 'Welcome to EFC Early Start Family Resource Center',
+        body: mailer.mailerhtml(data),
+        attachments: [],
+      };
+      await sendEmail(smtp, mailOptions);
+    }
     if (data) {
       return {
         statusCode: 200,

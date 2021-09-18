@@ -8,14 +8,12 @@ import {
   ConflictException,
   ParseUUIDPipe,
   Put,
-  UseGuards,
   Res,
   UnauthorizedException,
   Req,
   Delete,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthGuard } from '@nestjs/passport';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
   SignUpDto,

@@ -38,7 +38,7 @@ const production = false; // fasle : development env and true : production env
       synchronize: !production ? true : false,
       // 1st one is for development and 2nd one is for production
       // only when migration needed then call it to true
-      logging: false,
+      logging: true,
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'webroot'),

@@ -46,7 +46,7 @@ export class AuthService {
         status: 'Active',
         // role: Not('a02d1846-7911-42e4-b052-5c8d569f2d22'), // Super Admin Id
       })
-      .orderBy({ 'user.createdAt': 'ASC' })
+      .orderBy({ 'user.createdAt': 'DESC' })
       .getMany();
   }
 

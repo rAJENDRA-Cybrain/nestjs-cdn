@@ -5,6 +5,7 @@ import { LogsInterceptor } from './shared/logs.interceptor';
 import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
 import * as bodyParser from 'body-parser';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(cookieParser());
@@ -26,6 +27,16 @@ async function bootstrap() {
     type: VersioningType.URI,
   });
 
+  // app.use(
+  //   cors({
+  //     origin: ['http://localhost:4200', 'https://crm.cybraintech.com'],
+  //     allowedHeaders:
+  //       'Origin,X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Observe,Authorization,authorization',
+  //     methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH'],
+  //     credentials: true,
+  //   }),
+  // );
+
   app.setGlobalPrefix(process.env.API_PREFIX || 'api');
   app.useGlobalInterceptors(new LogsInterceptor());
 
@@ -34,10 +45,25 @@ async function bootstrap() {
   const swagger_options = {
     customCss: '.swagger-ui .topbar { display: none }',
   };
-  app.enableCors({
-    origin: true,
-    credentials: true,
-  });
+
+  //const whitelist = ['http://localhost:4567', 'http://plaians.com'];
+  // app.enableCors({
+  //   origin: function (origin, callback) {
+  //     if (whitelist.indexOf(origin) !== -1) {
+  //       console.log('allowed cors for:', origin);
+  //       callback(null, true);
+  //     } else {
+  //       console.log('blocked cors for:', origin);
+  //       callback(new Error('Not allowed by CORS'));
+  //     }
+  //   },
+  //   allowedHeaders:
+  //     'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Observe,Authorization,authorization,Access-Control-Allow-Origin',
+  //   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+  //   credentials: true,
+  // });
+
+  app.enableCors({ origin: true, credentials: true });
 
   SwaggerModule.setup('/', app, document, swagger_options); // swagger_options
 

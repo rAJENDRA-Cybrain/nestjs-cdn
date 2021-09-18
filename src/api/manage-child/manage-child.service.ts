@@ -27,7 +27,36 @@ export class ManageChildService {
     private authService: AuthService,
   ) {}
 
-  async findChild(userId: string, role: any) {
+  async findChild(
+    userId: string,
+    role: any,
+    child_name: string,
+    dob: string,
+    relation: string,
+    diagnosis: string,
+    intake_start_date: string,
+    intake_end_date: string,
+  ) {
+    // const query = await this.intakeRepository
+    //   .createQueryBuilder('Intake')
+    //   .leftJoinAndSelect('Intake.serviceCoordinator', 'serviceCoordinator')
+    //   .leftJoinAndSelect('Intake.efcEmployee', 'efcEmployee')
+    //   .orderBy({ 'Intake.createdAt': 'DESC' })
+    //   .where('Intake.isActive = :IsActive', {
+    //     IsActive: true,
+    //   });
+    // if (role.role == 'Efc Employee') {
+    //   query.andWhere(`Intake.efcEmployee: Equal(${userId})`);
+    // }
+    // if (role.role == 'Operator') {
+    //   query.andWhere('Intake.addedBy =:id', { id: userId });
+    // }
+    // if ((intake_start_date && intake_end_date) != undefined) {
+    //   query.andWhere(
+    //     `Intake.createdAt BETWEEN '${intake_start_date}' AND '${intake_end_date}'`,
+    //   );
+    // }
+    //return await query.getMany();
     if (role.role == 'Super Admin') {
       return await this.intakeRepository.find({
         relations: ['serviceCoordinator', 'efcEmployee'],
