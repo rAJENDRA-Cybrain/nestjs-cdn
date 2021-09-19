@@ -20,8 +20,10 @@ export class IntakeService {
     @InjectRepository(AdditionalChildrenEntity)
     private addChildRepository: Repository<AdditionalChildrenEntity>,
   ) {}
-  async isChildExist(createIntakeDto: CreateIntakeDto): Promise<IntakeEntity> {
-    return await this.intakeRepository.findOne({
+  async isChildExist(
+    createIntakeDto: CreateIntakeDto,
+  ): Promise<IntakeEntity[]> {
+    return await this.intakeRepository.find({
       childName: createIntakeDto.childName,
       parentName: createIntakeDto.parentName,
       dateOfBirth: createIntakeDto.dateOfBirth,
@@ -86,7 +88,7 @@ export class IntakeService {
         isActive: true,
         isDelete: false,
       })
-      .orderBy({ 'intake.createdAt': 'ASC' })
+      .orderBy({ 'intake.createdAt': 'DESC' })
       .getMany();
   }
 
@@ -185,7 +187,7 @@ export class IntakeService {
         intake: { intakeId: id },
       },
       order: {
-        createdAt: 'ASC',
+        createdAt: 'DESC',
       },
     });
   }

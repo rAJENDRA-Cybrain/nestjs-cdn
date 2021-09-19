@@ -47,58 +47,63 @@ export class IntakeController {
     status: 200,
     description: 'successful operation',
   })
-  public async intakeChild(@Body() createIntakeDto: CreateIntakeDto) {
+  async intakeChild(@Body() createIntakeDto: CreateIntakeDto) {
     // first check if child is exist with same name ,dob and parent name.
-    const isChildExist: IntakeEntity = await this.intakeService.isChildExist(
+    const isChildExist: IntakeEntity[] = await this.intakeService.isChildExist(
       createIntakeDto,
     );
-    if (isChildExist) {
+    console.log('================== my print=', isChildExist);
+    if (isChildExist.length > 0) {
       throw new ConflictException(
         `${createIntakeDto.childName} already exist.`,
       );
-    }
-
-    if (createIntakeDto.isReferal == 'Yes') {
-      this.serviceCoordinator =
-        await this.serviceCoordinatorService.isServiceCoExistById(
-          createIntakeDto.serviceCoordinatorId,
-        );
     } else {
-      createIntakeDto.reasonForReferal = [];
-    }
+      if (createIntakeDto.isReferal == 'Yes') {
+        this.serviceCoordinator =
+          await this.serviceCoordinatorService.isServiceCoExistById(
+            createIntakeDto.serviceCoordinatorId,
+          );
+      } else {
+        createIntakeDto.reasonForReferal = [];
+      }
 
-    if (createIntakeDto.efcEmployeeId) {
-      this.efcEmployee = await this.intakeService.findEfcEmployee(
-        createIntakeDto.efcEmployeeId,
+      if (createIntakeDto.efcEmployeeId) {
+        this.efcEmployee = await this.intakeService.findEfcEmployee(
+          createIntakeDto.efcEmployeeId,
+        );
+      }
+
+      const data: IntakeEntity = await this.intakeService.save(
+        createIntakeDto,
+        this.serviceCoordinator,
+        this.efcEmployee,
       );
-    }
 
-    const data: IntakeEntity = await this.intakeService.save(
-      createIntakeDto,
-      this.serviceCoordinator,
-      this.efcEmployee,
-    );
-
-    if (data) {
       const smtp = await this.smtpDetailsService.findActiveSmtp();
-      const data = {
-        timestamp: '',
-        childName: '',
-        parentsName: '',
+      if (!smtp) {
+        throw new ConflictException(`Configuration smtp details.`);
+      }
+      const EmailData = {
+        timestamp: `${new Date().toLocaleString('default', {
+          month: 'long',
+        })}  ${new Date().getDate()}, ${new Date().getFullYear()}`,
+        childName: data.childName,
+        parentsName: data.parentName,
       };
       const mailOptions = {
-        email: 'rajendra@cybrain.co.in',
+        email: data.parentEmail,
         subject: 'Welcome to EFC Early Start Family Resource Center',
-        body: mailer.mailerhtml(data),
+        body: mailer.mailerhtml(EmailData),
         attachments: [],
       };
+      console.log(EmailData, mailOptions);
       await sendEmail(smtp, mailOptions);
-    }
-    if (data) {
-      return {
-        statusCode: 200,
-        message: `${createIntakeDto.childName} Saved Succesfully.`,
-      };
+      if (data) {
+        return {
+          statusCode: 200,
+          message: `${createIntakeDto.childName} Saved Succesfully.`,
+        };
+      }
     }
   }
 
@@ -200,6 +205,7 @@ export class IntakeController {
       );
     } else {
       const data = await this.intakeService.deleteChildren(id);
+      console.log(data);
       if (data.affected > 0) {
         return {
           statusCode: 201,

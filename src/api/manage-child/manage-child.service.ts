@@ -61,18 +61,27 @@ export class ManageChildService {
       return await this.intakeRepository.find({
         relations: ['serviceCoordinator', 'efcEmployee'],
         where: { isActive: true },
+        order: {
+          createdAt: 'DESC',
+        },
       });
     }
     if (role.role == 'Efc Employee') {
       return await this.intakeRepository.find({
         relations: ['serviceCoordinator', 'efcEmployee'],
         where: { isActive: true, efcEmployee: Equal(userId) },
+        order: {
+          createdAt: 'DESC',
+        },
       });
     }
     if (role.role == 'Operator') {
       return await this.intakeRepository.find({
         relations: ['serviceCoordinator', 'efcEmployee'],
         where: { isActive: true, addedBy: Equal(userId) },
+        order: {
+          createdAt: 'DESC',
+        },
       });
     }
   }
@@ -150,7 +159,7 @@ export class ManageChildService {
     }
     for (let i = 0; i < req.body['intakes'].length; i++) {
       const mailOptions = {
-        email: 'rajendra@cybrain.co.in',
+        email: req.body['intakes'][i]['parentEmail'],
         subject: req.body.templateSubject,
         body: req.body.templateBody,
         attachments: req.body['templateAttachments'],

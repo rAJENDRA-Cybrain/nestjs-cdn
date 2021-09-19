@@ -16,7 +16,7 @@ export var mailer = {
         `	<title>Early Start Intake</title>` +
         `<style type="text/css">` +
         `.early-start-bhawan {` +
-        `  width: 700px;` +
+        `  width: 800px;` +
         `}` +
         `.end-sat li {` +
         `  list-style: none;` +
@@ -43,7 +43,6 @@ export var mailer = {
         `  margin-bottom: 0px;` +
         `}` +
         `.start-early {` +
-        `  border: 1px solid #e2e2e2;` +
         `  padding: 40px;` +
         `  width: 94%;` +
         `  margin: 0 auto;` +

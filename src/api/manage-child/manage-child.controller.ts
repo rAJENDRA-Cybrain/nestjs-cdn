@@ -278,6 +278,7 @@ export class ManageChildController {
     req.body['templateAttachments'] = JSON.parse(
       req.body['templateAttachments'],
     );
+    console.log(req.body);
     if (Object.keys(req.body['intakes']).length > 0) {
       const smtp = await this.smtpDetailsService.findActiveSmtp();
       if (Object.keys(smtp).length > 0) {
