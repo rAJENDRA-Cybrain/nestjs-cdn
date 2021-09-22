@@ -24,75 +24,58 @@ export class ReportsService {
 
   async findEmployeeReports(from_date, to_date) {
     const userData = await this.userRepository.find({
+      select: ['userId', 'firstName', 'lastName', 'emailId', 'contactNo'],
       where: {
         status: 'Active',
       },
       order: { createdAt: 'ASC' },
     });
-    const convData = await this.conversationRepository.find({
-      where: {
-        isActive: true,
-        options: true,
-      },
-      order: { createdAt: 'ASC' },
-    });
-    const finalResponseList = [];
-    for (let i = 0; i < userData.length; i++) {
-      let finalResponseObj = {};
-      const conversations = [];
-      finalResponseObj = {
-        userId: userData[i].userId,
-        firstName: userData[i].firstName,
-        lastName: userData[i].lastName,
-        emailId: userData[i].emailId,
-        contactNo: userData[i].contactNo,
-        conversations: conversations,
-      };
-      for (let j = 0; j < convData.length; j++) {
-        let convType = {};
-        const employeeNotes = await this.findEmployeeAddedNotes(
-          userData[i].userId,
-          convData[j].conversationTypeId,
-          from_date,
-          to_date,
-        );
-        convType = {
-          conversationTypeId: convData[j].conversationTypeId,
-          type: convData[j].type,
-          description: convData[j].description,
-          childNotes: employeeNotes,
-        };
-        if (Object.keys(convType).length > 0) {
-          conversations.push(convType);
-        }
-      }
-      if (Object.keys(finalResponseObj).length > 0) {
-        finalResponseList.push(finalResponseObj);
-      }
-    }
 
-    return finalResponseList;
+    for (let i = 0; i < userData.length; i++) {
+      userData[i]['reports'] = await this.findConversationsWiseNotes(
+        userData[i].userId,
+        from_date,
+        to_date,
+      );
+    }
+    return userData;
   }
 
-  async findEmployeeAddedNotes(user_id, convType_id, from_date, to_date) {
-    const query = await this.notesRepository
-      .createQueryBuilder('Notes')
-      .select(['Notes'])
-      .leftJoin('Notes.conversationType', 'conversationType')
-      .leftJoin('Notes.intakeChild', 'intakeChild')
-      .leftJoin('Notes.notesAddedBy', 'notesAddedBy')
-      .orderBy({ 'Notes.createdAt': 'ASC' })
+  async findConversationsWiseNotes(id, from_date, to_date) {
+    const query = await this.conversationRepository
+      .createQueryBuilder('coversationType')
+      .select([
+        'coversationType.conversationTypeId',
+        'coversationType.type',
+        'coversationType.description',
+        'childNotes',
+        'intakeChild.intakeId',
+        'intakeChild.childName',
+        'intakeChild.dateOfBirth',
+        'intakeChild.parentName',
+        'intakeChild.parentLastName',
+        'intakeChild.relationshipToChild',
+        'intakeChild.parentEmail',
+        'intakeChild.homePhnNo',
+        'intakeChild.cellPhnNo',
+        'intakeChild.workPhnNo',
+      ])
+      .leftJoin('coversationType.conversations', 'childNotes')
+      .leftJoin('childNotes.notesAddedBy', 'notesAddedBy')
+      .leftJoin('childNotes.intakeChild', 'intakeChild')
+      .orderBy({ 'childNotes.createdAt': 'ASC' })
       .where(
-        'Notes.isActive = :IsActive AND conversationType.conversationTypeId = :ConversationTypeId AND notesAddedBy.userId = :UserId',
+        'coversationType.isActive = :IsActive AND notesAddedBy.userId = :UserId AND childNotes.isActive = :NotesIsActive',
         {
           IsActive: true,
-          ConversationTypeId: convType_id,
-          UserId: user_id,
+          NotesIsActive: true,
+          UserId: id,
         },
       );
-
     if ((from_date && to_date) != undefined) {
-      query.andWhere(`Notes.createdAt BETWEEN '${from_date}' AND '${to_date}'`);
+      query.andWhere(
+        `childNotes.createdAt BETWEEN '${from_date}' AND '${to_date}'`,
+      );
     }
     return await query.getMany();
   }
@@ -163,3 +146,26 @@ export class ReportsService {
     }
   }
 }
+
+// async findEmployeeAddedNotes(user_id, convType_id, from_date, to_date) {
+//   const query = await this.notesRepository
+//     .createQueryBuilder('Notes')
+//     .select(['Notes'])
+//     .leftJoin('Notes.conversationType', 'conversationType')
+//     .leftJoin('Notes.intakeChild', 'intakeChild')
+//     .leftJoin('Notes.notesAddedBy', 'notesAddedBy')
+//     .orderBy({ 'Notes.createdAt': 'ASC' })
+//     .where(
+//       'Notes.isActive = :IsActive AND conversationType.conversationTypeId = :ConversationTypeId AND notesAddedBy.userId = :UserId',
+//       {
+//         IsActive: true,
+//         ConversationTypeId: convType_id,
+//         UserId: user_id,
+//       },
+//     );
+
+//   if ((from_date && to_date) != undefined) {
+//     query.andWhere(`Notes.createdAt BETWEEN '${from_date}' AND '${to_date}'`);
+//   }
+//   return await query.getMany();
+// }
