@@ -67,21 +67,21 @@ export class AuthController {
           emailId: findUser.emailId,
           role: findUser.role,
         };
-        res.cookie(
-          'access_token',
-          await this.authService.generateJWT(payload),
-          {
-            sameSite: 'strict',
-            path: '/',
-            httpOnly: true,
-            expires: new Date(new Date().getTime() + 5 * 1000),
-          },
-        );
-        res.cookie('refresh_token', findUser.userId, {
-          sameSite: 'strict',
-          path: '/',
-          httpOnly: true,
-        });
+        // res.cookie(
+        //   'access_token',
+        //   await this.authService.generateJWT(payload),
+        //   {
+        //     sameSite: 'strict',
+        //     path: '/',
+        //     httpOnly: true,
+        //     expires: new Date(new Date().getTime() + 5 * 1000),
+        //   },
+        // );
+        // res.cookie('refresh_token', findUser.userId, {
+        //   sameSite: 'strict',
+        //   path: '/',
+        //   httpOnly: true,
+        // });
         return {
           statusCode: 200,
           message: 'Success.',

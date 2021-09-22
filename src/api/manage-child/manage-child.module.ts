@@ -10,6 +10,7 @@ import {
   UserEntity,
   AdditionalChildrenEntity,
   SmtpDetailEntity,
+  EmailLogsEntity,
 } from 'src/database';
 import { IntakeService } from '../intake/intake.service';
 import { SmtpDetailsService } from '../smtp-details/smtp-details.service';
@@ -24,6 +25,7 @@ import { ConversationTypeService } from '../conversation-type/conversation-type.
       ManageChildNotesEntity,
       AdditionalChildrenEntity,
       SmtpDetailEntity,
+      EmailLogsEntity,
     ]),
     forwardRef(() => AuthModule),
   ],

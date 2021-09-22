@@ -14,6 +14,7 @@ import { ExitPlanService } from './exit-plan.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UpdateExitPlanDto } from '../../dto';
 import { AuthGuard } from '@nestjs/passport';
+import { AgeCalculator } from '@dipaktelangre/age-calculator';
 
 @Controller('exit-plan')
 @ApiTags('Exist Plan 3 Years APIs')
@@ -33,6 +34,11 @@ export class ExitPlanController {
   public async findAllChildrenAboveThreeYears(@Request() req) {
     const { userId, role } = req.user['payload'];
     const data = await this.exitPlanService.findChildren(userId, role);
+    if (data.length > 0) {
+      for (let i = 0; i < data.length; i++) {
+        data[i]['age'] = AgeCalculator.getAge(new Date(data[i].dateOfBirth));
+      }
+    }
     const filteredData = data.filter(function (el) {
       return el['age']['years'] >= 3;
     });

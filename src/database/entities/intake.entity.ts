@@ -20,6 +20,7 @@ import {
   ServiceCoordinatorEntity,
   AdditionalChildrenEntity,
   UserEntity,
+  EmailLogsEntity,
 } from 'src/database';
 
 @Entity('tbl_CRMIntake')
@@ -85,6 +86,12 @@ export class IntakeEntity {
   @Length(0, 200)
   @IsNotEmpty()
   parentName: string;
+
+  @Column({ nullable: true, default: '' })
+  @IsString()
+  @Length(0, 200)
+  @IsNotEmpty()
+  parentLastName: string;
 
   @Column()
   @IsString()
@@ -225,4 +232,7 @@ export class IntakeEntity {
     (manageChildNotesEntity) => manageChildNotesEntity.intakeChild,
   )
   childNotes: ManageChildNotesEntity[];
+
+  @OneToMany(() => EmailLogsEntity, (EmailLogs) => EmailLogs.intake)
+  emailLogs: EmailLogsEntity[];
 }

@@ -35,7 +35,7 @@ const production = false; // fasle : development env and true : production env
       password: process.env.DB_PASS || 'admin@123',
       database: process.env.DB_NAME || 'devChildCareCRM',
       entities: [join(__dirname, '**', '*.{ts,js}')], // don't remove this line
-      synchronize: !production ? false : false,
+      synchronize: !production ? true : false,
       // 1st one is for development and 2nd one is for production
       // only when migration needed then call it to true
       logging: false,

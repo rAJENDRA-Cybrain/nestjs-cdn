@@ -1,4 +1,3 @@
-export class EmailTemplate {}
 import {
   IsNotEmpty,
   Length,

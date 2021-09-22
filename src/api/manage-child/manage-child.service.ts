@@ -5,6 +5,7 @@ import {
   ManageChildNotesEntity,
   IntakeEntity,
   UserEntity,
+  EmailLogsEntity,
 } from '../../database';
 import {
   CreateManageChildNotesDto,
@@ -13,6 +14,7 @@ import {
 } from '../../dto';
 import { AuthService } from '../auth/auth.service';
 import { sendEmail } from 'src/shared/node-mailer';
+import { IntakeService } from '../intake/intake.service';
 
 @Injectable()
 export class ManageChildService {
@@ -23,6 +25,10 @@ export class ManageChildService {
     private intakeRepository: Repository<IntakeEntity>,
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
+    @InjectRepository(EmailLogsEntity)
+    private emailLogsRepository: Repository<EmailLogsEntity>,
+    @Inject(forwardRef(() => IntakeService))
+    private intakeService: IntakeService,
     @Inject(forwardRef(() => AuthService))
     private authService: AuthService,
   ) {}
@@ -165,7 +171,35 @@ export class ManageChildService {
         attachments: req.body['templateAttachments'],
       };
       await sendEmail(smtp, mailOptions);
+      await this.createEmailLogs(
+        req.body['intakes'][i]['intakeId'],
+        smtp,
+        mailOptions,
+      );
     }
     return true;
+  }
+
+  async createEmailLogs(intakeId, smtp, mailOptions) {
+    return await this.emailLogsRepository.save({
+      intake: await this.intakeService.findById(intakeId),
+      emailLogSmtpId: smtp.smtpId,
+      emailLogSmtpUserName: smtp.smtpUserName,
+      emailLogSmtpDisplayName: smtp.smtpDisplayName,
+      emailLogTo: mailOptions.email,
+      emailLogSubject: mailOptions.subject,
+      emailLogBody: mailOptions.body,
+      emailLogAttachments: mailOptions.attachments,
+    });
+  }
+
+  async findTriggeredEmailToAChild(intakeId) {
+    return await this.emailLogsRepository
+      .createQueryBuilder('emailLogs')
+      .select(['emailLogs'])
+      .innerJoin('emailLogs.intake', 'intake')
+      .where('intake.intakeId = :intakeId', { intakeId: intakeId })
+      .orderBy({ 'emailLogs.createdAt': 'DESC' })
+      .getMany();
   }
 }

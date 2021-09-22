@@ -55,7 +55,7 @@ export class EmailTemplateService {
   async findAllEmailTemplates() {
     return await this.emailTemplateRepository
       .createQueryBuilder('template')
-      .innerJoinAndSelect(
+      .leftJoinAndSelect(
         'template.attachments',
         'attachments',
         'attachments.isActive = :isActive',
@@ -114,7 +114,7 @@ export class EmailTemplateService {
   async findIndividualEmailTemplate(id: string) {
     return await this.emailTemplateRepository
       .createQueryBuilder('template')
-      .innerJoinAndSelect(
+      .leftJoinAndSelect(
         'template.attachments',
         'attachments',
         'attachments.isActive = :isActive',

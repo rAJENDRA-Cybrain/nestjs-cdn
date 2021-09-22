@@ -52,7 +52,6 @@ export class IntakeController {
     const isChildExist: IntakeEntity[] = await this.intakeService.isChildExist(
       createIntakeDto,
     );
-    console.log('================== my print=', isChildExist);
     if (isChildExist.length > 0) {
       throw new ConflictException(
         `${createIntakeDto.childName} already exist.`,

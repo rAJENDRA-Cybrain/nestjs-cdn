@@ -250,11 +250,11 @@ export class ManageChildController {
   // Email triggering.
   @Post('trigger-email')
   @Version('1')
-  @ApiOperation({ summary: 'Trigger mail from manage child.' })
   @ApiResponse({
     status: 200,
     description: 'successful operation',
   })
+  @ApiOperation({ summary: 'Trigger mail from manage child.' })
   @UseInterceptors(
     FilesInterceptor('attachments', 5, {
       storage: diskStorage({
@@ -282,7 +282,6 @@ export class ManageChildController {
     if (Object.keys(req.body['intakes']).length > 0) {
       const smtp = await this.smtpDetailsService.findActiveSmtp();
       if (Object.keys(smtp).length > 0) {
-        //   return triggerEmailDto;
         const mail = await this.manageChildService.triggerMail(
           req,
           files,
@@ -294,6 +293,35 @@ export class ManageChildController {
       }
     } else {
       throw new ConflictException(`Please select the children.`);
+    }
+  }
+  @Get('trigger-email/:intakeId')
+  @Version('1')
+  @ApiOperation({
+    summary: 'Get individual children triggered emails by intakeId.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'successful operation',
+  })
+  public async findAllTriggeredEmail(
+    @Param('intakeId', new ParseUUIDPipe({ version: '4' })) intakeId: string,
+  ) {
+    const Data = await this.manageChildService.findTriggeredEmailToAChild(
+      intakeId,
+    );
+    if (Data) {
+      return {
+        statusCode: 200,
+        message: `Success.`,
+        data: Data,
+      };
+    } else {
+      return {
+        statusCode: 200,
+        message: `No Data Found..`,
+        data: [],
+      };
     }
   }
 }

@@ -1,10 +1,11 @@
-import { VersioningType, ValidationPipe } from '@nestjs/common';
+import { VersioningType, ValidationPipe, Req, Res } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { LogsInterceptor } from './shared/logs.interceptor';
 import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
 import * as bodyParser from 'body-parser';
+import { Request, Response } from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -27,45 +28,42 @@ async function bootstrap() {
     type: VersioningType.URI,
   });
 
-  // app.use(
-  //   cors({
-  //     origin: ['http://localhost:4200', 'https://crm.cybraintech.com'],
-  //     allowedHeaders:
-  //       'Origin,X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Observe,Authorization,authorization',
-  //     methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH'],
-  //     credentials: true,
-  //   }),
-  // );
-
   app.setGlobalPrefix(process.env.API_PREFIX || 'api');
   app.useGlobalInterceptors(new LogsInterceptor());
 
   app.useGlobalPipes(new ValidationPipe());
   const document = SwaggerModule.createDocument(app, config);
-  const swagger_options = {
-    customCss: '.swagger-ui .topbar { display: none }',
-  };
-
+  // app.enableCors({
+  //   origin: [/^(.*)/],
+  //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  //   preflightContinue: false,
+  //   optionsSuccessStatus: 200,
+  //   maxAge: 17656545,
+  //   credentials: true,
+  //   allowedHeaders:
+  //     'Origin,X-Requested-With,Content-Type,Accept,Authorization,authorization,X-Forwarded-for',
+  // });
+  //app.enableCors();
   //const whitelist = ['http://localhost:4567', 'http://crm.cybraintech.com/'];
   // app.enableCors({
-  //   origin: function (origin, callback) {
-  //     if (whitelist.indexOf(origin) !== -1) {
-  //       console.log('allowed cors for:', origin);
-  //       callback(null, true);
-  //     } else {
-  //       console.log('blocked cors for:', origin);
-  //       callback(new Error('Not allowed by CORS'));
-  //     }
-  //   },
-  //   // allowedHeaders:
-  //   //   'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Observe,Authorization,authorization,Access-Control-Allow-Origin',
-  //   // methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+  //   // origin: function (origin, callback) {
+  //   //   if (whitelist.indexOf(origin) !== -1) {
+  //   //     console.log('allowed cors for:', origin);
+  //   //     callback(null, true);
+  //   //   } else {
+  //   //     console.log('blocked cors for:', origin);
+  //   //     callback(new Error('Not allowed by CORS'));
+  //   //   }
+  //   // },
+  //   origin: true,
+  //   allowedHeaders:
+  //     'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Observe,Authorization,authorization',
+  //   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
   //   credentials: true,
   // });
-
   app.enableCors({ origin: true, credentials: true });
 
-  SwaggerModule.setup('/', app, document, swagger_options); // swagger_options
+  SwaggerModule.setup('/', app, document); // swagger_options
 
   await app.listen(process.env.PORT || 3007, '0.0.0.0', async () => {
     console.log(`Listening on : ${await app.getUrl()}`);
