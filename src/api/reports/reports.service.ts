@@ -7,19 +7,36 @@ import {
   IntakeEntity,
   ManageChildNotesEntity,
   UserEntity,
+  ReportsGeneratedEntity,
 } from '../../database';
+import { GenerateHtmlToPdf } from '../../dto';
+import * as puppeteer from 'puppeteer';
+import { Readable } from 'stream';
+import { AuthService } from '../auth/auth.service';
+
+export interface PDFRenderOptions {
+  page: {
+    format?: puppeteer.PaperFormat;
+    landscape?: boolean;
+    height?: puppeteer.PaperFormatDimensions['height'];
+    width?: puppeteer.PaperFormatDimensions['width'];
+    path?: string;
+  };
+  screen?: boolean;
+}
 
 @Injectable()
 export class ReportsService {
   constructor(
     @InjectRepository(IntakeEntity)
     private intakeRepository: Repository<IntakeEntity>,
-    @InjectRepository(ManageChildNotesEntity)
-    private notesRepository: Repository<ManageChildNotesEntity>,
     @InjectRepository(ConversationTypeEntity)
     private conversationRepository: Repository<ConversationTypeEntity>,
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
+    @InjectRepository(ReportsGeneratedEntity)
+    private reportGenerateRepository: Repository<ReportsGeneratedEntity>,
+    private authService: AuthService,
   ) {}
 
   async findEmployeeReports(from_date, to_date) {
@@ -38,7 +55,14 @@ export class ReportsService {
         to_date,
       );
     }
-    return userData;
+    const filteredData = userData.filter(function (el) {
+      return el['reports'].length > 0;
+    });
+    if (filteredData.length > 0) {
+      return filteredData;
+    } else {
+      return [];
+    }
   }
 
   async findConversationsWiseNotes(id, from_date, to_date) {
@@ -73,9 +97,21 @@ export class ReportsService {
         },
       );
     if ((from_date && to_date) != undefined) {
-      query.andWhere(
-        `childNotes.createdAt BETWEEN '${from_date}' AND '${to_date}'`,
-      );
+      query
+        .andWhere(
+          `
+          DATE_TRUNC('day', "childNotes"."createdAt") >= :begin`,
+          {
+            begin: from_date,
+          },
+        )
+        .andWhere(
+          `
+          DATE_TRUNC('day', "childNotes"."createdAt")  <= :end`,
+          {
+            end: to_date,
+          },
+        );
     }
     return await query.getMany();
   }
@@ -113,11 +149,22 @@ export class ReportsService {
       .where('Intake.isActive = :IsActive', {
         IsActive: true,
       });
-
     if ((from_date && to_date) != undefined) {
-      query.andWhere(
-        `Intake.createdAt BETWEEN '${from_date}' AND '${to_date}'`,
-      );
+      query
+        .andWhere(
+          `
+            DATE_TRUNC('day', "Intake"."createdAt") >= :begin`,
+          {
+            begin: from_date,
+          },
+        )
+        .andWhere(
+          `
+            DATE_TRUNC('day', "Intake"."createdAt")  <= :end`,
+          {
+            end: to_date,
+          },
+        );
     }
     if (year !== undefined) {
       if (month == 0) {
@@ -145,27 +192,38 @@ export class ReportsService {
       return [];
     }
   }
+
+  async renderPdfFromHtml(html: string, options?: PDFRenderOptions) {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.setContent(html, { waitUntil: 'domcontentloaded', timeout: 0 });
+    if (options) {
+      await page.emulateMediaType(options.screen ? 'screen' : 'print');
+    }
+    const pdfContent = await page.pdf(options.page);
+    await browser.close();
+    return pdfContent;
+  }
+
+  async addGeneratedFileData(userId, Result, data: GenerateHtmlToPdf) {
+    return await this.reportGenerateRepository.save({
+      fromDate: data.from_Date,
+      toDate: data.to_Date,
+      fileLink: Result.path,
+      reportGeneratedBy: await this.authService.isUserExistById(userId),
+    });
+  }
+
+  async findEmployeeReportsToDownloadFile() {
+    return await this.reportGenerateRepository
+      .createQueryBuilder('reports')
+      .select([
+        'reports',
+        'reportGeneratedBy.firstName',
+        'reportGeneratedBy.lastName',
+      ])
+      .leftJoin('reports.reportGeneratedBy', 'reportGeneratedBy')
+      .orderBy({ 'reports.createdAt': 'DESC' })
+      .getMany();
+  }
 }
-
-// async findEmployeeAddedNotes(user_id, convType_id, from_date, to_date) {
-//   const query = await this.notesRepository
-//     .createQueryBuilder('Notes')
-//     .select(['Notes'])
-//     .leftJoin('Notes.conversationType', 'conversationType')
-//     .leftJoin('Notes.intakeChild', 'intakeChild')
-//     .leftJoin('Notes.notesAddedBy', 'notesAddedBy')
-//     .orderBy({ 'Notes.createdAt': 'ASC' })
-//     .where(
-//       'Notes.isActive = :IsActive AND conversationType.conversationTypeId = :ConversationTypeId AND notesAddedBy.userId = :UserId',
-//       {
-//         IsActive: true,
-//         ConversationTypeId: convType_id,
-//         UserId: user_id,
-//       },
-//     );
-
-//   if ((from_date && to_date) != undefined) {
-//     query.andWhere(`Notes.createdAt BETWEEN '${from_date}' AND '${to_date}'`);
-//   }
-//   return await query.getMany();
-// }

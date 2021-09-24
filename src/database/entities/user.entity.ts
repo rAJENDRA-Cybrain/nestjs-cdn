@@ -14,6 +14,7 @@ import {
   IntakeEntity,
   ManageChildNotesEntity,
   RecordConversationEntity,
+  ReportsGeneratedEntity,
 } from 'src/database';
 @Entity('tbl_CRMUser')
 export class UserEntity {
@@ -85,4 +86,7 @@ export class UserEntity {
     (recordConversationEntity) => recordConversationEntity.conversationAddedBy,
   )
   conversationsRecordedBy: RecordConversationEntity[];
+
+  @OneToMany(() => ReportsGeneratedEntity, (entity) => entity.reportGeneratedBy)
+  reportGeneratedBy: ReportsGeneratedEntity[];
 }

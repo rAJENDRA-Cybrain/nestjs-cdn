@@ -7,6 +7,7 @@ import {
   IntakeEntity,
   ManageChildNotesEntity,
   UserEntity,
+  ReportsGeneratedEntity,
 } from 'src/database';
 import { AuthModule } from '../auth/auth.module';
 
@@ -17,6 +18,7 @@ import { AuthModule } from '../auth/auth.module';
       IntakeEntity,
       ManageChildNotesEntity,
       ConversationTypeEntity,
+      ReportsGeneratedEntity,
     ]),
     forwardRef(() => AuthModule),
   ],

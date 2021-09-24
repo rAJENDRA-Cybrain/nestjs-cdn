@@ -42,6 +42,7 @@ export * from './create-email-template.dto';
 export * from './update-email-template.dto';
 
 export * from './trigger-email.dto';
+export * from './generate-report-link.dto';
 
 
 

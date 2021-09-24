@@ -40,10 +40,16 @@ const production = false; // fasle : development env and true : production env
       // only when migration needed then call it to true
       logging: false,
     }),
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'webroot'),
-      serveRoot: '/uploads',
-    }),
+    ServeStaticModule.forRoot(
+      {
+        rootPath: join(__dirname, '..', 'webroot'),
+        serveRoot: '/uploads',
+      },
+      {
+        rootPath: join(__dirname, '..', 'webroot/html-to-pdf'),
+        serveRoot: '/html-to-pdf',
+      },
+    ),
     SharedModule,
     RoleModule,
     AuthModule,

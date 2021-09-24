@@ -1,6 +1,25 @@
-import { Controller, Get, Param, Query, Version } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  Req,
+  Res,
+  UseGuards,
+  Version,
+} from '@nestjs/common';
+import { Request, Response } from 'express';
 import { ReportsService } from './reports.service';
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  QueryGenerateReportDto,
+  QueryReportYearWiseDto,
+  GenerateHtmlToPdf,
+} from '../../dto';
+import { AuthGuard } from '@nestjs/passport';
+
 @Controller('reports')
 @ApiTags('Reports APIs')
 export class ReportsController {
@@ -12,25 +31,37 @@ export class ReportsController {
     status: 200,
     description: 'successful operation',
   })
-  @ApiOperation({ summary: '' })
-  @ApiQuery({
-    name: 'from_date',
-    type: String,
-    required: false,
-  })
-  @ApiQuery({
-    name: 'to_date',
-    type: String,
-    required: false,
-  })
-  async generateNewReports(
-    @Query('from_date') from_date: string,
-    @Query('to_date') to_date: string,
-  ) {
+  @ApiOperation({ summary: 'Generate report with time interval' })
+  async generateNewReports(@Query() query: QueryGenerateReportDto) {
     const response = await this.reportsService.findEmployeeReports(
-      from_date,
-      to_date,
+      query.from_date,
+      query.to_date,
     );
+    if (response.length > 0) {
+      return {
+        statusCode: 200,
+        message: `Success.`,
+        data: response,
+      };
+    } else {
+      return {
+        statusCode: 200,
+        message: `No Data Found..`,
+        data: [],
+      };
+    }
+  }
+
+  @Get('generate/files-to-download')
+  @Version('1')
+  @ApiResponse({
+    status: 200,
+    description: 'successful operation',
+  })
+  @ApiOperation({ summary: 'Generated reports file' })
+  async generateNewReportsFile() {
+    const response =
+      await this.reportsService.findEmployeeReportsToDownloadFile();
     if (response.length > 0) {
       return {
         statusCode: 200,
@@ -52,40 +83,17 @@ export class ReportsController {
     status: 200,
     description: 'successful operation',
   })
-  @ApiOperation({ summary: '' })
-  @ApiQuery({
-    name: 'from_date',
-    type: String,
-    required: false,
-  })
-  @ApiQuery({
-    name: 'to_date',
-    type: String,
-    required: false,
-  })
-  @ApiQuery({
-    name: 'year',
-    type: Number,
-    required: false,
-  })
-  @ApiQuery({
-    name: 'month',
-    type: Number,
-    required: false,
-  })
+  @ApiOperation({ summary: 'Report 2.6 years and 3 years childrens' })
   async findAll(
     @Param('filter_year') filter_year: string,
-    @Query('from_date') from_date: string,
-    @Query('to_date') to_date: string,
-    @Query('year') year: number,
-    @Query('month') month: number,
+    @Query() query: QueryReportYearWiseDto,
   ) {
     const response = await this.reportsService.findChildren(
       filter_year,
-      from_date,
-      to_date,
-      month,
-      year,
+      query.from_date,
+      query.to_date,
+      query.month,
+      query.year,
     );
     if (response.length > 0) {
       return {
@@ -100,5 +108,49 @@ export class ReportsController {
         data: [],
       };
     }
+  }
+
+  @Post('render-html-to-pdf')
+  @Version('1')
+  @ApiResponse({
+    status: 200,
+    description: 'successful operation',
+  })
+  @ApiOperation({ summary: '' })
+  @UseGuards(AuthGuard('jwt'))
+  async postRenderFromHtml(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Body() data: GenerateHtmlToPdf,
+  ) {
+    //console.log(data);
+    const randomName = Array(32)
+      .fill(null)
+      .map(() => Math.round(Math.random() * 16).toString(16))
+      .join('');
+    data.options.page.path = `./webroot/html-to-pdf/${randomName}.pdf`;
+    const buffer = await this.reportsService.renderPdfFromHtml(
+      data.html,
+      data.options,
+    );
+    const Result = {
+      filename: `${randomName}.pdf`,
+      mimeType: 'application/pdf',
+      path:
+        req.protocol +
+        '://' +
+        req.get('host') +
+        `/html-to-pdf/${randomName}.pdf`,
+      content: buffer.toString('base64'),
+    };
+    if (buffer) {
+      await this.reportsService.addGeneratedFileData(
+        req.user['payload'].userId,
+        Result,
+        data,
+      );
+    }
+    res.setHeader('Content-Type', 'application/json;charset=UTF-8');
+    res.status(200).send(Result);
   }
 }
