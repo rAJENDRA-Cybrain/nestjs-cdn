@@ -60,6 +60,7 @@ export class AuthController {
         auth_credentials,
         findUser.password,
       );
+
       if (checkPassword) {
         const payload = {
           userId: findUser.userId,

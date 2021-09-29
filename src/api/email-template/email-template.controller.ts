@@ -155,6 +155,7 @@ export class EmailTemplateController {
     @Body() template: UpdateEmailTemplateDto,
     @UploadedFiles() files: Express.Multer.File,
   ) {
+    //console.log(req.body);
     const isExist =
       await this.emailTemplateService.isEmailTemplateExistByOtherId(
         templateId,
@@ -171,13 +172,11 @@ export class EmailTemplateController {
           template,
         );
       if (updateEmailTemp.affected > 0) {
-        if (Object.keys(files).length) {
-          await this.emailTemplateService.updateEmailAttachment(
-            req,
-            templateId,
-            files,
-          );
-        }
+        await this.emailTemplateService.updateEmailAttachment(
+          req,
+          templateId,
+          files,
+        );
         return {
           statusCode: 200,
           message: `Updated Succesfully.`,

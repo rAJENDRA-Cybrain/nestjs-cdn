@@ -36,8 +36,7 @@ export class SignUpDto {
 
   @IsString()
   @MinLength(8)
-  @MaxLength(12)
-  @ApiProperty({ minLength: 8, maxLength: 12, default: '' })
+  @ApiProperty({ minLength: 8, default: '' })
   password: string;
 
   @ApiProperty({ default: '' })

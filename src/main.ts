@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { VersioningType, ValidationPipe, Req, Res } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -63,7 +64,7 @@ async function bootstrap() {
   // });
   app.enableCors({ origin: true, credentials: true });
 
-  SwaggerModule.setup('/', app, document); // swagger_options
+  SwaggerModule.setup('/', app, document);
 
   await app.listen(process.env.PORT || 3007, '0.0.0.0', async () => {
     console.log(`Listening on : ${await app.getUrl()}`);

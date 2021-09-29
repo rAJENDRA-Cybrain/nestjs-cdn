@@ -62,6 +62,7 @@ export class ReportsController {
   async generateNewReportsFile() {
     const response =
       await this.reportsService.findEmployeeReportsToDownloadFile();
+
     if (response.length > 0) {
       return {
         statusCode: 200,

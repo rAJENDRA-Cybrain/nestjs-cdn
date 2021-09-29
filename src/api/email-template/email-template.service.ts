@@ -81,16 +81,28 @@ export class EmailTemplateService {
     const template = await this.emailTemplateRepository.findOne({
       where: { templateId: id },
     });
-    for (let i = 0; i < files.length; i++) {
-      await this.emailTemplateAttachmentsRepository.save({
-        attachmentFileName: files[i].originalname,
-        attachmentFileUri:
-          req.protocol +
-          '://' +
-          req.get('host') +
-          `/uploads/email-attachments/${files[i].filename}`,
-        templates: template,
-      });
+    const templateAttachments = JSON.parse(req.body['templateAttachments']);
+    if (templateAttachments.length > 0) {
+      for (let i = 0; i < templateAttachments.length; i++) {
+        await this.emailTemplateAttachmentsRepository.save({
+          attachmentFileName: templateAttachments[i].filename,
+          attachmentFileUri: templateAttachments[i].path,
+          templates: template,
+        });
+      }
+    }
+    if (Object.keys(files).length) {
+      for (let i = 0; i < files.length; i++) {
+        await this.emailTemplateAttachmentsRepository.save({
+          attachmentFileName: files[i].originalname,
+          attachmentFileUri:
+            req.protocol +
+            '://' +
+            req.get('host') +
+            `/uploads/email-attachments/${files[i].filename}`,
+          templates: template,
+        });
+      }
     }
   }
 

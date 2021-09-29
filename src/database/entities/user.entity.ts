@@ -53,7 +53,7 @@ export class UserEntity {
   userName: string;
 
   @Column()
-  @Length(8, 50)
+  @Length(8)
   @IsNotEmpty()
   password: string;
 

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -29,7 +30,7 @@ const production = false; // fasle : development env and true : production env
     }),
     TypeOrmModule.forRoot({
       type: process.env.DB_DIALECT || ('postgres' as any),
-      host: process.env.DB_HOST || '103.148.157.214',
+      host: process.env.DB_HOST || '136.243.77.30',
       port: parseInt(<string>process.env.DB_PORT) || 5432,
       username: process.env.DB_USER || 'postgres',
       password: process.env.DB_PASS || 'admin@123',
