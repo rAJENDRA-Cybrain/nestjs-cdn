@@ -11,11 +11,9 @@ export class QueryGenerateReportDto {
 }
 
 export class QueryReportYearWiseDto {
-  @IsString()
   @ApiPropertyOptional({ default: '' })
   from_date: string;
 
-  @IsString()
   @ApiPropertyOptional({ default: '' })
   to_date: string;
 

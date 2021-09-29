@@ -220,12 +220,19 @@ export class ReportsService {
     return await this.reportGenerateRepository
       .createQueryBuilder('reports')
       .select([
-        'reports',
+        'reports.reportsId',
+        'reports.fromDate',
+        'reports.toDate',
+        'reports.fileLink',
+        'reports.reportGeneratedBy',
+        'reports.isActive',
+        'reports.createdAt',
+        'reports.updatedAt',
         'reportGeneratedBy.firstName',
         'reportGeneratedBy.lastName',
       ])
       .leftJoin('reports.reportGeneratedBy', 'reportGeneratedBy')
-      .orderBy({ 'reports.createdAt': 'DESC' })
+      .orderBy({ 'reports.updatedAt': 'ASC' })
       .getMany();
   }
 }

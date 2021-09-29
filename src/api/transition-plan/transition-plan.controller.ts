@@ -37,6 +37,7 @@ export class TransitionPlanController {
     if (data.length > 0) {
       for (let i = 0; i < data.length; i++) {
         data[i]['age'] = AgeCalculator.getAge(new Date(data[i].dateOfBirth));
+        console.log(data[i]['age']);
       }
     }
     const filteredData = data.filter(function (el) {

@@ -72,6 +72,7 @@ export class IntakeService {
       .createQueryBuilder('intake')
       .select([
         'intake',
+        'intake.createdAt',
         'serCoordinator.serviceCoordinatorId',
         'serCoordinator.name',
         'serCoordinator.agency',
@@ -89,7 +90,7 @@ export class IntakeService {
         isActive: true,
         isDelete: false,
       })
-      .orderBy({ 'intake.createdAt': 'DESC' })
+      .orderBy({ 'intake.createdAt': 'DESC', 'intake.intakeId': 'DESC' })
       .getMany();
   }
 

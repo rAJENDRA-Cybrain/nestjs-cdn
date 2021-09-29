@@ -52,6 +52,7 @@ export class IntakeController {
     const isChildExist: IntakeEntity[] = await this.intakeService.isChildExist(
       createIntakeDto,
     );
+    //console.log(isChildExist);
     if (isChildExist.length > 0) {
       throw new ConflictException(
         `${createIntakeDto.childName} already exist.`,
@@ -95,7 +96,7 @@ export class IntakeController {
         body: mailer.mailerhtml(EmailData),
         attachments: [],
       };
-      console.log(EmailData, mailOptions);
+      //console.log(EmailData, mailOptions);
       await sendEmail(smtp, mailOptions);
       if (data) {
         return {

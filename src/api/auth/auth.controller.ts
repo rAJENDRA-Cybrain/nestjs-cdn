@@ -105,6 +105,7 @@ export class AuthController {
     const isExist: UserEntity = await this.authService.isAccountExist(
       signUpDto,
     );
+    console.log(isExist);
     if (!isExist) {
       const findRole: RoleEntity = await this.roleService.isRoleExistById(
         signUpDto.roleId,
