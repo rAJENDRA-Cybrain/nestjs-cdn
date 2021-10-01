@@ -29,12 +29,13 @@ const production = false; // fasle : development env and true : production env
       envFilePath: !production ? '.env.development' : '.env.production',
     }),
     TypeOrmModule.forRoot({
-      type: process.env.DB_DIALECT || ('postgres' as any),
-      host: process.env.DB_HOST || '136.243.77.30',
-      port: parseInt(<string>process.env.DB_PORT) || 5432,
-      username: process.env.DB_USER || 'postgres',
-      password: process.env.DB_PASS || 'admin@123',
-      database: process.env.DB_NAME || 'devChildCareCRM',
+      type: 'postgres',
+      host: 'ec2-44-198-204-136.compute-1.amazonaws.com',
+      database: 'dbmn4ctprpvs8j',
+      port:  5432,
+      username: 'hgjvwxrrerpbof',
+      password:'faaa99952d7564be2178988181ce83287423cf3214c8ff0722ba81a1f63d9073',
+      ssl: { rejectUnauthorized: false },
       entities: [join(__dirname, '**', '*.{ts,js}')], // don't remove this line
       synchronize: !production ? true : false,
       // 1st one is for development and 2nd one is for production
