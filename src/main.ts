@@ -66,7 +66,7 @@ async function bootstrap() {
 
   SwaggerModule.setup('/', app, document);
 
-  await app.listen(process.env.PORT || 3007, '0.0.0.0', async () => {
+  await app.listen(process.env.PORT, '0.0.0.0', async () => {
     console.log(`Listening on : ${await app.getUrl()}`);
   });
 }
