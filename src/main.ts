@@ -34,24 +34,34 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe());
   const document = SwaggerModule.createDocument(app, config);
-
-  // const whitelist = ['http://localhost:4567'];
   // app.enableCors({
-  //   origin: function (origin, callback) {
-  //     if (whitelist.indexOf(origin) !== -1) {
-  //       console.log('allowed cors for:', origin);
-  //       callback(null, true);
-  //     } else {
-  //       console.log('blocked cors for:', origin);
-  //       callback(new Error('Not allowed by CORS'));
-  //     }
-  //   },
+  //   origin: [/^(.*)/],
+  //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  //   preflightContinue: false,
+  //   optionsSuccessStatus: 200,
+  //   maxAge: 17656545,
+  //   credentials: true,
+  //   allowedHeaders:
+  //     'Origin,X-Requested-With,Content-Type,Accept,Authorization,authorization,X-Forwarded-for',
+  // });
+  //app.enableCors();
+  //const whitelist = ['http://localhost:4567', 'http://crm.cybraintech.com/'];
+  // app.enableCors({
+  //   // origin: function (origin, callback) {
+  //   //   if (whitelist.indexOf(origin) !== -1) {
+  //   //     console.log('allowed cors for:', origin);
+  //   //     callback(null, true);
+  //   //   } else {
+  //   //     console.log('blocked cors for:', origin);
+  //   //     callback(new Error('Not allowed by CORS'));
+  //   //   }
+  //   // },
+  //   origin: true,
   //   allowedHeaders:
   //     'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Observe,Authorization,authorization',
   //   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
   //   credentials: true,
   // });
-  
   app.enableCors({ origin: true, credentials: true });
 
   SwaggerModule.setup('/', app, document);
