@@ -29,15 +29,15 @@ const production = false; // fasle : development env and true : production env
       envFilePath: !production ? '.env.development' : '.env.production',
     }),
     TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'ec2-44-198-204-136.compute-1.amazonaws.com',
-      database: 'dbmn4ctprpvs8j',
-      port:  5432,
-      username: 'hgjvwxrrerpbof',
-      password:'faaa99952d7564be2178988181ce83287423cf3214c8ff0722ba81a1f63d9073',
+      type: ('postgres' as any),
+      host: process.env.aws_DB_HOST,
+      database: process.env.aws_DB_NAME,
+      port:  process.env.aws_DB_PORT as any,
+      username: process.env.aws_DB_USER,
+      password: process.env.aws_DB_PASS,
       ssl: { rejectUnauthorized: false },
       entities: [join(__dirname, '**', '*.{ts,js}')], // don't remove this line
-      synchronize: !production ? true : false,
+      synchronize: !production ? true: false,
       // 1st one is for development and 2nd one is for production
       // only when migration needed then call it to true
       logging: false,

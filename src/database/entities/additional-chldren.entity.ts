@@ -1,7 +1,6 @@
 import {
   IsNotEmpty,
   Length,
-  IsEmail,
   IsString,
   IsBoolean,
   IsNumber,
@@ -14,7 +13,6 @@ import {
   PrimaryGeneratedColumn,
   JoinColumn,
   ManyToOne,
-  OneToMany,
 } from 'typeorm';
 import { IntakeEntity } from 'src/database';
 

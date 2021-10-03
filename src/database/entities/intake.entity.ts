@@ -22,7 +22,6 @@ import {
   UserEntity,
   EmailLogsEntity,
 } from 'src/database';
-
 @Entity('tbl_CRMIntake')
 export class IntakeEntity {
   @PrimaryGeneratedColumn('uuid')

@@ -2,14 +2,12 @@ import { IsBoolean, IsNotEmpty, Length } from 'class-validator';
 import {
   Entity,
   Column,
-  Unique,
   CreateDateColumn,
   UpdateDateColumn,
   PrimaryGeneratedColumn,
   OneToMany,
 } from 'typeorm';
 import { UserEntity } from './user.entity';
-
 @Entity('tbl_Role')
 export class RoleEntity {
   @PrimaryGeneratedColumn('uuid')

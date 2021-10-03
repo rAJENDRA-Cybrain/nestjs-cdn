@@ -9,7 +9,6 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { ConversationTypeEntity, UserEntity } from '../../database';
-
 @Entity('tbl_CRMRecordConversation')
 export class RecordConversationEntity {
   @PrimaryGeneratedColumn('uuid')

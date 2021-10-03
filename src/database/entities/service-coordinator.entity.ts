@@ -14,7 +14,6 @@ import {
   OneToMany,
 } from 'typeorm';
 import { IntakeEntity } from './intake.entity';
-
 @Entity('tbl_CRMServiceCordinator')
 export class ServiceCoordinatorEntity {
   @PrimaryGeneratedColumn('uuid')

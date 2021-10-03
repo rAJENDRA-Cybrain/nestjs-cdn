@@ -9,7 +9,6 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { UserEntity } from './user.entity';
-
 @Entity('tbl_CRMReportGenerated')
 export class ReportsGeneratedEntity {
   @PrimaryGeneratedColumn('uuid')
