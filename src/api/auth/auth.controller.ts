@@ -160,6 +160,7 @@ export class AuthController {
             hashPassword,
           );
           if (data) {
+            await this.authService.resetPasswordEmail(smtp, findUser);
             return {
               statusCode: 200,
               message: `Password Updated Succesfully.`,
@@ -177,6 +178,7 @@ export class AuthController {
             hashPassword,
           );
           if (data) {
+            await this.authService.resetPasswordEmail(smtp, findUser);
             return {
               statusCode: 200,
               message: `Password Updated Succesfully.`,
