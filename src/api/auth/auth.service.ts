@@ -63,7 +63,7 @@ export class AuthService {
       .leftJoin('user.role', 'role')
       .where('user.status = :status AND role.roleId =:RoleId', {
         status: 'Active',
-        RoleId: '203df19c-d1e3-498a-bb8d-3713aad83ce8', // Efc Role
+        RoleId: '8700bed7-45de-471b-aac0-362bb71daa3f', // Efc Role
       })
       .orderBy({ 'user.createdAt': 'ASC' })
       .getMany();
