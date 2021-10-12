@@ -323,7 +323,8 @@ export class AuthController {
     );
     if (isExist) {
       const smtp = await this.smtpDetailsService.findActiveSmtp();
-      const expireIn = new Date(new Date().getTime() + 5 * 60000);
+      //const expireIn = new Date(new Date().getTime() + 5 * 60000);
+      const expireIn = new Date(new Date().getTime() + 60 * 60 * 24 * 1000);
       const token = await this.authService.generateForgotPasswordJWTLink(
         {
           id: isExist.userId,
