@@ -1,12 +1,12 @@
 /* eslint-disable prettier/prettier */
-import { VersioningType, ValidationPipe, Req, Res } from '@nestjs/common';
+import { VersioningType, ValidationPipe} from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { LogsInterceptor } from './shared/logs.interceptor';
 import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
 import * as bodyParser from 'body-parser';
-import { Request, Response } from 'express';
+//import { Request, Response } from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -39,10 +39,10 @@ async function bootstrap() {
   // app.enableCors({
   //   origin: function (origin, callback) {
   //     if (whitelist.indexOf(origin) !== -1) {
-  //       console.log('allowed cors for:', origin);
+  //       //console.log('allowed cors for:', origin);
   //       callback(null, true);
   //     } else {
-  //       console.log('blocked cors for:', origin);
+  //       //console.log('blocked cors for:', origin);
   //       callback(new Error('Not allowed by CORS'));
   //     }
   //   },
@@ -51,8 +51,11 @@ async function bootstrap() {
   //   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
   //   credentials: true,
   // });
-  
-  app.enableCors({ origin: true, credentials: true });
+
+  app.enableCors({
+      origin: true,
+      credentials: true 
+  });
 
   SwaggerModule.setup('/', app, document);
 

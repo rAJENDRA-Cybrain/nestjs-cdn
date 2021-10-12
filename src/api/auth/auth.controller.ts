@@ -27,6 +27,7 @@ import { RoleService } from '../role/role.service';
 import { BadRequestException } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { IntakeService } from '../intake/intake.service';
+import { SmtpDetailsService } from '../smtp-details/smtp-details.service';
 
 @Controller('auth')
 @ApiTags('Authentication APIs')
@@ -35,6 +36,7 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly roleService: RoleService,
     private readonly intakeService: IntakeService,
+    private readonly smtpDetailsService: SmtpDetailsService,
   ) {}
 
   @Post('sign-in')
@@ -111,11 +113,14 @@ export class AuthController {
         signUpDto.roleId,
       );
       if (findRole) {
+        const original_password = signUpDto.password;
         signUpDto['password'] = await this.authService.hashPassword(
           signUpDto.password,
         );
         const data = await this.authService.save(signUpDto, findRole);
         if (data) {
+          const smtp = await this.smtpDetailsService.findActiveSmtp();
+          await this.authService.triggerEmail(smtp, data, original_password);
           return {
             statusCode: 200,
             message: `${signUpDto.firstName} ${signUpDto.lastName} User Created Succesfully.`,
@@ -147,6 +152,7 @@ export class AuthController {
       const hashPassword = await this.authService.hashPassword(
         updatePasswordDto.newPassword,
       );
+      const smtp = await this.smtpDetailsService.findActiveSmtp();
       if (updatePasswordDto.source == 'Super-Admin') {
         if (hashPassword) {
           const data = await this.authService.updatePassword(
@@ -314,11 +320,16 @@ export class AuthController {
       forgotPasswordDto.emailId,
     );
     if (isExist) {
+      const smtp = await this.smtpDetailsService.findActiveSmtp();
       const expireIn = new Date(new Date().getTime() + 5 * 60000);
-      const token = await this.authService.generateJWT({
-        id: isExist.userId,
-        exp: expireIn,
-      });
+      const token = await this.authService.generateForgotPasswordJWTLink(
+        {
+          id: isExist.userId,
+          exp: expireIn,
+        },
+        forgotPasswordDto.emailId,
+        smtp,
+      );
       return {
         statusCode: 200,
         message: 'Success.',
@@ -326,6 +337,30 @@ export class AuthController {
       };
     } else {
       throw new ConflictException('Invalid email address!.');
+    }
+  }
+
+  @Get(':token/validate-forgot-password-token')
+  @Version('1')
+  @ApiOperation({ summary: 'Check Forgot Password Token' })
+  @ApiResponse({
+    status: 200,
+    description: 'successful operation',
+  })
+  public async checkForgetPasswordToken(@Param('token') token: string) {
+    const isExist: UserEntity = await this.authService.findFPTokenExist(token);
+    if (isExist) {
+      return {
+        statusCode: 200,
+        message: 'Success.',
+        data: isExist,
+      };
+    } else {
+      return {
+        statusCode: 200,
+        message: 'No Data Found.',
+        data: [],
+      };
     }
   }
 
@@ -344,11 +379,13 @@ export class AuthController {
     if (isExist) {
       const hashPassword = await this.authService.hashPassword(password);
       if (hashPassword) {
+        const smtp = await this.smtpDetailsService.findActiveSmtp();
         const data = await this.authService.updatePassword(
           userId,
           hashPassword,
         );
         if (data.affected > 0) {
+          await this.authService.resetPasswordEmail(smtp, isExist);
           return {
             statusCode: 200,
             message: `Password Updated Succesfully.`,

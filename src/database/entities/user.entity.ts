@@ -57,12 +57,18 @@ export class UserEntity {
   @IsNotEmpty()
   password: string;
 
+  @Column({ default: 'Active' })
+  status: string;
+
   @ManyToOne(() => RoleEntity, (roleEntity) => roleEntity.roles)
   @JoinColumn({ name: 'roleId' })
   role: RoleEntity;
 
-  @Column({ default: 'Active' })
-  status: string; // Active Blocked Deleted
+  @Column({ select: false, default: '' })
+  fp_req_token: string;
+
+  @Column({ select: false, default: false })
+  fp_req_token_status: boolean;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   @CreateDateColumn()

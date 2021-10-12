@@ -5,6 +5,9 @@ import { Equal, Not, Repository } from 'typeorm';
 import { SignUpDto, UpdateSignUpDto } from '../../dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { sendEmail } from 'src/shared/node-mailer';
+import { mailer } from 'src/shared/htmlMailer/welcome';
+import { fp_mailer } from 'src/shared/htmlMailer/forgot-password';
 
 @Injectable()
 export class AuthService {
@@ -73,14 +76,14 @@ export class AuthService {
     return await this.userRepository
       .createQueryBuilder('user')
       .where(
-        'user.userName = :UserName OR user.emailId = :EmailId OR user.contactNo = :ContactNo AND user.status = :Status',
+        '(user.userName = :UserName OR user.emailId = :EmailId OR user.contactNo = :ContactNo)',
         {
           UserName: signUpDto.userName,
           EmailId: signUpDto.emailId,
           ContactNo: signUpDto.contactNo,
-          Status: 'Active',
         },
       )
+      .andWhere({ status: 'Active' })
       .getOne();
   }
 
@@ -187,6 +190,7 @@ export class AuthService {
   public async updatePassword(userId: string, hash: string): Promise<any> {
     return await this.userRepository.update(userId, {
       password: hash,
+      fp_req_token_status: true,
     });
   }
 
@@ -203,6 +207,21 @@ export class AuthService {
     });
   }
 
+  async triggerEmail(smtp, data, original_password) {
+    const mailOptions = {
+      email: data.emailId,
+      subject: `Welcome to  ${smtp.smtpDisplayName}`,
+      body: mailer.mailerhtml({
+        userName: data.userName,
+        emailId: data.emailId,
+        contactNo: data.contactNo,
+        password: original_password,
+      }),
+      attachments: [],
+    };
+    await sendEmail(smtp, mailOptions);
+    return true;
+  }
   async hashPassword(password: string): Promise<string> {
     return await bcrypt.hash(password, 12);
   }
@@ -221,8 +240,54 @@ export class AuthService {
     }
   }
 
+  async findFPTokenExist(token: string): Promise<any> {
+    return await this.userRepository.findOne({
+      select: [
+        'userId',
+        'firstName',
+        'lastName',
+        'emailId',
+        'fp_req_token',
+        'fp_req_token_status',
+      ],
+      where: { fp_req_token: token, status: 'Active' },
+    });
+  }
+
   async generateJWT(payload): Promise<string> {
     return await this.jwtService.signAsync({ payload });
+  }
+
+  async generateForgotPasswordJWTLink(payload, emailId, smtp): Promise<string> {
+    const fp_req_token = await this.jwtService.signAsync({ payload });
+
+    // storing  the last fp token for each user.
+    await this.userRepository.update(payload.id, {
+      fp_req_token: fp_req_token,
+      fp_req_token_status: false,
+    });
+    // send the forgot password link through email.
+    const mailOptions = {
+      email: emailId,
+      subject: `${smtp.smtpDisplayName} Reset Password Assistance.`,
+      body: fp_mailer.mailerhtml({
+        request_link: `https://childcarecrm.cyberschoolmanager.com/auth/reset-password/${fp_req_token}`,
+      }),
+      attachments: [],
+    };
+    await sendEmail(smtp, mailOptions);
+    return fp_req_token;
+  }
+
+  async resetPasswordEmail(smtp, userData) {
+    const mailOptions = {
+      email: userData.emailId,
+      subject: `${smtp.smtpDisplayName} Password Has Been Updated.`,
+      body: fp_mailer.resetPasswordThankYouHtml(),
+      attachments: [],
+    };
+    await sendEmail(smtp, mailOptions);
+    return true;
   }
 
   async generateFPJwt(id: any): Promise<string> {
