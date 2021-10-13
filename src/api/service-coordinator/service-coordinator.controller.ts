@@ -32,22 +32,23 @@ export class ServiceCoordinatorController {
     status: 200,
     description: 'successful operation',
   })
-  public async createRole(
-    @Body() createServiceCoordinatorDto: CreateServiceCoordinatorDto,
+  public async createServiceCoordinator(
+    @Body() servCoordinatorDto: CreateServiceCoordinatorDto,
   ) {
-    const { name, agency, phoneNo, emailId } = createServiceCoordinatorDto;
     const isSerCoordinatorExist: ServiceCoordinatorEntity =
       await this.serviceCoordinatorService.isSerCoordinatorExist(
-        agency,
-        emailId,
-        name,
-        phoneNo,
+        servCoordinatorDto.agencyId,
+        servCoordinatorDto.emailId,
+        servCoordinatorDto.name,
+        servCoordinatorDto.phoneNo,
       );
     if (isSerCoordinatorExist) {
-      throw new ConflictException(`${name} is already exist.`);
+      throw new ConflictException(
+        `${servCoordinatorDto.name} is already exist.`,
+      );
     }
     const data: ServiceCoordinatorEntity =
-      await this.serviceCoordinatorService.save(createServiceCoordinatorDto);
+      await this.serviceCoordinatorService.save(servCoordinatorDto);
     if (data) {
       return {
         statusCode: 200,
@@ -55,6 +56,37 @@ export class ServiceCoordinatorController {
       };
     }
   }
+
+  // @Post()
+  // @Version('1')
+  // @ApiOperation({ summary: 'Create new service coordinator' })
+  // @ApiResponse({
+  //   status: 200,
+  //   description: 'successful operation',
+  // })
+  // public async createRole(
+  //   @Body() createServiceCoordinatorDto: CreateServiceCoordinatorDto,
+  // ) {
+  //   const { name, agency, phoneNo, emailId } = createServiceCoordinatorDto;
+  //   const isSerCoordinatorExist: ServiceCoordinatorEntity =
+  //     await this.serviceCoordinatorService.isSerCoordinatorExist(
+  //       agency,
+  //       emailId,
+  //       name,
+  //       phoneNo,
+  //     );
+  //   if (isSerCoordinatorExist) {
+  //     throw new ConflictException(`${name} is already exist.`);
+  //   }
+  //   const data: ServiceCoordinatorEntity =
+  //     await this.serviceCoordinatorService.save(createServiceCoordinatorDto);
+  //   if (data) {
+  //     return {
+  //       statusCode: 200,
+  //       message: `Saved Succesfully.`,
+  //     };
+  //   }
+  // }
 
   @Get()
   @Version('1')

@@ -9,8 +9,9 @@ export class CreateServiceCoordinatorDto {
 
   @IsString()
   @Length(0, 100)
+  @IsUUID()
   @ApiProperty({ minLength: 0, maxLength: 100, default: '' })
-  agency: string;
+  agencyId: string;
 
   @IsString()
   @ApiProperty({ minLength: 0, maxLength: 14, default: '' })

@@ -1,13 +1,13 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ServiceCoordinatorService } from './service-coordinator.service';
 import { ServiceCoordinatorController } from './service-coordinator.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ServiceCoordinatorEntity } from 'src/database';
-import { AuthModule } from '../auth/auth.module';
+import { AgencyEntity, ServiceCoordinatorEntity } from 'src/database';
+import { AgencyService } from '../agency/agency.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ServiceCoordinatorEntity])],
+  imports: [TypeOrmModule.forFeature([ServiceCoordinatorEntity, AgencyEntity])],
   controllers: [ServiceCoordinatorController],
-  providers: [ServiceCoordinatorService],
+  providers: [ServiceCoordinatorService, AgencyService],
 })
 export class ServiceCoordinatorModule {}

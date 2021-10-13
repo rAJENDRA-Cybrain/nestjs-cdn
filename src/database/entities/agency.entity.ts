@@ -5,7 +5,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   PrimaryGeneratedColumn,
+  OneToMany,
 } from 'typeorm';
+import { ServiceCoordinatorEntity } from './service-coordinator.entity';
+
 @Entity('tbl_CRMAgency')
 export class AgencyEntity {
   @PrimaryGeneratedColumn('uuid')
@@ -21,7 +24,7 @@ export class AgencyEntity {
   @IsNotEmpty()
   description: string;
 
-  @Column({ default: false })
+  @Column({ default: true })
   @IsBoolean()
   isActive: boolean;
 
@@ -36,4 +39,10 @@ export class AgencyEntity {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   @UpdateDateColumn()
   public updatedAt: Date;
+
+  @OneToMany(
+    () => ServiceCoordinatorEntity,
+    (ServiceCoordinatorEntity) => ServiceCoordinatorEntity.agency,
+  )
+  includeServiceCoordinator: ServiceCoordinatorEntity[];
 }

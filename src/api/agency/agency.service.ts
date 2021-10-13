@@ -15,7 +15,6 @@ export class AgencyService {
     return await this.agencyRepository.find({
       where: {
         isActive: true,
-        isDelete: false,
       },
       order: { createdAt: 'ASC', agencyId: 'ASC' },
     });
@@ -25,8 +24,8 @@ export class AgencyService {
     return await this.agencyRepository.save(createAgencyDto);
   }
 
-  public async findOneAgency(id: string): Promise<AgencyEntity[]> {
-    return await this.agencyRepository.find({
+  public async findOneAgency(id: string): Promise<AgencyEntity> {
+    return await this.agencyRepository.findOne({
       agencyId: id,
       isActive: true,
       isDelete: false,

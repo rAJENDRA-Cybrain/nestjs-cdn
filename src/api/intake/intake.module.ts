@@ -11,7 +11,9 @@ import {
   ServiceCoordinatorEntity,
   AdditionalChildrenEntity,
   SmtpDetailEntity,
+  AgencyEntity,
 } from 'src/database';
+import { AgencyService } from '../agency/agency.service';
 
 @Module({
   imports: [
@@ -21,10 +23,16 @@ import {
       SmtpDetailEntity,
       AdditionalChildrenEntity,
       ServiceCoordinatorEntity,
+      AgencyEntity,
     ]),
     forwardRef(() => AuthModule),
   ],
   controllers: [IntakeController],
-  providers: [IntakeService, ServiceCoordinatorService, SmtpDetailsService],
+  providers: [
+    IntakeService,
+    ServiceCoordinatorService,
+    AgencyService,
+    SmtpDetailsService,
+  ],
 })
 export class IntakeModule {}

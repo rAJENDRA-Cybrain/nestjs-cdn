@@ -12,8 +12,11 @@ import {
   UpdateDateColumn,
   PrimaryGeneratedColumn,
   OneToMany,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { IntakeEntity } from './intake.entity';
+import { AgencyEntity } from './agency.entity';
 @Entity('tbl_CRMServiceCordinator')
 export class ServiceCoordinatorEntity {
   @PrimaryGeneratedColumn('uuid')
@@ -25,11 +28,12 @@ export class ServiceCoordinatorEntity {
   @IsNotEmpty()
   name: string;
 
-  @Column()
-  @IsString()
-  @Length(0, 500)
-  @IsNotEmpty()
-  agency: string;
+  @ManyToOne(
+    () => AgencyEntity,
+    (AgencyEntity) => AgencyEntity.includeServiceCoordinator,
+  )
+  @JoinColumn({ name: 'agencyId' })
+  agency: AgencyEntity;
 
   @Column()
   @IsString()

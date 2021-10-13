@@ -81,10 +81,8 @@ export class AgencyController {
   public async findOneAgency(
     @Param('agencyId', new ParseUUIDPipe({ version: '4' })) agencyId: string,
   ) {
-    const data: AgencyEntity[] = await this.agencyService.findOneAgency(
-      agencyId,
-    );
-    if (data) {
+    const data: AgencyEntity = await this.agencyService.findOneAgency(agencyId);
+    if (Object.keys(data).length > 0) {
       return {
         statusCode: 200,
         message: `Success.`,
@@ -114,7 +112,7 @@ export class AgencyController {
       agencyId,
       updateAgencyDto.agencyName,
     );
-    if (isExist) {
+    if (!isExist) {
       const data = await this.agencyService.update(agencyId, updateAgencyDto);
       if (data) {
         return {
@@ -123,6 +121,10 @@ export class AgencyController {
           data: [],
         };
       }
+    } else {
+      throw new ConflictException(
+        `${updateAgencyDto.agencyName} already exist.`,
+      );
     }
   }
 
