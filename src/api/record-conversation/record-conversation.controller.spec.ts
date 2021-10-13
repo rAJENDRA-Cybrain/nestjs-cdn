@@ -11,7 +11,9 @@ describe('RecordConversationController', () => {
       providers: [RecordConversationService],
     }).compile();
 
-    controller = module.get<RecordConversationController>(RecordConversationController);
+    controller = module.get<RecordConversationController>(
+      RecordConversationController,
+    );
   });
 
   it('should be defined', () => {

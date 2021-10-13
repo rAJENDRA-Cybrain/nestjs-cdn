@@ -6,6 +6,9 @@
 export * from './create-role.dto';
 export * from './update-role.dto';
 
+export * from './create-agency.dto';
+export * from './update-agency.dto';
+
 export * from './create-employee.dto';
 export * from './update-employee.dto';
 export * from './update-password.dto';

@@ -19,6 +19,7 @@ import { SmtpDetailsModule } from './api/smtp-details/smtp-details.module';
 import { RecordConversationModule } from './api/record-conversation/record-conversation.module';
 import { ReportsModule } from './api/reports/reports.module';
 import { EmailTemplateModule } from './api/email-template/email-template.module';
+import { AgencyModule } from './api/agency/agency.module';
 
 const production = false; // fasle : development env and true : production env
 
@@ -65,6 +66,7 @@ const production = false; // fasle : development env and true : production env
     RecordConversationModule,
     ReportsModule,
     EmailTemplateModule,
+    AgencyModule,
   ],
   controllers: [AppController],
   providers: [AppService],
