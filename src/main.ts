@@ -23,6 +23,7 @@ async function bootstrap() {
     .setTitle('ChildCare CRM Api Project')
     .setDescription('An Api Project with NestJs, PostgresSQL, TypeORM')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
 
   app.enableVersioning({

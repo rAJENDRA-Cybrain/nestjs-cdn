@@ -33,6 +33,21 @@ export class IntakeEntity {
   @IsNotEmpty()
   childName: string;
 
+  @Column({ nullable: true })
+  @IsString()
+  @Length(5, 200)
+  childMiddleName: string;
+
+  @Column({ nullable: true })
+  @IsString()
+  @Length(5, 200)
+  childLastName: string;
+
+  @Column({ nullable: false })
+  @IsString()
+  @Length(1, 200)
+  gender: string;
+
   @Column({ type: 'date' })
   @IsNotEmpty()
   dateOfBirth: Date;
@@ -41,16 +56,12 @@ export class IntakeEntity {
   @IsNotEmpty()
   dateOfReceived: Date;
 
-  @Column()
-  @IsString()
+  @Column({ nullable: true, default: '' })
   @Length(0, 200)
-  @IsNotEmpty()
   preSchool: string;
 
-  @Column()
-  @IsString()
+  @Column({ nullable: true, default: '' })
   @Length(0, 200)
-  @IsNotEmpty()
   dayCare: string;
 
   @Column()
@@ -59,7 +70,7 @@ export class IntakeEntity {
   @IsNotEmpty()
   ethnicity: string;
 
-  @Column()
+  @Column({ nullable: true })
   @IsString()
   @Length(0, 200)
   otherEthnicity: string;
@@ -111,6 +122,11 @@ export class IntakeEntity {
   @IsNotEmpty()
   address: string;
 
+  @Column({ nullable: true })
+  @IsString()
+  @Length(0, 100)
+  state: string;
+
   @Column()
   @IsString()
   @Length(0, 100)
@@ -152,10 +168,9 @@ export class IntakeEntity {
   @IsString({ each: true })
   public reasonForReferal: string[];
 
-  @Column()
+  @Column({ nullable: true })
   @IsString()
   @Length(0, 200)
-  @IsNotEmpty()
   earlyStartServices: string;
 
   @Column({ nullable: true, default: '' })

@@ -73,16 +73,7 @@ export class ReportsService {
         'coversationType.type',
         'coversationType.description',
         'childNotes',
-        'intakeChild.intakeId',
-        'intakeChild.childName',
-        'intakeChild.dateOfBirth',
-        'intakeChild.parentName',
-        'intakeChild.parentLastName',
-        'intakeChild.relationshipToChild',
-        'intakeChild.parentEmail',
-        'intakeChild.homePhnNo',
-        'intakeChild.cellPhnNo',
-        'intakeChild.workPhnNo',
+        'intakeChild',
       ])
       .leftJoin('coversationType.conversations', 'childNotes')
       .leftJoin('childNotes.notesAddedBy', 'notesAddedBy')

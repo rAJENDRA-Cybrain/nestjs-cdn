@@ -13,6 +13,8 @@ export * from './create-employee.dto';
 export * from './update-employee.dto';
 export * from './update-password.dto';
 
+export * from './create-add-referrals.dto';
+
 export * from './create-referal-agency.dto';
 export * from './update-referal-agency.dto';
 

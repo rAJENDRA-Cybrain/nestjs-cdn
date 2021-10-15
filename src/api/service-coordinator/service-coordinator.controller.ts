@@ -57,37 +57,6 @@ export class ServiceCoordinatorController {
     }
   }
 
-  // @Post()
-  // @Version('1')
-  // @ApiOperation({ summary: 'Create new service coordinator' })
-  // @ApiResponse({
-  //   status: 200,
-  //   description: 'successful operation',
-  // })
-  // public async createRole(
-  //   @Body() createServiceCoordinatorDto: CreateServiceCoordinatorDto,
-  // ) {
-  //   const { name, agency, phoneNo, emailId } = createServiceCoordinatorDto;
-  //   const isSerCoordinatorExist: ServiceCoordinatorEntity =
-  //     await this.serviceCoordinatorService.isSerCoordinatorExist(
-  //       agency,
-  //       emailId,
-  //       name,
-  //       phoneNo,
-  //     );
-  //   if (isSerCoordinatorExist) {
-  //     throw new ConflictException(`${name} is already exist.`);
-  //   }
-  //   const data: ServiceCoordinatorEntity =
-  //     await this.serviceCoordinatorService.save(createServiceCoordinatorDto);
-  //   if (data) {
-  //     return {
-  //       statusCode: 200,
-  //       message: `Saved Succesfully.`,
-  //     };
-  //   }
-  // }
-
   @Get()
   @Version('1')
   @ApiOperation({ summary: 'Get list of service coordinator.' })
@@ -125,21 +94,20 @@ export class ServiceCoordinatorController {
   public async update(
     @Param('serviceCoordinatorId', new ParseUUIDPipe({ version: '4' }))
     serviceCoordinatorId: string,
-    @Body() updateServiceCoordinatorDto: UpdateServiceCoordinatorDto,
+    @Body() updateData: UpdateServiceCoordinatorDto,
   ) {
-    const isAgenctExistById: ServiceCoordinatorEntity =
+    const isExist: ServiceCoordinatorEntity =
       await this.serviceCoordinatorService.isServiceCoExistInOtherId(
         serviceCoordinatorId,
-        updateServiceCoordinatorDto,
+        updateData,
       );
-    if (isAgenctExistById) {
-      throw new ConflictException(
-        `${updateServiceCoordinatorDto.name} is already exist.`,
-      );
+    console.log(isExist);
+    if (isExist) {
+      throw new ConflictException(`${updateData.name} is already exist.`);
     }
     const data = await this.serviceCoordinatorService.update(
       serviceCoordinatorId,
-      updateServiceCoordinatorDto,
+      updateData,
     );
     if (data.affected > 0) {
       return {

@@ -10,13 +10,20 @@ import {
   Put,
   InternalServerErrorException,
   Delete,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
 import { IntakeService } from './intake.service';
 import { ServiceCoordinatorService } from '../service-coordinator/service-coordinator.service';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
-  CreateIntakeDto,
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import {
   UpdateIntakeDto,
+  CreateReferralsDto,
   CreateAdditionalChildrenDto,
   UpdateAdditionalChildrenDto,
 } from '../../dto';
@@ -29,6 +36,7 @@ import {
 import { sendEmail } from 'src/shared/node-mailer';
 import { mailer } from 'src/shared/htmlMailer/early-intake';
 import { SmtpDetailsService } from '../smtp-details/smtp-details.service';
+import { AuthGuard } from '@nestjs/passport';
 @Controller('intake-children')
 @ApiTags('Early Intake Form APIs')
 export class IntakeController {
@@ -40,82 +48,78 @@ export class IntakeController {
     private readonly smtpDetailsService: SmtpDetailsService,
   ) {}
 
-  @Post()
+  @Post('')
   @Version('1')
-  @ApiOperation({ summary: 'Add new children.' })
+  @ApiOperation({ summary: 'Add new children referrals.' })
   @ApiResponse({
     status: 200,
     description: 'successful operation',
   })
-  async intakeChild(@Body() createIntakeDto: CreateIntakeDto) {
-    // first check if child is exist with same name ,dob and parent name.
-    const isChildExist: IntakeEntity[] = await this.intakeService.isChildExist(
-      createIntakeDto,
-    );
-    //console.log(isChildExist);
-    if (isChildExist.length > 0) {
+  async addReferrals(@Body() createReferralsDto: CreateReferralsDto) {
+    const isChildrenExist: IntakeEntity[] =
+      await this.intakeService.isChildExistForReferrals(createReferralsDto);
+
+    if (isChildrenExist.length > 0) {
       throw new ConflictException(
-        `${createIntakeDto.childName} already exist.`,
+        `${createReferralsDto.childName} ${createReferralsDto.childMiddleName} ${createReferralsDto.childLastName}already exist.`,
       );
     } else {
-      if (createIntakeDto.isReferal == 'Yes') {
+      if (createReferralsDto.isReferal === 'Yes') {
         this.serviceCoordinator =
           await this.serviceCoordinatorService.isServiceCoExistById(
-            createIntakeDto.serviceCoordinatorId,
+            createReferralsDto.serviceCoordinatorId,
           );
-      } else {
-        createIntakeDto.reasonForReferal = [];
       }
 
-      if (createIntakeDto.efcEmployeeId) {
-        this.efcEmployee = await this.intakeService.findEfcEmployee(
-          createIntakeDto.efcEmployeeId,
-        );
-      }
-
-      const data: IntakeEntity = await this.intakeService.save(
-        createIntakeDto,
-        this.serviceCoordinator,
-        this.efcEmployee,
-      );
-
-      const smtp = await this.smtpDetailsService.findActiveSmtp();
+      const [EfcEmployee, smtp] = await Promise.all([
+        this.intakeService.findEfcEmployee(createReferralsDto.efcEmployeeId),
+        this.smtpDetailsService.findActiveSmtp(),
+      ]);
       if (!smtp) {
-        throw new ConflictException(`Configuration smtp details.`);
-      }
-      const EmailData = {
-        timestamp: `${new Date().toLocaleString('default', {
-          month: 'long',
-        })}  ${new Date().getDate()}, ${new Date().getFullYear()}`,
-        childName: data.childName,
-        parentsName: data.parentName,
-      };
-      const mailOptions = {
-        email: data.parentEmail,
-        subject: 'Welcome to EFC Early Start Family Resource Center',
-        body: mailer.mailerhtml(EmailData),
-        attachments: [],
-      };
-      //console.log(EmailData, mailOptions);
-      await sendEmail(smtp, mailOptions);
-      if (data) {
-        return {
-          statusCode: 200,
-          message: `${createIntakeDto.childName} Saved Succesfully.`,
+        throw new ConflictException(`Configure smtp details.`);
+      } else {
+        const data: IntakeEntity = await this.intakeService.addReferrals(
+          createReferralsDto,
+          this.serviceCoordinator,
+          EfcEmployee,
+        );
+        const EmailData = {
+          timestamp: `${new Date().toLocaleString('default', {
+            month: 'long',
+          })}  ${new Date().getDate()}, ${new Date().getFullYear()}`,
+          childName: `${data.childName} ${data.childMiddleName} ${data.childLastName}`,
+          parentsName: data.parentName,
         };
+        const mailOptions = {
+          email: data.parentEmail,
+          subject: 'Welcome to EFC Early Start Family Resource Center',
+          body: mailer.mailerhtml(EmailData),
+          attachments: [],
+        };
+        await sendEmail(smtp, mailOptions);
+        if (data) {
+          return {
+            statusCode: 200,
+            message: `Referral saved succesfully.`,
+          };
+        }
       }
     }
   }
 
   @Get('')
   @Version('1')
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Get list of intake children.' })
   @ApiResponse({
     status: 200,
     description: 'successful operation',
   })
-  public async findAllChildren() {
-    const data: IntakeEntity[] = await this.intakeService.findAll();
+  @UseGuards(AuthGuard('jwt'))
+  public async findAllChildren(@Request() req) {
+    const { userId, role } = req.user['payload'];
+    const data: IntakeEntity[] = await this.intakeService.findAll(userId, role);
+    console.log(data);
     if (data.length > 0) {
       return {
         statusCode: 200,
@@ -150,38 +154,35 @@ export class IntakeController {
 
     if (isChildExistByOtherId) {
       throw new ConflictException(
-        `${updateIntakeDto.childName} is already exist.`,
+        `${updateIntakeDto.childName} ${updateIntakeDto.childMiddleName} ${updateIntakeDto.childLastName} already exist.`,
       );
-    }
-
-    if (updateIntakeDto.isReferal == 'Yes') {
-      this.serviceCoordinator =
-        await this.serviceCoordinatorService.isServiceCoExistById(
-          updateIntakeDto.serviceCoordinatorId,
+    } else {
+      if (updateIntakeDto.isReferal === 'Yes') {
+        this.serviceCoordinator =
+          await this.serviceCoordinatorService.isServiceCoExistById(
+            updateIntakeDto.serviceCoordinatorId,
+          );
+      }
+      if (updateIntakeDto.efcEmployeeId) {
+        this.efcEmployee = await this.intakeService.findEfcEmployee(
+          updateIntakeDto.efcEmployeeId,
         );
-    } else {
-      updateIntakeDto.reasonForReferal = [];
-    }
-
-    if (updateIntakeDto.efcEmployeeId) {
-      this.efcEmployee = await this.intakeService.findEfcEmployee(
-        updateIntakeDto.efcEmployeeId,
+      }
+      const data = await this.intakeService.update(
+        intakeId,
+        updateIntakeDto,
+        this.serviceCoordinator,
+        this.efcEmployee,
       );
-    }
 
-    const data = await this.intakeService.update(
-      intakeId,
-      updateIntakeDto,
-      this.serviceCoordinator,
-      this.efcEmployee,
-    );
-    if (data.affected > 0) {
-      return {
-        statusCode: 201,
-        message: `Updated Succesfully.`,
-      };
-    } else {
-      throw new InternalServerErrorException();
+      if (data.affected > 0) {
+        return {
+          statusCode: 201,
+          message: `Updated Succesfully.`,
+        };
+      } else {
+        throw new InternalServerErrorException();
+      }
     }
   }
 
@@ -326,3 +327,70 @@ export class IntakeController {
     }
   }
 }
+
+// @Post()
+// @Version('1')
+// @ApiOperation({ summary: 'Add new children.' })
+// @ApiResponse({
+//   status: 200,
+//   description: 'successful operation',
+// })
+// async intakeChild(@Body() createIntakeDto: CreateIntakeDto) {
+//   // first check if child is exist with same name ,dob and parent name.
+//   const isChildExist: IntakeEntity[] = await this.intakeService.isChildExist(
+//     createIntakeDto,
+//   );
+//   //console.log(isChildExist);
+//   if (isChildExist.length > 0) {
+//     throw new ConflictException(
+//       `${createIntakeDto.childName} already exist.`,
+//     );
+//   } else {
+//     if (createIntakeDto.isReferal == 'Yes') {
+//       this.serviceCoordinator =
+//         await this.serviceCoordinatorService.isServiceCoExistById(
+//           createIntakeDto.serviceCoordinatorId,
+//         );
+//     } else {
+//       createIntakeDto.reasonForReferal = [];
+//     }
+
+//     if (createIntakeDto.efcEmployeeId) {
+//       this.efcEmployee = await this.intakeService.findEfcEmployee(
+//         createIntakeDto.efcEmployeeId,
+//       );
+//     }
+
+//     const data: IntakeEntity = await this.intakeService.save(
+//       createIntakeDto,
+//       this.serviceCoordinator,
+//       this.efcEmployee,
+//     );
+
+//     const smtp = await this.smtpDetailsService.findActiveSmtp();
+//     if (!smtp) {
+//       throw new ConflictException(`Configuration smtp details.`);
+//     }
+//     const EmailData = {
+//       timestamp: `${new Date().toLocaleString('default', {
+//         month: 'long',
+//       })}  ${new Date().getDate()}, ${new Date().getFullYear()}`,
+//       childName: data.childName,
+//       parentsName: data.parentName,
+//     };
+//     const mailOptions = {
+//       email: data.parentEmail,
+//       subject: 'Welcome to EFC Early Start Family Resource Center',
+//       body: mailer.mailerhtml(EmailData),
+//       attachments: [],
+//     };
+//     //console.log(EmailData, mailOptions);
+//     await sendEmail(smtp, mailOptions);
+//     if (data) {
+//       return {
+//         statusCode: 200,
+//         message: `${createIntakeDto.childName} Saved Succesfully.`,
+//       };
+//     }
+//   }
+// }

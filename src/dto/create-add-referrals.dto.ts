@@ -7,10 +7,10 @@ import {
   IsUUID,
 } from 'class-validator';
 
-export class CreateIntakeDto {
+export class CreateReferralsDto {
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({ minLength: 5, maxLength: 50, default: '' })
+  @ApiProperty({ minLength: 0, maxLength: 50, default: '' })
   childName: string;
 
   @IsString()
@@ -36,14 +36,6 @@ export class CreateIntakeDto {
   gender: string;
 
   @IsString()
-  @ApiPropertyOptional({ minLength: 0, maxLength: 100, default: '' })
-  preSchool: string;
-
-  @IsString()
-  @ApiPropertyOptional({ minLength: 0, maxLength: 100, default: '' })
-  dayCare: string;
-
-  @IsString()
   @ApiProperty({ minLength: 0, maxLength: 500, default: '' })
   @IsNotEmpty()
   childDiagnosis: string;
@@ -56,15 +48,6 @@ export class CreateIntakeDto {
   @IsString()
   @ApiPropertyOptional({ minLength: 0, maxLength: 100, default: '' })
   otherEthnicity: string;
-
-  @IsString()
-  @ApiProperty({ minLength: 0, maxLength: 100, default: 'Yes' })
-  @IsNotEmpty()
-  fluentInEng: string;
-
-  @IsString()
-  @ApiPropertyOptional({ minLength: 0, maxLength: 100, default: '' })
-  otherLang: string;
 
   // parent Details
   @IsString()
@@ -89,9 +72,18 @@ export class CreateIntakeDto {
   parentEmail: string;
 
   @IsString()
-  @ApiProperty({ minLength: 0, maxLength: 200, default: '' })
+  @ApiProperty({ minLength: 0, maxLength: 14, default: '' })
   @IsNotEmpty()
-  address: string;
+  homePhnNo: string;
+
+  @IsString()
+  @ApiProperty({ minLength: 0, maxLength: 100, default: 'Yes' })
+  @IsNotEmpty()
+  fluentInEng: string;
+
+  @IsString()
+  @ApiPropertyOptional({ minLength: 0, maxLength: 100, default: '' })
+  otherLang: string;
 
   @IsString()
   @ApiProperty({ minLength: 0, maxLength: 200, default: '' })
@@ -109,17 +101,20 @@ export class CreateIntakeDto {
   zipcode: string;
 
   @IsString()
-  @ApiProperty({ minLength: 0, maxLength: 14, default: '' })
+  @ApiProperty({ minLength: 0, maxLength: 200, default: '' })
   @IsNotEmpty()
-  homePhnNo: string;
+  address: string;
 
-  @IsString()
-  @ApiPropertyOptional({ minLength: 0, maxLength: 14, default: '' })
-  cellPhnNo: string;
+  // Reason For Referrals
+  @IsArray()
+  @ApiPropertyOptional({ minLength: 0, maxLength: 100, default: [] })
+  reasonForReferal: Array<string>;
 
+  // Allocate Efc Employee & Referral Source
   @IsString()
-  @ApiPropertyOptional({ minLength: 0, maxLength: 14, default: '' })
-  workPhnNo: string;
+  @IsUUID()
+  @ApiProperty({ minLength: 0, maxLength: 100, default: '' })
+  efcEmployeeId: string;
 
   @IsString()
   @ApiProperty({ minLength: 0, maxLength: 10, default: '' })
@@ -130,21 +125,8 @@ export class CreateIntakeDto {
   @ApiPropertyOptional({ minLength: 0, maxLength: 100, default: '' })
   serviceCoordinatorId: string;
 
-  @IsArray()
-  @ApiPropertyOptional({ minLength: 0, maxLength: 100, default: [] })
-  reasonForReferal: Array<string>;
-
-  @IsString()
-  @ApiProperty({ minLength: 0, maxLength: 100, default: '' })
-  @IsNotEmpty()
-  earlyStartServices: string;
-
-  @IsString()
-  @ApiPropertyOptional({ minLength: 0, maxLength: 500, default: '' })
-  otherRelevantInformation: string;
-
   @IsString()
   @IsUUID()
   @ApiProperty({ minLength: 0, maxLength: 100, default: '' })
-  efcEmployeeId: string;
+  addedBy: string;
 }

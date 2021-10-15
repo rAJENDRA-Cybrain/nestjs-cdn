@@ -2,11 +2,9 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class UpdateTransitionPlanDto {
-  @IsString()
   @ApiPropertyOptional({ minLength: 0, maxLength: 100, default: '' })
   preSchool: string;
 
-  @IsString()
   @ApiPropertyOptional({ minLength: 0, maxLength: 100, default: '' })
   dayCare: string;
 

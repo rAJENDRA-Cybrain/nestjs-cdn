@@ -4,6 +4,7 @@ import { Not, Equal, Repository, Raw, getManager } from 'typeorm';
 import {
   CreateIntakeDto,
   UpdateIntakeDto,
+  CreateReferralsDto,
   CreateAdditionalChildrenDto,
   UpdateAdditionalChildrenDto,
 } from '../../dto';
@@ -20,13 +21,16 @@ export class IntakeService {
     @InjectRepository(AdditionalChildrenEntity)
     private addChildRepository: Repository<AdditionalChildrenEntity>,
   ) {}
-  async isChildExist(
-    createIntakeDto: CreateIntakeDto,
+
+  async isChildExistForReferrals(
+    CreateReferralsDto: CreateReferralsDto,
   ): Promise<IntakeEntity[]> {
     return await this.intakeRepository.find({
-      childName: createIntakeDto.childName,
-      parentName: createIntakeDto.parentName,
-      dateOfBirth: createIntakeDto.dateOfBirth,
+      childName: CreateReferralsDto.childName,
+      childMiddleName: CreateReferralsDto.childMiddleName,
+      childLastName: CreateReferralsDto.childLastName,
+      parentName: CreateReferralsDto.parentName,
+      dateOfBirth: CreateReferralsDto.dateOfBirth,
       isActive: true,
       isDelete: false,
     });
@@ -35,63 +39,74 @@ export class IntakeService {
   async findEfcEmployee(id) {
     return await this.authService.isUserExistById(id);
   }
-  public async save(createIntakeDto: CreateIntakeDto, servCord, efcEmployee) {
+
+  public async addReferrals(
+    createReferralsDto: CreateReferralsDto,
+    ServiceCoordinator,
+    EfcEmployee,
+  ) {
     return this.intakeRepository.save({
-      childName: createIntakeDto.childName,
-      dateOfBirth: createIntakeDto.dateOfBirth,
-      dateOfReceived: createIntakeDto.dateOfReceived,
-      preSchool: createIntakeDto.preSchool,
-      dayCare: createIntakeDto.dayCare,
-      childDiagnosis: createIntakeDto.childDiagnosis,
-      ethnicity: createIntakeDto.ethnicity,
-      otherEthnicity: createIntakeDto.otherEthnicity,
-      fluentInEng: createIntakeDto.fluentInEng,
-      otherLang: createIntakeDto.otherLang,
-      parentName: createIntakeDto.parentName,
-      parentLastName: createIntakeDto.parentLastName,
-      relationshipToChild: createIntakeDto.relationshipToChild,
-      parentEmail: createIntakeDto.parentEmail,
-      address: createIntakeDto.address,
-      city: createIntakeDto.city,
-      zipcode: createIntakeDto.zipcode,
-      homePhnNo: createIntakeDto.homePhnNo,
-      cellPhnNo: createIntakeDto.cellPhnNo,
-      workPhnNo: createIntakeDto.workPhnNo,
-      isReferal: createIntakeDto.isReferal,
-      reasonForReferal: createIntakeDto.reasonForReferal,
-      earlyStartServices: createIntakeDto.earlyStartServices,
-      otherRelevantInformation: createIntakeDto.otherRelevantInformation,
-      serviceCoordinator: servCord,
-      efcEmployee: efcEmployee,
-      addedBy: createIntakeDto.addedBy,
+      //child Details
+      childName: createReferralsDto.childName,
+      childMiddleName: createReferralsDto.childMiddleName,
+      childLastName: createReferralsDto.childLastName,
+      dateOfBirth: createReferralsDto.dateOfBirth,
+      dateOfReceived: createReferralsDto.dateOfReceived,
+      gender: createReferralsDto.gender,
+      childDiagnosis: createReferralsDto.childDiagnosis,
+      ethnicity: createReferralsDto.ethnicity,
+      otherEthnicity: createReferralsDto.otherEthnicity,
+      parentName: createReferralsDto.parentName,
+      parentLastName: createReferralsDto.parentLastName,
+      relationshipToChild: createReferralsDto.relationshipToChild,
+      parentEmail: createReferralsDto.parentEmail,
+      homePhnNo: createReferralsDto.homePhnNo,
+      fluentInEng: createReferralsDto.fluentInEng,
+      otherLang: createReferralsDto.otherLang,
+      state: createReferralsDto.state,
+      city: createReferralsDto.city,
+      zipcode: createReferralsDto.zipcode,
+      address: createReferralsDto.address,
+      isReferal: createReferralsDto.isReferal,
+      reasonForReferal: createReferralsDto.reasonForReferal,
+      serviceCoordinator: ServiceCoordinator,
+      efcEmployee: EfcEmployee,
+      addedBy: createReferralsDto.addedBy,
     });
   }
 
-  public async findAll(): Promise<IntakeEntity[]> {
-    return await this.intakeRepository
-      .createQueryBuilder('intake')
+  public async findAll(id, role): Promise<IntakeEntity[]> {
+    const query: any = await this.intakeRepository
+      .createQueryBuilder('Intake')
       .select([
-        'intake',
-        'intake.createdAt',
-        'serCoordinator.serviceCoordinatorId',
-        'serCoordinator.name',
-        'serCoordinator.agency',
-        'serCoordinator.phoneNo',
-        'serCoordinator.emailId',
+        'Intake',
+        'Intake.createdAt',
+        'serviceCoordinator.serviceCoordinatorId',
+        'serviceCoordinator.name',
+        'serviceCoordinator.agency',
+        'serviceCoordinator.phoneNo',
+        'serviceCoordinator.emailId',
         'efcEmployee.userId',
         'efcEmployee.firstName',
         'efcEmployee.lastName',
-        'efcEmployee.emailId',
         'efcEmployee.contactNo',
+        'efcEmployee.emailId',
       ])
-      .leftJoin('intake.serviceCoordinator', 'serCoordinator')
-      .leftJoin('intake.efcEmployee', 'efcEmployee')
-      .where('intake.isActive = :isActive AND intake.isDelete = :isDelete', {
-        isActive: true,
-        isDelete: false,
-      })
-      .orderBy({ 'intake.createdAt': 'DESC', 'intake.intakeId': 'DESC' })
-      .getMany();
+      .leftJoinAndSelect('Intake.serviceCoordinator', 'serviceCoordinator')
+      .leftJoinAndSelect('serviceCoordinator.agency', 'agency')
+      .leftJoinAndSelect('Intake.efcEmployee', 'efcEmployee')
+      .orderBy({ 'Intake.createdAt': 'ASC' })
+      .where('Intake.isActive = :IsActive', {
+        IsActive: true,
+      });
+    if (role.role == 'Efc Employee') {
+      query.andWhere(`Intake.efcEmployee = :id`, { id: id });
+    }
+    if (role.role == 'Operator') {
+      query.andWhere('Intake.addedBy =:id', { id: id });
+    }
+    //execute the query.
+    return await query.getMany();
   }
 
   public async isChildExistByOtherId(
@@ -103,6 +118,8 @@ export class IntakeService {
       isDelete: false,
       intakeId: Not(id),
       childName: updateIntakeDto.childName,
+      childMiddleName: updateIntakeDto.childMiddleName,
+      childLastName: updateIntakeDto.childLastName,
       parentName: updateIntakeDto.parentName,
       dateOfBirth: updateIntakeDto.dateOfBirth,
     });
@@ -116,6 +133,9 @@ export class IntakeService {
   ) {
     return await this.intakeRepository.update(intakeId, {
       childName: updateIntakeDto.childName,
+      childMiddleName: updateIntakeDto.childMiddleName,
+      childLastName: updateIntakeDto.childLastName,
+      gender: updateIntakeDto.gender,
       dateOfBirth: updateIntakeDto.dateOfBirth,
       dateOfReceived: updateIntakeDto.dateOfReceived,
       preSchool: updateIntakeDto.preSchool,
@@ -130,6 +150,7 @@ export class IntakeService {
       relationshipToChild: updateIntakeDto.relationshipToChild,
       parentEmail: updateIntakeDto.parentEmail,
       address: updateIntakeDto.address,
+      state: updateIntakeDto.state,
       city: updateIntakeDto.city,
       zipcode: updateIntakeDto.zipcode,
       homePhnNo: updateIntakeDto.homePhnNo,
@@ -244,3 +265,35 @@ export class IntakeService {
     });
   }
 }
+
+// public async save(createIntakeDto: CreateIntakeDto, servCord, efcEmployee) {
+//   return this.intakeRepository.save({
+//     childName: createIntakeDto.childName,
+//     dateOfBirth: createIntakeDto.dateOfBirth,
+//     dateOfReceived: createIntakeDto.dateOfReceived,
+//     preSchool: createIntakeDto.preSchool,
+//     dayCare: createIntakeDto.dayCare,
+//     childDiagnosis: createIntakeDto.childDiagnosis,
+//     ethnicity: createIntakeDto.ethnicity,
+//     otherEthnicity: createIntakeDto.otherEthnicity,
+//     fluentInEng: createIntakeDto.fluentInEng,
+//     otherLang: createIntakeDto.otherLang,
+//     parentName: createIntakeDto.parentName,
+//     parentLastName: createIntakeDto.parentLastName,
+//     relationshipToChild: createIntakeDto.relationshipToChild,
+//     parentEmail: createIntakeDto.parentEmail,
+//     address: createIntakeDto.address,
+//     city: createIntakeDto.city,
+//     zipcode: createIntakeDto.zipcode,
+//     homePhnNo: createIntakeDto.homePhnNo,
+//     cellPhnNo: createIntakeDto.cellPhnNo,
+//     workPhnNo: createIntakeDto.workPhnNo,
+//     isReferal: createIntakeDto.isReferal,
+//     reasonForReferal: createIntakeDto.reasonForReferal,
+//     earlyStartServices: createIntakeDto.earlyStartServices,
+//     otherRelevantInformation: createIntakeDto.otherRelevantInformation,
+//     serviceCoordinator: servCord,
+//     efcEmployee: efcEmployee,
+//     addedBy: createIntakeDto.addedBy,
+//   });
+// }
