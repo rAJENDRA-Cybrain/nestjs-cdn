@@ -118,4 +118,32 @@ export class ServiceCoordinatorController {
       throw new InternalServerErrorException();
     }
   }
+
+  @Get(':agencyId')
+  @Version('1')
+  @ApiOperation({ summary: 'Get service coordinator .' })
+  @ApiResponse({
+    status: 200,
+    description: 'successful operation',
+  })
+  public async findServiceCoordinators(
+    @Param('agencyId', new ParseUUIDPipe({ version: '4' })) agencyId: string,
+  ) {
+    const data: any = await this.serviceCoordinatorService.findAllByAgencyId(
+      agencyId,
+    );
+    if (Object.keys(data).length > 0) {
+      return {
+        statusCode: 200,
+        message: `Success.`,
+        data: data,
+      };
+    } else {
+      return {
+        statusCode: 200,
+        message: 'No Data Found',
+        data: [],
+      };
+    }
+  }
 }

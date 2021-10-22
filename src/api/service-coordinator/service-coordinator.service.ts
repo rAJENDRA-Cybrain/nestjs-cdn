@@ -67,6 +67,24 @@ export class ServiceCoordinatorService {
       .getMany();
   }
 
+  async findAllByAgencyId(id): Promise<ServiceCoordinatorEntity[]> {
+    return await this.serCoRepository
+      .createQueryBuilder('serviceCoordinator')
+      .leftJoin('serviceCoordinator.agency', 'agency')
+      .where(
+        'serviceCoordinator.isActive = :isActive AND serviceCoordinator.isDelete = :isDelete AND agency.agencyId = :agencyId',
+        {
+          isActive: true,
+          isDelete: false,
+          agencyId: id,
+        },
+      )
+      .orderBy({
+        'serviceCoordinator.createdAt': 'ASC',
+      })
+      .getMany();
+  }
+
   public async isServiceCoExistInOtherId(
     id,
     serviceCoordinator,
