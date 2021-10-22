@@ -65,7 +65,11 @@ export class ManageChildService {
     //return await query.getMany();
     if (role.role == 'Super Admin') {
       return await this.intakeRepository.find({
-        relations: ['serviceCoordinator', 'efcEmployee'],
+        relations: [
+          'serviceCoordinator',
+          'serviceCoordinator.agency',
+          'efcEmployee',
+        ],
         where: { isActive: true },
         order: {
           createdAt: 'DESC',
@@ -74,7 +78,11 @@ export class ManageChildService {
     }
     if (role.role == 'Efc Employee') {
       return await this.intakeRepository.find({
-        relations: ['serviceCoordinator', 'efcEmployee'],
+        relations: [
+          'serviceCoordinator',
+          'serviceCoordinator.agency',
+          'efcEmployee',
+        ],
         where: { isActive: true, efcEmployee: Equal(userId) },
         order: {
           createdAt: 'DESC',
@@ -83,7 +91,11 @@ export class ManageChildService {
     }
     if (role.role == 'Operator') {
       return await this.intakeRepository.find({
-        relations: ['serviceCoordinator', 'efcEmployee'],
+        relations: [
+          'serviceCoordinator',
+          'serviceCoordinator.agency',
+          'efcEmployee',
+        ],
         where: { isActive: true, addedBy: Equal(userId) },
         order: {
           createdAt: 'DESC',

@@ -18,6 +18,7 @@ import {
 } from '@nestjs/common';
 import { diskStorage } from 'multer';
 import {
+  ApiBearerAuth,
   ApiConsumes,
   ApiOperation,
   ApiQuery,
@@ -60,6 +61,7 @@ export class ManageChildController {
     status: 200,
     description: 'successful operation',
   })
+  @ApiBearerAuth()
   @ApiQuery({
     name: 'child_name',
     type: String,
