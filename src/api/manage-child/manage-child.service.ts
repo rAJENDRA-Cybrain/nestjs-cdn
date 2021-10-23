@@ -178,6 +178,7 @@ export class ManageChildService {
     for (let i = 0; i < req.body['intakes'].length; i++) {
       const mailOptions = {
         email: req.body['intakes'][i]['parentEmail'],
+        replyTo: req.body['intakes'][i]['efcEmployee_email'],
         subject: req.body.templateSubject,
         body: req.body.templateBody,
         attachments: req.body['templateAttachments'],

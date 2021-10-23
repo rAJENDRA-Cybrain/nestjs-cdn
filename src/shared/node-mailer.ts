@@ -13,14 +13,19 @@ export const sendEmail = async (transOpts: any, mailOptions: any) => {
             pass: transOpts.smtpPassword
         }
     });
-    const info = await transporter.sendMail({
+
+    const emailConfiguration = {
         from:`"${transOpts.smtpDisplayName}" <${transOpts.smtpUserName}>`,
-        to: mailOptions.email,
         bcc:'rajendra@cybrain.co.in',
         subject: mailOptions.subject,
         html: mailOptions.body,
         attachments:mailOptions.attachments,
-    });
+    };
+    if (mailOptions.replyTo) {
+        emailConfiguration['replyTo'] = mailOptions.replyTo;
+    }
+
+    const info = await transporter.sendMail(emailConfiguration);
 
     console.log('Message sent: %s', info.messageId);
 };

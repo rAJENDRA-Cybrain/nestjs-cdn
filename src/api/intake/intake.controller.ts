@@ -94,6 +94,7 @@ export class IntakeController {
           email: data.parentEmail,
           subject: 'Welcome to EFC Early Start Family Resource Center',
           body: mailer.mailerhtml(EmailData),
+          replyTo: EfcEmployee.emailId,
           attachments: [],
         };
         await sendEmail(smtp, mailOptions);
