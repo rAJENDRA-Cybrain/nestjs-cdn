@@ -11,7 +11,12 @@ import {
   Request,
 } from '@nestjs/common';
 import { ExitPlanService } from './exit-plan.service';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { UpdateExitPlanDto } from '../../dto';
 import { AuthGuard } from '@nestjs/passport';
 import { AgeCalculator } from '@dipaktelangre/age-calculator';
@@ -23,6 +28,7 @@ export class ExitPlanController {
 
   @Version('1')
   @Get('3-years')
+  @ApiBearerAuth()
   @ApiOperation({
     summary: 'Get list of intake children above 3 years for exit.',
   })
@@ -36,6 +42,7 @@ export class ExitPlanController {
     const data = await this.exitPlanService.findChildren(userId, role);
     if (data.length > 0) {
       for (let i = 0; i < data.length; i++) {
+        data[i]['daysCount'] = await this.getNumberOfDays(data[i].dateOfBirth);
         data[i]['age'] = AgeCalculator.getAge(new Date(data[i].dateOfBirth));
       }
     }
@@ -80,5 +87,21 @@ export class ExitPlanController {
     } else {
       throw new InternalServerErrorException();
     }
+  }
+
+  private async getNumberOfDays(date: any) {
+    const date1 = new Date(date);
+    const date2 = new Date();
+
+    // One day in milliseconds
+    const oneDay = 1000 * 60 * 60 * 24;
+
+    // Calculating the time difference between two dates
+    const diffInTime = date2.getTime() - date1.getTime();
+
+    // Calculating the no. of days between two dates
+    const diffInDays = Math.round(diffInTime / oneDay);
+
+    return diffInDays;
   }
 }
