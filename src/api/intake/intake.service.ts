@@ -69,7 +69,8 @@ export class IntakeService {
       address: createReferralsDto.address,
       isReferal: createReferralsDto.isReferal,
       reasonForReferal: createReferralsDto.reasonForReferal,
-      serviceCoordinator: ServiceCoordinator,
+      serviceCoordinator:
+        createReferralsDto.isReferal === 'Yes' ? ServiceCoordinator : [],
       efcEmployee: EfcEmployee,
       addedBy: createReferralsDto.addedBy,
     });
@@ -160,7 +161,8 @@ export class IntakeService {
       reasonForReferal: updateIntakeDto.reasonForReferal,
       earlyStartServices: updateIntakeDto.earlyStartServices,
       otherRelevantInformation: updateIntakeDto.otherRelevantInformation,
-      serviceCoordinator: serviceCoordinator,
+      serviceCoordinator:
+        updateIntakeDto.isReferal === 'Yes' ? serviceCoordinator : [],
       efcEmployee: efcEmployee,
     });
   }
