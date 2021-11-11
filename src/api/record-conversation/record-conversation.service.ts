@@ -49,7 +49,6 @@ export class RecordConversationService {
         'conversationAddedBy.firstName',
         'conversationAddedBy.lastName',
         'conversationAddedBy.emailId',
-        'conversationAddedBy.contactNo',
       ])
       .leftJoin('Record.conversationType', 'conversationType')
       .leftJoin('Record.conversationAddedBy', 'conversationAddedBy')

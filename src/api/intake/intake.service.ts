@@ -90,7 +90,6 @@ export class IntakeService {
         'efcEmployee.userId',
         'efcEmployee.firstName',
         'efcEmployee.lastName',
-        'efcEmployee.contactNo',
         'efcEmployee.emailId',
       ])
       .leftJoinAndSelect('Intake.serviceCoordinator', 'serviceCoordinator')
@@ -267,35 +266,3 @@ export class IntakeService {
     });
   }
 }
-
-// public async save(createIntakeDto: CreateIntakeDto, servCord, efcEmployee) {
-//   return this.intakeRepository.save({
-//     childName: createIntakeDto.childName,
-//     dateOfBirth: createIntakeDto.dateOfBirth,
-//     dateOfReceived: createIntakeDto.dateOfReceived,
-//     preSchool: createIntakeDto.preSchool,
-//     dayCare: createIntakeDto.dayCare,
-//     childDiagnosis: createIntakeDto.childDiagnosis,
-//     ethnicity: createIntakeDto.ethnicity,
-//     otherEthnicity: createIntakeDto.otherEthnicity,
-//     fluentInEng: createIntakeDto.fluentInEng,
-//     otherLang: createIntakeDto.otherLang,
-//     parentName: createIntakeDto.parentName,
-//     parentLastName: createIntakeDto.parentLastName,
-//     relationshipToChild: createIntakeDto.relationshipToChild,
-//     parentEmail: createIntakeDto.parentEmail,
-//     address: createIntakeDto.address,
-//     city: createIntakeDto.city,
-//     zipcode: createIntakeDto.zipcode,
-//     homePhnNo: createIntakeDto.homePhnNo,
-//     cellPhnNo: createIntakeDto.cellPhnNo,
-//     workPhnNo: createIntakeDto.workPhnNo,
-//     isReferal: createIntakeDto.isReferal,
-//     reasonForReferal: createIntakeDto.reasonForReferal,
-//     earlyStartServices: createIntakeDto.earlyStartServices,
-//     otherRelevantInformation: createIntakeDto.otherRelevantInformation,
-//     serviceCoordinator: servCord,
-//     efcEmployee: efcEmployee,
-//     addedBy: createIntakeDto.addedBy,
-//   });
-// }

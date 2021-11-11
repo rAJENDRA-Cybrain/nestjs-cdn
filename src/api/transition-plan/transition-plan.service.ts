@@ -25,7 +25,6 @@ export class TransitionPlanService {
         'efcEmployee.userId',
         'efcEmployee.firstName',
         'efcEmployee.lastName',
-        'efcEmployee.contactNo',
         'efcEmployee.emailId',
       ])
       .leftJoinAndSelect('Intake.serviceCoordinator', 'serviceCoordinator')
@@ -41,7 +40,6 @@ export class TransitionPlanService {
     if (role.role == 'Operator') {
       query.andWhere('Intake.addedBy =:id', { id: id });
     }
-    //execute the query.
     return await query.getMany();
   }
 
