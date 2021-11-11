@@ -39,7 +39,8 @@ const production = false; // fasle : development env and true : production env
       ssl: { rejectUnauthorized: false },
       entities: [join(__dirname, '**', '*.{ts,js}')], // don't remove this line
       synchronize: !production ? true: false,
-      // 1st one is for development and 2nd one is for production
+      // 1st one is for development and 2nd one is for production 
+      // scroll to top if production is false i.e development
       // only when migration needed then call it to true
       logging: false,
     }),

@@ -41,7 +41,7 @@ export class ReportsService {
 
   async findEmployeeReports(from_date, to_date) {
     const userData = await this.userRepository.find({
-      select: ['userId', 'firstName', 'lastName', 'emailId', 'contactNo'],
+      select: ['userId', 'firstName', 'lastName', 'emailId'],
       where: {
         status: 'Active',
       },
@@ -121,7 +121,6 @@ export class ReportsService {
         'efcEmployee.firstName',
         'efcEmployee.lastName',
         'efcEmployee.emailId',
-        'efcEmployee.contactNo',
         'additionalChild.additionalChildrenId',
         'additionalChild.childName',
         'additionalChild.childAge',

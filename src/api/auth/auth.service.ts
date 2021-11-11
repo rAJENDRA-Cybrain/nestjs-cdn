@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, Options } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/database';
 import { Equal, Not, Repository } from 'typeorm';
@@ -22,9 +22,6 @@ export class AuthService {
       firstName: signUpDto.firstName,
       lastName: signUpDto.lastName,
       emailId: signUpDto.emailId,
-      contactNo: signUpDto.contactNo,
-      dateOfJoining: signUpDto.dateOfJoining,
-      userName: signUpDto.userName,
       password: signUpDto.password,
       role: role,
     });
@@ -38,9 +35,6 @@ export class AuthService {
         'user.firstName',
         'user.lastName',
         'user.emailId',
-        'user.contactNo',
-        'user.dateOfJoining',
-        'user.userName',
         'role.roleId',
         'role.role',
       ])
@@ -61,7 +55,6 @@ export class AuthService {
         'user.firstName',
         'user.lastName',
         'user.emailId',
-        'user.contactNo',
       ])
       .leftJoin('user.role', 'role')
       .where('user.status = :status AND role.roleId =:RoleId', {
@@ -75,14 +68,9 @@ export class AuthService {
   public async isAccountExist(signUpDto: SignUpDto) {
     return await this.userRepository
       .createQueryBuilder('user')
-      .where(
-        '(user.userName = :UserName OR user.emailId = :EmailId OR user.contactNo = :ContactNo)',
-        {
-          UserName: signUpDto.userName,
-          EmailId: signUpDto.emailId,
-          ContactNo: signUpDto.contactNo,
-        },
-      )
+      .where('(user.emailId = :EmailId)', {
+        EmailId: signUpDto.emailId,
+      })
       .andWhere({ status: 'Active' })
       .getOne();
   }
@@ -102,72 +90,32 @@ export class AuthService {
         'user.firstName',
         'user.lastName',
         'user.emailId',
-        'user.contactNo',
         'user.password',
         'role.roleId',
         'role.role',
       ])
       .leftJoin('user.role', 'role')
-      .where(
-        'user.userName = :UserName OR user.emailId = :EmailId OR user.contactNo = :ContactNo AND user.status = :Status',
-        {
-          UserName: auth_key,
-          EmailId: auth_key,
-          ContactNo: auth_key,
-          Status: 'Active',
-        },
-      )
+      .where('user.emailId = :EmailId AND user.status = :Status', {
+        EmailId: auth_key,
+        Status: 'Active',
+      })
       .getOne();
   }
 
   public async isAccountExistById(id, updateSignUpDto: UpdateSignUpDto) {
-    const { emailId, userName, contactNo } = updateSignUpDto;
     if (
       (
         await this.userRepository.find({
-          emailId: emailId,
+          emailId: updateSignUpDto.emailId,
           status: 'Active',
           userId: Not(id),
         })
       ).length > 0
     ) {
       throw new ConflictException('Email Already Exist.');
-    } else if (
-      (
-        await this.userRepository.find({
-          userName: userName,
-          status: 'Active',
-          userId: Not(id),
-        })
-      ).length > 0
-    ) {
-      throw new ConflictException('UserName Already Exist.');
-    } else if (
-      (
-        await this.userRepository.find({
-          contactNo: contactNo,
-          status: 'Active',
-          userId: Not(id),
-        })
-      ).length > 0
-    ) {
-      throw new ConflictException('Mobile No Already Exist.');
     } else {
       return true;
     }
-    // return await this.userRepository
-    //   .createQueryBuilder('user')
-    //   .where(
-    //     'user.userName = :UserName OR user.emailId = :EmailId OR user.contactNo = :ContactNo AND user.status = :Status AND user.userId != :UserId',
-    //     {
-    //       UserName: updateSignUpDto.userName,
-    //       EmailId: updateSignUpDto.emailId,
-    //       ContactNo: updateSignUpDto.contactNo,
-    //       Status: 'Active',
-    //       UserId: id,
-    //     },
-    //   )
-    //   .getOne();
   }
   public async isUserExistById(id): Promise<UserEntity> {
     return await this.userRepository.findOne({
@@ -180,9 +128,6 @@ export class AuthService {
       firstName: updateSignUpDto.firstName,
       lastName: updateSignUpDto.lastName,
       emailId: updateSignUpDto.emailId,
-      contactNo: updateSignUpDto.contactNo,
-      dateOfJoining: updateSignUpDto.dateOfJoining,
-      userName: updateSignUpDto.userName,
       role: Role,
     });
   }
@@ -212,9 +157,7 @@ export class AuthService {
       email: data.emailId,
       subject: `Welcome to  ${smtp.smtpDisplayName}`,
       body: mailer.mailerhtml({
-        userName: data.userName,
         emailId: data.emailId,
-        contactNo: data.contactNo,
         password: original_password,
       }),
       attachments: [],

@@ -38,21 +38,6 @@ export class UserEntity {
   emailId: string;
 
   @Column()
-  @IsString()
-  @IsNotEmpty()
-  contactNo: string;
-
-  @Column()
-  @IsNotEmpty()
-  dateOfJoining: Date;
-
-  @Column()
-  @IsString()
-  @Length(2, 50)
-  @IsNotEmpty()
-  userName: string;
-
-  @Column()
   @Length(8)
   @IsNotEmpty()
   password: string;

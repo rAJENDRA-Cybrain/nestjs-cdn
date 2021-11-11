@@ -43,9 +43,7 @@ export var mailer = {
             `				  <br />` +
             `				  Admin Panel Login Details:<br />` +
             `				  =================================<br />` +
-            `				  Username : ${responseForEmail.userName} <br />` +
             `				  Email :  ${responseForEmail.emailId} <br />` +
-            `				  Contact Number :  ${responseForEmail.contactNo} <br />` +
             `				  Password :  ${responseForEmail.password} <br />` +
             `				  =================================<br />` +
             `                  <br />` +
