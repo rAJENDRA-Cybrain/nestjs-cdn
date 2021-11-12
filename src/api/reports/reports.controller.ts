@@ -33,9 +33,11 @@ export class ReportsController {
   })
   @ApiOperation({ summary: 'Generate report with time interval' })
   async generateNewReports(@Query() query: QueryGenerateReportDto) {
+    console.log('userIds', query.user_ids);
     const response = await this.reportsService.findEmployeeReports(
       query.from_date,
       query.to_date,
+      query.user_ids,
     );
     if (response.length > 0) {
       return {

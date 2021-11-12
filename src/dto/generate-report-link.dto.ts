@@ -8,6 +8,9 @@ export class QueryGenerateReportDto {
 
   @ApiPropertyOptional({ default: '' })
   to_date: string;
+
+  @ApiProperty()
+  user_ids: string;
 }
 
 export class QueryReportYearWiseDto {

@@ -1,7 +1,7 @@
 import { AgeCalculator } from '@dipaktelangre/age-calculator';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Equal, Repository } from 'typeorm';
+import { Equal, In, Repository } from 'typeorm';
 import {
   ConversationTypeEntity,
   IntakeEntity,
@@ -39,12 +39,17 @@ export class ReportsService {
     private authService: AuthService,
   ) {}
 
-  async findEmployeeReports(from_date, to_date) {
+  async findEmployeeReports(from_date, to_date, user_ids) {
     const userData = await this.userRepository.find({
       select: ['userId', 'firstName', 'lastName', 'emailId'],
-      where: {
-        status: 'Active',
-      },
+      where: user_ids
+        ? {
+            status: 'Active',
+            userId: In(user_ids.split(',')),
+          }
+        : {
+            status: 'Active',
+          },
       order: { createdAt: 'ASC' },
     });
 
