@@ -40,18 +40,22 @@ export class ReportsService {
   ) {}
 
   async findEmployeeReports(from_date, to_date, user_ids) {
-    const userData = await this.userRepository.find({
-      select: ['userId', 'firstName', 'lastName', 'emailId'],
-      where: user_ids
-        ? {
-            status: 'Active',
-            userId: In(user_ids.split(',')),
-          }
-        : {
-            status: 'Active',
-          },
-      order: { createdAt: 'ASC' },
-    });
+    let userData = [];
+    if (user_ids) {
+      userData = await this.userRepository.find({
+        select: ['userId', 'firstName', 'lastName', 'emailId'],
+        where: user_ids
+          ? {
+              status: 'Active',
+              userId: In(user_ids),
+            }
+          : {
+              status: 'Active',
+              userId: In(user_ids),
+            },
+        order: { createdAt: 'ASC' },
+      });
+    }
 
     for (let i = 0; i < userData.length; i++) {
       userData[i]['reports'] = await this.findConversationsWiseNotes(
