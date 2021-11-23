@@ -7,11 +7,12 @@ export const sendEmail = async (transOpts: any, mailOptions: any) => {
     const transporter = nodemailer.createTransport({
         host: transOpts.smtpHost,
         port: transOpts.smtpPort,
-        //secure: true,//config.mailSecure, // lack of ssl commented this. You can uncomment it.
+        secure: true,//config.mailSecure, // lack of ssl commented this. You can uncomment it.
         auth: {
             user: transOpts.smtpUserName,
             pass: transOpts.smtpPassword
-        }
+        },
+        tls: { ciphers: 'SSLv3' }
     });
 
     const emailConfiguration = {

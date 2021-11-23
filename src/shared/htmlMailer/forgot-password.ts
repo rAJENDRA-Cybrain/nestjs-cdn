@@ -12,7 +12,7 @@ export var fp_mailer = {
             `<body>Greetings from Childcare CRM,` +
             `<br>` +
             `<br>` +
-            `We received a request to reset the password for the Childcare CRM account` +
+            `We received a request to reset the password for the Childcare CRM account ` +
             `associated with this e-mail address. Click the link below to reset your password.` +
             `<br>` +
             `<br>` +
