@@ -5,22 +5,31 @@ import * as nodemailer from 'nodemailer';
 export const sendEmail = async (transOpts: any, mailOptions: any) => {
 
     const transporter = nodemailer.createTransport({
-        host: transOpts.smtpHost,
-        port: transOpts.smtpPort,
-        secure: true,//config.mailSecure, // lack of ssl commented this. You can uncomment it.
-        auth: {
-            user: transOpts.smtpUserName,
-            pass: transOpts.smtpPassword
-        },
-        tls: { ciphers: 'SSLv3' }
-    });
+            host: 'smtp.office365.com',
+            port: 587,
+            auth: { user: 'rajendra.cybrain@outlook.com', pass: 'test@77R' },
+            tls: { ciphers: 'SSLv3' }
+        });
+
+
+    // {
+    //     host: transOpts.smtpHost,
+    //     port: transOpts.smtpPort,
+    //     secure: true,//config.mailSecure, // lack of ssl commented this. You can uncomment it.
+    //     auth: {
+    //         user: transOpts.smtpUserName,
+    //         pass: transOpts.smtpPassword
+    //     },
+    // }
+
+
 
     const emailConfiguration = {
-        from:`"${transOpts.smtpDisplayName}" <${transOpts.smtpUserName}>`,
-        bcc:'rajendra@cybrain.co.in',
+        from: `"${transOpts.smtpDisplayName}" <${transOpts.smtpUserName}>`,
+        bcc: 'rajendra@cybrain.co.in',
         subject: mailOptions.subject,
         html: mailOptions.body,
-        attachments:mailOptions.attachments,
+        attachments: mailOptions.attachments,
     };
     if (mailOptions.replyTo) {
         emailConfiguration['replyTo'] = mailOptions.replyTo;
