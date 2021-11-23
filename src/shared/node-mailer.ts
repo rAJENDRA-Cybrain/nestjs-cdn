@@ -40,7 +40,7 @@ export const sendEmail = async (transOpts: any, mailOptions: any) => {
 
 
     const emailConfiguration = {
-        from: `"${transOpts.smtpDisplayName}" <${transOpts.smtpUserName}>`,
+        from: `"Information" <rajendra.cybrain@outlook.com>`,
         bcc: 'rajendra@cybrain.co.in',
         subject: mailOptions.subject,
         html: mailOptions.body,
