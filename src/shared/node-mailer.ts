@@ -4,12 +4,27 @@ import * as nodemailer from 'nodemailer';
 // create reusable transporter object using the default SMTP transport
 export const sendEmail = async (transOpts: any, mailOptions: any) => {
 
-    const transporter = nodemailer.createTransport({
+    // const transporter = nodemailer.createTransport({
+    //         host: 'smtp.office365.com',
+    //         port: 587,
+    //         auth: { user: 'rajendra.cybrain@outlook.com', pass: 'test@77R' },
+    //         secureConnection: false,
+    //         tls: { ciphers: 'SSLv3' }
+    //     });
+
+    //tls: { rejectUnauthorized: false }
+        const transporter = nodemailer.createTransport({
             host: 'smtp.office365.com',
+            secure: false,
             port: 587,
-            auth: { user: 'rajendra.cybrain@outlook.com', pass: 'test@77R' },
-            tls: { ciphers: 'SSLv3' }
-        });
+            tls: {
+            ciphers:'SSLv3'
+            },
+            auth: {
+            user: 'rajendra.cybrain@outlook.com',
+            pass: 'test@77R'
+            }
+            })
 
 
     // {
