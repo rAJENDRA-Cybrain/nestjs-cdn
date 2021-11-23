@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
-import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
-import { HttpExceptionFilter } from './http-exception.filter';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LogsInterceptor } from './logs.interceptor';
 @Module({
   providers: [
