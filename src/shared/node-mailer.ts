@@ -17,16 +17,13 @@ export const sendEmail = async (transOpts: any, mailOptions: any) => {
         host: transOpts.smtpHost,
         secure: false,
         port: transOpts.smtpPort,
-        ignoreTLS: true,
         tls:{
-            rejectUnauthorized: false,
             ciphers: "SSLv3"
          },
         auth: { user: transOpts.smtpUserName, pass: transOpts.smtpPassword },
         debug: true,
         logger: true, 
     };
-
 
     const connection = transOpts.smtpHost.includes('smtp.office365.com') ? connection_office_365 : connection_gmail;
 
