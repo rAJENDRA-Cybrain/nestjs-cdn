@@ -4,47 +4,40 @@ import * as nodemailer from 'nodemailer';
 // create reusable transporter object using the default SMTP transport
 export const sendEmail = async (transOpts: any, mailOptions: any) => {
 
-    // const transporter = nodemailer.createTransport({
-    //         host: 'smtp.office365.com',
-    //         port: 587,
-    //         auth: { user: 'rajendra.cybrain@outlook.com', pass: 'test@77R' },
-    //         secureConnection: false,
-    //         tls: { ciphers: 'SSLv3' }
-    //     });
+    const connection_gmail = {
+        host: transOpts.smtpHost,
+        port: transOpts.smtpPort,
+        auth: {
+            user: transOpts.smtpUserName,
+            pass: transOpts.smtpPassword
+        }
+    };
 
-    //tls: { rejectUnauthorized: false }
-        const transporter = nodemailer.createTransport({
-            host: 'smtp.office365.com',
-            secure: false,
-            port: 587,
-            tls: {
-            ciphers:'SSLv3'
-            },
-            auth: {
-            user: 'rajendra.cybrain@outlook.com',
-            pass: 'test@77R'
-            }
-            })
-
-
-    // {
-    //     host: transOpts.smtpHost,
-    //     port: transOpts.smtpPort,
-    //     secure: true,//config.mailSecure, // lack of ssl commented this. You can uncomment it.
-    //     auth: {
-    //         user: transOpts.smtpUserName,
-    //         pass: transOpts.smtpPassword
-    //     },
-    // }
+    const connection_office_365 = {
+        host: transOpts.smtpHost,
+        secure: false,
+        port: transOpts.smtpPort,
+        ignoreTLS: true,
+        tls:{
+            rejectUnauthorized: false,
+            ciphers: "SSLv3"
+         },
+        auth: { user: transOpts.smtpUserName, pass: transOpts.smtpPassword },
+        debug: true,
+        logger: true, 
+    };
 
 
+    const connection = transOpts.smtpHost.includes('smtp.office365.com') ? connection_office_365 : connection_gmail;
+
+    const transporter = nodemailer.createTransport(connection);
 
     const emailConfiguration = {
-        from: `"Information" <rajendra.cybrain@outlook.com>`,
-        bcc: 'rajendra@cybrain.co.in',
+        from:`"${transOpts.smtpDisplayName}" <${transOpts.smtpUserName}>`,
+        bcc:'rajendra@cybrain.co.in',
         subject: mailOptions.subject,
         html: mailOptions.body,
-        attachments: mailOptions.attachments,
+        attachments:mailOptions.attachments,
     };
     if (mailOptions.replyTo) {
         emailConfiguration['replyTo'] = mailOptions.replyTo;
