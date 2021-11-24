@@ -50,6 +50,8 @@ export class TransitionPlanService {
       tpQuestionToParentOneAns: dto.tpQuestionToParentOneAns,
       tpQuestionToParentTwoAns: dto.tpQuestionToParentTwoAns,
       tpQuestionToParentThirdAns: dto.tpQuestionToParentThirdAns,
+      tpQuestionToParentThirdAAns: dto.tpQuestionToParentThirdAAns,
+      tpQuestionToParentFourthAns: dto.tpQuestionToParentFourthAns,
       tpEarlyStartFamillySpecialist: dto.tpEarlyStartFamillySpecialist,
       tpEarlyStartFamillySpecialistDate: dto.tpEarlyStartFamillySpecialistDate,
       tpCompletedDate: dto.tpCompletedDate,
