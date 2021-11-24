@@ -64,6 +64,10 @@ export class IntakeEntity {
   @Length(0, 200)
   dayCare: string;
 
+  @Column({ nullable: true, default: '' })
+  @Length(0, 200)
+  otherServices: string;
+
   @Column()
   @IsString()
   @Length(0, 50)

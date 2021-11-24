@@ -47,6 +47,11 @@ export class ExitPlanService {
 
   public async update(intakeId: string, dto: UpdateExitPlanDto) {
     return await this.intakeRepository.update(intakeId, {
+      preSchool: dto.preSchool,
+      dayCare: dto.dayCare,
+      otherServices: dto.otherServices,
+      tpEarlyStartFamillySpecialist: dto.tpEarlyStartFamillySpecialist,
+      tpEarlyStartFamillySpecialistDate: dto.tpEarlyStartFamillySpecialistDate,
       isEligibleForKERN: dto.isEligibleForKERN,
       epQuestionToParentOneAns: dto.epQuestionToParentOneAns,
       epQuestionToParentTwoAns: dto.epQuestionToParentTwoAns,
