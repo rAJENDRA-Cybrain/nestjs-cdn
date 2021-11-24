@@ -221,6 +221,36 @@ export class IntakeEntity {
   @Column({ nullable: true, default: '' })
   @IsString()
   @Length(0, 20)
+  isEligibleForKERN: string;
+
+  @Column({ nullable: true, default: '' })
+  @IsString()
+  @Length(0, 20)
+  epQuestionToParentOneAns: string;
+
+  @Column({ nullable: true, default: '' })
+  @IsString()
+  @Length(0, 20)
+  epQuestionToParentTwoAns: string;
+
+  @Column({ nullable: true, default: '' })
+  @IsString()
+  @Length(0, 20)
+  epQuestionToParentThirdAns: string;
+
+  @Column({ nullable: true, default: '' })
+  @IsString()
+  @Length(0, 20)
+  epQuestionToParentThirdAAns: string;
+
+  @Column({ nullable: true, default: '' })
+  @IsString()
+  @Length(0, 20)
+  epQuestionToParentFourthAns: string;
+
+  @Column({ nullable: true, default: '' })
+  @IsString()
+  @Length(0, 20)
   epContinueStatus: string;
 
   @Column({ nullable: true, type: 'date' })
