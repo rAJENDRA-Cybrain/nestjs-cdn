@@ -44,15 +44,10 @@ export class ReportsService {
     if (user_ids) {
       userData = await this.userRepository.find({
         select: ['userId', 'firstName', 'lastName', 'emailId'],
-        where: user_ids
-          ? {
-              status: 'Active',
-              userId: In(user_ids),
-            }
-          : {
-              status: 'Active',
-              userId: In(user_ids),
-            },
+        where: {
+          status: 'Active',
+          userId: In(user_ids.split(',')),
+        },
         order: { createdAt: 'ASC' },
       });
     }
