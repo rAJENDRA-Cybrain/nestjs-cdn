@@ -28,6 +28,14 @@ export class UpdateTransitionPlanDto {
   @ApiProperty({ minLength: 0, maxLength: 3, default: '' })
   tpQuestionToParentThirdAns: string;
 
+  @IsString()
+  @ApiProperty({ minLength: 0, maxLength: 3, default: '' })
+  tpQuestionToParentThirdAAns: string;
+
+  @IsString()
+  @ApiProperty({ minLength: 0, maxLength: 3, default: '' })
+  tpQuestionToParentFourthAns: string;
+
   @IsNotEmpty()
   @ApiProperty({ minLength: 0, maxLength: 50 })
   tpCompletedDate: Date;
