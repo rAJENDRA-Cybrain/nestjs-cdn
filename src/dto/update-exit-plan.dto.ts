@@ -15,7 +15,7 @@ export class UpdateExitPlanDto {
   @ApiProperty({ minLength: 0, maxLength: 14, default: '' })
   tpEarlyStartFamillySpecialist: string;
 
-  @ApiProperty({ minLength: 0, maxLength: 50 })
+  @ApiProperty({ minLength: 0, maxLength: 50, default: null })
   tpEarlyStartFamillySpecialistDate: Date;
 
   @IsString()
@@ -46,6 +46,6 @@ export class UpdateExitPlanDto {
   @ApiProperty({ minLength: 0, maxLength: 100, default: '' })
   epContinueStatus: string;
 
-  @ApiProperty({ minLength: 0, maxLength: 50 })
+  @ApiProperty({ minLength: 0, maxLength: 50, default: null })
   epCompletedDate: Date;
 }

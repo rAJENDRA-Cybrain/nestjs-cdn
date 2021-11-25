@@ -12,7 +12,7 @@ export class UpdateTransitionPlanDto {
   @ApiProperty({ minLength: 0, maxLength: 14, default: '' })
   tpEarlyStartFamillySpecialist: string;
 
-  @ApiProperty({ minLength: 0, maxLength: 50 })
+  @ApiProperty({ minLength: 0, maxLength: 50, default: null })
   tpEarlyStartFamillySpecialistDate: Date;
 
   @IsString()
@@ -35,6 +35,6 @@ export class UpdateTransitionPlanDto {
   @ApiProperty({ minLength: 0, maxLength: 3, default: '' })
   tpQuestionToParentFourthAns: string;
 
-  @ApiProperty({ minLength: 0, maxLength: 50 })
+  @ApiProperty({ minLength: 0, maxLength: 50, default: null })
   tpCompletedDate: Date;
 }
