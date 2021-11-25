@@ -12,7 +12,6 @@ export class UpdateTransitionPlanDto {
   @ApiProperty({ minLength: 0, maxLength: 14, default: '' })
   tpEarlyStartFamillySpecialist: string;
 
-  @IsNotEmpty()
   @ApiProperty({ minLength: 0, maxLength: 50 })
   tpEarlyStartFamillySpecialistDate: Date;
 
@@ -36,7 +35,6 @@ export class UpdateTransitionPlanDto {
   @ApiProperty({ minLength: 0, maxLength: 3, default: '' })
   tpQuestionToParentFourthAns: string;
 
-  @IsNotEmpty()
   @ApiProperty({ minLength: 0, maxLength: 50 })
   tpCompletedDate: Date;
 }
