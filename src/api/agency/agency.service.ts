@@ -58,7 +58,7 @@ export class AgencyService {
     const data = await this.isAssignedToAnyIntake(id);
     if (data.length) {
       throw new ConflictException(
-        'System Restricted. Agency alraedy assigned to children.',
+        'System Restricted. Agency already assigned to children.',
       );
     } else {
       return await this.agencyRepository.update(id, {

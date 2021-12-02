@@ -123,7 +123,7 @@ export class ServiceCoordinatorService {
     const data = await this.isAssignedToAnyIntake(id);
     if (data.length) {
       throw new ConflictException(
-        'System Restricted. Service Coordinator alraedy assigned to children.',
+        'System Restricted. Service Coordinator already assigned to children.',
       );
     } else {
       return await this.serCoRepository.update(id, {

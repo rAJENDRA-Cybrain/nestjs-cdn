@@ -294,7 +294,7 @@ export class AuthController {
       );
       if (isAssignedToIntake.length > 0) {
         throw new ConflictException(
-          'System Restricted. User alraedy assigned to children.',
+          'System Restricted. User already assigned to children.',
         );
       } else {
         const isStatusUpdated = await this.authService.deleteEmployee(userId);

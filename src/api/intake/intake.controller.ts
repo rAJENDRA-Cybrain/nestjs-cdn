@@ -203,7 +203,7 @@ export class IntakeController {
     const isNotesExists = this.intakeService.isNotesExist(id);
     if ((await isNotesExists).childNotes.length > 0) {
       throw new ConflictException(
-        `System Restricted.Notes are already present for this children.`,
+        `System Restricted. Notes are already present for this children.`,
       );
     } else {
       const data = await this.intakeService.deleteChildren(id);
