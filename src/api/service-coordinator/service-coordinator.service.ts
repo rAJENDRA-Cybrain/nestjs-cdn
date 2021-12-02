@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import {
   CreateServiceCoordinatorDto,
   UpdateServiceCoordinatorDto,
@@ -116,6 +116,36 @@ export class ServiceCoordinatorService {
       phoneNo: data.phoneNo,
       emailId: data.emailId,
       agency: agency,
+    });
+  }
+
+  async archiveServiceCoordinator(id: string) {
+    const data = await this.isAssignedToAnyIntake(id);
+    if (data.length) {
+      throw new ConflictException(
+        'System Restricted. Service Coordinator alraedy assigned to children.',
+      );
+    } else {
+      return await this.serCoRepository.update(id, {
+        isActive: false,
+        isDelete: true,
+      });
+    }
+  }
+
+  async isAssignedToAnyIntake(id: string) {
+    return await this.serCoRepository.find({
+      join: {
+        alias: 'serviceCoordinator',
+        leftJoinAndSelect: {
+          intakes: 'serviceCoordinator.intakes',
+        },
+      },
+      where: {
+        isActive: true,
+        isDelete: false,
+        serviceCoordinatorId: id,
+      },
     });
   }
 }

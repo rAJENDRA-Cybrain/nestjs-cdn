@@ -144,6 +144,7 @@ export class AgencyController {
       return {
         statusCode: 201,
         message: `Archived succesfully.`,
+        data: isStatusUpdated,
       };
     }
   }

@@ -9,6 +9,7 @@ import {
   ParseUUIDPipe,
   Put,
   InternalServerErrorException,
+  Delete,
 } from '@nestjs/common';
 import { ServiceCoordinatorService } from './service-coordinator.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -121,7 +122,7 @@ export class ServiceCoordinatorController {
 
   @Get(':agencyId')
   @Version('1')
-  @ApiOperation({ summary: 'Get service coordinator .' })
+  @ApiOperation({ summary: 'Get service coordinator according to agency.' })
   @ApiResponse({
     status: 200,
     description: 'successful operation',
@@ -143,6 +144,28 @@ export class ServiceCoordinatorController {
         statusCode: 200,
         message: 'No Data Found',
         data: [],
+      };
+    }
+  }
+
+  @Delete(':serviceCoordinatorId')
+  @Version('1')
+  @ApiOperation({ summary: 'Archive service coordinator.' })
+  @ApiResponse({
+    status: 200,
+    description: 'successful operation',
+  })
+  public async archiveServiceCoordinator(
+    @Param('serviceCoordinatorId', new ParseUUIDPipe({ version: '4' }))
+    id: string,
+  ) {
+    const isStatusUpdated =
+      await this.serviceCoordinatorService.archiveServiceCoordinator(id);
+    if (isStatusUpdated.affected > 0) {
+      return {
+        statusCode: 201,
+        message: `Archived succesfully.`,
+        data: isStatusUpdated,
       };
     }
   }
