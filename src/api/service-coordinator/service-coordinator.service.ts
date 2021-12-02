@@ -120,8 +120,8 @@ export class ServiceCoordinatorService {
   }
 
   async archiveServiceCoordinator(id: string) {
-    const data = await this.isAssignedToAnyIntake(id);
-    if (data.length) {
+    const data: any = await this.isAssignedToAnyIntake(id);
+    if (data.intakes.length) {
       throw new ConflictException(
         'System Restricted. Service Coordinator already assigned to children.',
       );
@@ -134,7 +134,7 @@ export class ServiceCoordinatorService {
   }
 
   async isAssignedToAnyIntake(id: string) {
-    return await this.serCoRepository.find({
+    return await this.serCoRepository.findOne({
       join: {
         alias: 'serviceCoordinator',
         leftJoinAndSelect: {

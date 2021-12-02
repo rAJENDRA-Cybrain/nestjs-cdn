@@ -159,6 +159,7 @@ export class ServiceCoordinatorController {
     @Param('serviceCoordinatorId', new ParseUUIDPipe({ version: '4' }))
     id: string,
   ) {
+    console.log(id);
     const isStatusUpdated =
       await this.serviceCoordinatorService.archiveServiceCoordinator(id);
     if (isStatusUpdated.affected > 0) {
