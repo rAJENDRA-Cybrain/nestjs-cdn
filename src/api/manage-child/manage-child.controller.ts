@@ -289,9 +289,9 @@ export class ManageChildController {
           files,
           smtp,
         );
-        return { statusCode: 201, message: `Email send succesfully.` };
+        return { statusCode: 201, message: `Email sent succesfully.` };
       } else {
-        throw new ConflictException(`Please activate smtp configuration.`);
+        throw new ConflictException(`Please activate SMTP configuration.`);
       }
     } else {
       throw new ConflictException(`Please select the children.`);
