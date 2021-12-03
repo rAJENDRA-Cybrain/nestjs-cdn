@@ -175,6 +175,8 @@ export class ManageChildService {
         }
       }
     }
+
+    const batch = Math.floor(Math.random() * 1000000 + 1);
     for (let i = 0; i < req.body['intakes'].length; i++) {
       const mailOptions = {
         email: req.body['intakes'][i]['parentEmail'],
@@ -183,17 +185,18 @@ export class ManageChildService {
         body: req.body.templateBody,
         attachments: req.body['templateAttachments'],
       };
-      await sendEmail(smtp, mailOptions);
+      //await sendEmail(smtp, mailOptions);
       await this.createEmailLogs(
         req.body['intakes'][i]['intakeId'],
         smtp,
         mailOptions,
+        batch,
       );
     }
     return true;
   }
 
-  async createEmailLogs(intakeId, smtp, mailOptions) {
+  async createEmailLogs(intakeId, smtp, mailOptions, batch) {
     return await this.emailLogsRepository.save({
       intake: await this.intakeService.findById(intakeId),
       emailLogSmtpId: smtp.smtpId,
@@ -203,6 +206,7 @@ export class ManageChildService {
       emailLogSubject: mailOptions.subject,
       emailLogBody: mailOptions.body,
       emailLogAttachments: mailOptions.attachments,
+      batch: batch,
     });
   }
 

@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
 import {
   Entity,
   Column,
@@ -51,6 +51,19 @@ export class EmailLogsEntity {
   @Column('text', { array: true, nullable: true })
   @IsString({ each: true })
   emailLogAttachments: string[];
+
+  @Column({ default: false })
+  @IsBoolean()
+  isSent: boolean;
+
+  @Column({ default: false })
+  @IsBoolean()
+  isDelete: boolean;
+
+  @Column({ nullable: true })
+  @IsString()
+  @IsNotEmpty()
+  batch: string;
 
   @Column()
   @CreateDateColumn()
