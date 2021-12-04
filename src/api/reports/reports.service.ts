@@ -229,4 +229,10 @@ export class ReportsService {
       .orderBy({ 'reports.updatedAt': 'ASC' })
       .getMany();
   }
+
+  async archiveReportFile(id: string) {
+    return await this.reportGenerateRepository.update(id, {
+      isActive: false,
+    });
+  }
 }

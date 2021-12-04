@@ -41,6 +41,11 @@ export class EmailLogsEntity {
   @Column()
   @IsString()
   @IsNotEmpty()
+  emailLogreplyTo: string;
+
+  @Column()
+  @IsString()
+  @IsNotEmpty()
   emailLogSubject: string;
 
   @Column()
@@ -64,6 +69,9 @@ export class EmailLogsEntity {
   @IsString()
   @IsNotEmpty()
   batch: string;
+
+  @Column({ default: '' })
+  addedBy: string;
 
   @Column()
   @CreateDateColumn()

@@ -271,6 +271,7 @@ export class ManageChildController {
       }),
     }),
   )
+  @UseGuards(AuthGuard('jwt'))
   @ApiConsumes('multipart/form-data')
   async triggerEmail(
     @Req() req: Request,
@@ -283,12 +284,16 @@ export class ManageChildController {
     if (Object.keys(req.body['intakes']).length > 0) {
       const smtp = await this.smtpDetailsService.findActiveSmtp();
       if (Object.keys(smtp).length > 0) {
-        const mail = await this.manageChildService.triggerMail(
+        const email_batch = await this.manageChildService.triggerMail(
           req,
           files,
           smtp,
         );
-        return { statusCode: 201, message: `Email sent succesfully.` };
+        return {
+          statusCode: 201,
+          message: `Email's are processed successfully .`,
+          data: { batch: email_batch },
+        };
       } else {
         throw new ConflictException(`Please activate SMTP configuration.`);
       }

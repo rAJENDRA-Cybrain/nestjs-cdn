@@ -17,12 +17,12 @@ export const sendEmail = async (transOpts: any, mailOptions: any) => {
         host: transOpts.smtpHost,
         secure: false,
         port: transOpts.smtpPort,
-        tls:{
+        tls: {
             ciphers: "SSLv3"
-         },
+        },
         auth: { user: transOpts.smtpUserName, pass: transOpts.smtpPassword },
-        debug: true,
-        logger: true, 
+        debug: false,
+        logger: false,
     };
 
     const connection = transOpts.smtpHost.includes('smtp.office365.com') ? connection_office_365 : connection_gmail;
@@ -30,18 +30,26 @@ export const sendEmail = async (transOpts: any, mailOptions: any) => {
     const transporter = nodemailer.createTransport(connection);
 
     const emailConfiguration = {
-        from:`"${transOpts.smtpDisplayName}" <${transOpts.smtpUserName}>`,
+        from: `"${transOpts.smtpDisplayName}" <${transOpts.smtpUserName}>`,
         to: mailOptions.email,
-        bcc:'rajendra@cybrain.co.in',
+        bcc: 'rajendra@cybrain.co.in',
         subject: mailOptions.subject,
         html: mailOptions.body,
-        attachments:mailOptions.attachments,
+        attachments: mailOptions.attachments,
     };
     if (mailOptions.replyTo) {
         emailConfiguration['replyTo'] = mailOptions.replyTo;
     }
 
-    const info = await transporter.sendMail(emailConfiguration);
+    return new Promise((resolve, reject) => {
 
-    console.log('Message sent: %s', info.messageId);
+        transporter.sendMail(emailConfiguration, async (error, data) => {
+
+            if (error) {
+                return reject(error);
+            }
+            console.log('Message sent: %s', data);
+            return resolve(data);
+        });
+    });
 };

@@ -10,11 +10,12 @@ import {
 import {
   CreateManageChildNotesDto,
   UpdateManageChildNotesDto,
-  TriggerEmailDto,
 } from '../../dto';
+import { Cron, CronExpression, SchedulerRegistry } from '@nestjs/schedule';
 import { AuthService } from '../auth/auth.service';
 import { sendEmail } from 'src/shared/node-mailer';
 import { IntakeService } from '../intake/intake.service';
+import { SmtpDetailsService } from '../smtp-details/smtp-details.service';
 
 @Injectable()
 export class ManageChildService {
@@ -31,6 +32,8 @@ export class ManageChildService {
     private intakeService: IntakeService,
     @Inject(forwardRef(() => AuthService))
     private authService: AuthService,
+    private schedulerRegistry: SchedulerRegistry,
+    private readonly smtpDetailsService: SmtpDetailsService,
   ) {}
 
   async findChild(
@@ -43,26 +46,6 @@ export class ManageChildService {
     intake_start_date: string,
     intake_end_date: string,
   ) {
-    // const query = await this.intakeRepository
-    //   .createQueryBuilder('Intake')
-    //   .leftJoinAndSelect('Intake.serviceCoordinator', 'serviceCoordinator')
-    //   .leftJoinAndSelect('Intake.efcEmployee', 'efcEmployee')
-    //   .orderBy({ 'Intake.createdAt': 'DESC' })
-    //   .where('Intake.isActive = :IsActive', {
-    //     IsActive: true,
-    //   });
-    // if (role.role == 'Efc Employee') {
-    //   query.andWhere(`Intake.efcEmployee: Equal(${userId})`);
-    // }
-    // if (role.role == 'Operator') {
-    //   query.andWhere('Intake.addedBy =:id', { id: userId });
-    // }
-    // if ((intake_start_date && intake_end_date) != undefined) {
-    //   query.andWhere(
-    //     `Intake.createdAt BETWEEN '${intake_start_date}' AND '${intake_end_date}'`,
-    //   );
-    // }
-    //return await query.getMany();
     if (role.role == 'Super Admin') {
       return await this.intakeRepository.find({
         relations: [
@@ -148,6 +131,7 @@ export class ManageChildService {
       date: dto.date,
     });
   }
+
   async updateStatus(id: string) {
     return await this.notesRepository.update(id, {
       isActive: false,
@@ -177,6 +161,7 @@ export class ManageChildService {
     }
 
     const batch = Math.floor(Math.random() * 1000000 + 1);
+
     for (let i = 0; i < req.body['intakes'].length; i++) {
       const mailOptions = {
         email: req.body['intakes'][i]['parentEmail'],
@@ -185,28 +170,31 @@ export class ManageChildService {
         body: req.body.templateBody,
         attachments: req.body['templateAttachments'],
       };
-      //await sendEmail(smtp, mailOptions);
       await this.createEmailLogs(
         req.body['intakes'][i]['intakeId'],
         smtp,
         mailOptions,
         batch,
+        req.body.userId,
       );
     }
-    return true;
+    await this.triggerCronJob('bulk-email');
+    return batch;
   }
 
-  async createEmailLogs(intakeId, smtp, mailOptions, batch) {
+  async createEmailLogs(intakeId, smtp, mailOptions, batch, userId) {
     return await this.emailLogsRepository.save({
       intake: await this.intakeService.findById(intakeId),
       emailLogSmtpId: smtp.smtpId,
       emailLogSmtpUserName: smtp.smtpUserName,
       emailLogSmtpDisplayName: smtp.smtpDisplayName,
       emailLogTo: mailOptions.email,
+      emailLogreplyTo: mailOptions.replyTo,
       emailLogSubject: mailOptions.subject,
       emailLogBody: mailOptions.body,
       emailLogAttachments: mailOptions.attachments,
       batch: batch,
+      addedBy: userId,
     });
   }
 
@@ -218,5 +206,52 @@ export class ManageChildService {
       .where('intake.intakeId = :intakeId', { intakeId: intakeId })
       .orderBy({ 'emailLogs.createdAt': 'DESC' })
       .getMany();
+  }
+
+  async updateEmailLogsStatus(logId: string) {
+    await this.emailLogsRepository.update(logId, {
+      isSent: true,
+    });
+  }
+
+  @Cron(CronExpression.EVERY_MINUTE, { name: 'bulk-email' })
+  async handleCron() {
+    console.log('CRON JOB STARTED');
+    const email_log = await this.emailLogsRepository.find({
+      where: { isDelete: false, isSent: false },
+      order: {
+        createdAt: 'ASC',
+      },
+      take: 3,
+    });
+
+    if (email_log.length > 0) {
+      const smtp = await this.smtpDetailsService.findActiveSmtp();
+      for (let i = 0; i < email_log.length; i++) {
+        const mailOptions = {
+          email: email_log[i]['emailLogTo'],
+          replyTo: email_log[i]['emailLogreplyTo'],
+          subject: email_log[i]['emailLogSubject'],
+          body: email_log[i]['emailLogBody'],
+          attachments: email_log[i]['emailLogAttachments'],
+        };
+        await sendEmail(smtp, mailOptions);
+        await this.updateEmailLogsStatus(email_log[i]['emailLogId']);
+      }
+    } else {
+      await this.stopCronJob('bulk-email');
+    }
+  }
+
+  async triggerCronJob(id: string) {
+    const job = this.schedulerRegistry.getCronJob(id);
+    job.start();
+    console.log('CROn Job Triggered');
+  }
+
+  async stopCronJob(id: string) {
+    const job = this.schedulerRegistry.getCronJob(id);
+    job.stop();
+    console.log('CRON JOB STOPED');
   }
 }

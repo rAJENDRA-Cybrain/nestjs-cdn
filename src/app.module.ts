@@ -6,6 +6,7 @@ import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { ScheduleModule } from '@nestjs/schedule';
 import { SharedModule } from './shared/shared.module';
 import { RoleModule } from './api/role/role.module';
 import { AuthModule } from './api/auth/auth.module';
@@ -25,6 +26,7 @@ const production = false; // fasle : development env and true : production env
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: !production ? '.env.development' : '.env.production',
