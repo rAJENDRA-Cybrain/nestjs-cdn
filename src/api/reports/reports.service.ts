@@ -227,6 +227,9 @@ export class ReportsService {
       ])
       .leftJoin('reports.reportGeneratedBy', 'reportGeneratedBy')
       .orderBy({ 'reports.updatedAt': 'ASC' })
+      .where('reports.isActive = :IsActive', {
+        IsActive: true,
+      })
       .getMany();
   }
 
