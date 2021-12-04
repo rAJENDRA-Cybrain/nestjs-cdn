@@ -36,27 +36,27 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   const document = SwaggerModule.createDocument(app, config);
 
-  const whitelist = ['http://localhost:4567'];
-  app.enableCors({
-    origin: function (origin, callback) {
-      if (whitelist.indexOf(origin) !== -1) {
-        //console.log('allowed cors for:', origin);
-        callback(null, true);
-      } else {
-        //console.log('blocked cors for:', origin);
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
-    allowedHeaders:
-      'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Observe,Authorization,authorization',
-    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
-    credentials: true,
-  });
-
+//   const whitelist = ['http://localhost:4567'];
 //   app.enableCors({
-//       origin: true,
-//       credentials: true 
+//     origin: function (origin, callback) {
+//       if (whitelist.indexOf(origin) !== -1) {
+//         //console.log('allowed cors for:', origin);
+//         callback(null, true);
+//       } else {
+//         //console.log('blocked cors for:', origin);
+//         callback(new Error('Not allowed by CORS'));
+//       }
+//     },
+//     allowedHeaders:
+//       'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Observe,Authorization,authorization',
+//     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+//     credentials: true,
 //   });
+
+  app.enableCors({
+      origin: true,
+      credentials: true 
+  });
 
   SwaggerModule.setup('/', app, document);
 

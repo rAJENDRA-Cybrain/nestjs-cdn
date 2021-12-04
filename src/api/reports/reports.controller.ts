@@ -1,8 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
+  ParseUUIDPipe,
   Post,
   Query,
   Req,
@@ -154,5 +156,26 @@ export class ReportsController {
     }
     res.setHeader('Content-Type', 'application/json;charset=UTF-8');
     res.status(200).send(Result);
+  }
+
+  @Delete(':reportsId')
+  @Version('1')
+  @ApiOperation({ summary: 'Archive report files.' })
+  @ApiResponse({
+    status: 200,
+    description: 'successful operation',
+  })
+  public async archiveReport(
+    @Param('reportsId', new ParseUUIDPipe({ version: '4' }))
+    id: string,
+  ) {
+    const isStatusUpdated = await this.reportsService.archiveReportFile(id);
+    if (isStatusUpdated.affected > 0) {
+      return {
+        statusCode: 201,
+        message: `Archived succesfully.`,
+        data: isStatusUpdated,
+      };
+    }
   }
 }
