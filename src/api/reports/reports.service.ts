@@ -53,23 +53,55 @@ export class ReportsService {
     }
 
     for (let i = 0; i < userData.length; i++) {
-      userData[i]['reports'] = await this.findConversationsWiseNotes(
-        userData[i].userId,
-        from_date,
-        to_date,
-      );
+      const [ff, tp, tRef, tComp] = await Promise.all([
+        await this.findConversationsWiseNotes(
+          userData[i].userId,
+          '908fdda9-7cce-4f5a-be80-30907ca65feb',
+          from_date,
+          to_date,
+        ),
+        await this.findConversationsWiseNotes(
+          userData[i].userId,
+          '7f89f393-018a-4a33-ad25-cb7e15d81467',
+          from_date,
+          to_date,
+        ),
+        await this.findTotalIntakeReferal(
+          userData[i].userId,
+          from_date,
+          to_date,
+        ),
+        await this.findTotalIntakeCompleted(
+          userData[i].userId,
+          from_date,
+          to_date,
+        ),
+      ]);
+
+      userData[i]['Employee Name'] =
+        userData[i].firstName + ' ' + userData[i].lastName;
+      userData[i]['HOW MANY NEW REFERRALS DID YOU RECEIVE?'] = tRef.length;
+      userData[i][
+        'HOW MANY NEW FAMILIES DID YOU HAVE CONTACT WITH FACE TO FACE'
+      ] = ff[0]?.conversations ? ff[0]?.conversations?.length : 0;
+      userData[i][
+        'HOW MANY FAMILIES DID YOU HAVE CONTACT WITH OVER THE PHONE'
+      ] = tp[0]?.conversations ? tp[0]?.conversations?.length : 0;
+      userData[i]['HOW MANY INTAKES DID YOU COMPLETE?'] = tComp.length;
+
+      delete userData[i].lastName;
+      delete userData[i].firstName;
+      delete userData[i].userId;
     }
-    const filteredData = userData.filter(function (el) {
-      return el['reports'].length > 0;
-    });
-    if (filteredData.length > 0) {
-      return filteredData;
+
+    if (userData.length > 0) {
+      return userData;
     } else {
       return [];
     }
   }
 
-  async findConversationsWiseNotes(id, from_date, to_date) {
+  async findConversationsWiseNotes(id, convTypeId, from_date, to_date) {
     const query = await this.conversationRepository
       .createQueryBuilder('coversationType')
       .select([
@@ -84,11 +116,12 @@ export class ReportsService {
       .leftJoin('childNotes.intakeChild', 'intakeChild')
       .orderBy({ 'childNotes.createdAt': 'ASC' })
       .where(
-        'coversationType.isActive = :IsActive AND notesAddedBy.userId = :UserId AND childNotes.isActive = :NotesIsActive',
+        'coversationType.isActive = :IsActive AND coversationType.conversationTypeId = :convTypeId  AND notesAddedBy.userId = :UserId AND childNotes.isActive = :NotesIsActive',
         {
           IsActive: true,
           NotesIsActive: true,
           UserId: id,
+          convTypeId: convTypeId,
         },
       );
     if ((from_date && to_date) != undefined) {
@@ -108,6 +141,84 @@ export class ReportsService {
           },
         );
     }
+    return await query.getMany();
+  }
+
+  async findTotalIntakeReferal(userId, from_date, to_date) {
+    const query = await this.intakeRepository
+      .createQueryBuilder('Intake')
+      .select([
+        'Intake',
+        'efcEmployee.userId',
+        'efcEmployee.firstName',
+        'efcEmployee.lastName',
+        'efcEmployee.emailId',
+      ])
+      .leftJoin('Intake.efcEmployee', 'efcEmployee')
+      .orderBy({ 'Intake.createdAt': 'ASC' })
+      .where('Intake.isActive = :IsActive AND efcEmployee.userId = :userId', {
+        IsActive: true,
+        userId: userId,
+      });
+    if ((from_date && to_date) != undefined) {
+      query
+        .andWhere(
+          `
+            DATE_TRUNC('day', "Intake"."createdAt") >= :begin`,
+          {
+            begin: from_date,
+          },
+        )
+        .andWhere(
+          `
+            DATE_TRUNC('day', "Intake"."createdAt")  <= :end`,
+          {
+            end: to_date,
+          },
+        );
+    }
+
+    return await query.getMany();
+  }
+
+  async findTotalIntakeCompleted(userId, from_date, to_date) {
+    const query = await this.intakeRepository
+      .createQueryBuilder('Intake')
+      .select([
+        'Intake',
+        'efcEmployee.userId',
+        'efcEmployee.firstName',
+        'efcEmployee.lastName',
+        'efcEmployee.emailId',
+      ])
+      .leftJoin('Intake.efcEmployee', 'efcEmployee')
+      .orderBy({ 'Intake.createdAt': 'ASC' })
+      .where(
+        'Intake.isActive = :IsActive AND efcEmployee.userId = :userId AND Intake.epContinueStatus = :status',
+        {
+          IsActive: true,
+          userId: userId,
+          status: 'No',
+        },
+      );
+    if ((from_date && to_date) != undefined) {
+      query
+        .andWhere(
+          `
+            DATE_TRUNC('day', "Intake"."createdAt") >= :begin`,
+          {
+            begin: from_date,
+          },
+        )
+        .andWhere(
+          `
+            DATE_TRUNC('day', "Intake"."createdAt")  <= :end`,
+          {
+            end: to_date,
+          },
+        );
+    }
+
     return await query.getMany();
   }
 
