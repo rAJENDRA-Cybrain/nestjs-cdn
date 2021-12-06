@@ -330,4 +330,32 @@ export class ManageChildController {
       };
     }
   }
+
+  @Get('mail-progress/:userId')
+  @Version('1')
+  @ApiOperation({
+    summary: 'Get user mail progress.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'successful operation',
+  })
+  public async findMailActiveList(
+    @Param('userId', new ParseUUIDPipe({ version: '4' })) userId: string,
+  ) {
+    const Data: any = await this.manageChildService.findMailActiveList(userId);
+    if (Data) {
+      return {
+        statusCode: 200,
+        message: `Success.`,
+        data: Data,
+      };
+    } else {
+      return {
+        statusCode: 200,
+        message: `No Data Found..`,
+        data: [],
+      };
+    }
+  }
 }

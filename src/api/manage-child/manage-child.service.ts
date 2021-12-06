@@ -214,6 +214,34 @@ export class ManageChildService {
     });
   }
 
+  async findMailActiveList(userId: string) {
+    const batches = await this.emailLogsRepository
+      .createQueryBuilder('emailLogs')
+      .select('DISTINCT ("batch")')
+      .where('emailLogs.addedBy = :addedBy', { addedBy: userId })
+      .getRawMany();
+
+    if (batches.length > 0) {
+      for (let index = 0; index < batches.length; index++) {
+        const count = await this.emailLogsRepository
+          .createQueryBuilder('emailLogs')
+          .where(
+            'emailLogs.addedBy = :addedBy AND emailLogs.batch = :batch AND emailLogs.isSent = :isSent AND emailLogs.isDelete = :isDelete',
+            {
+              isSent: false,
+              isDelete: false,
+              batch: batches[index].batch,
+              addedBy: userId,
+            },
+          )
+          .getMany();
+
+        batches[index]['total_emails'] = count.length > 0 ? count.length : 0;
+      }
+    }
+    return batches;
+  }
+
   @Cron(CronExpression.EVERY_MINUTE, { name: 'bulk-email' })
   async handleCron() {
     console.log('CRON JOB STARTED');
