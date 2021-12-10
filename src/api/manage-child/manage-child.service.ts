@@ -261,7 +261,7 @@ export class ManageChildService {
           replyTo: email_log[i]['emailLogreplyTo'],
           subject: email_log[i]['emailLogSubject'],
           body: email_log[i]['emailLogBody'],
-          attachments: email_log[i]['emailLogAttachments'],
+          attachments: JSON.parse(email_log[i]['emailLogAttachments'] as any),
         };
         await sendEmail(smtp, mailOptions);
         await this.updateEmailLogsStatus(email_log[i]['emailLogId']);
