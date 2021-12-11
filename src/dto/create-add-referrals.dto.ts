@@ -121,7 +121,6 @@ export class CreateReferralsDto {
   @IsNotEmpty()
   isReferal: string;
 
-  @IsString()
   @ApiPropertyOptional({ minLength: 0, maxLength: 100, default: '' })
   serviceCoordinatorId: string;
 
