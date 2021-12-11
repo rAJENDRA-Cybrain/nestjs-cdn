@@ -113,11 +113,9 @@ export class IntakeEntity {
   @IsNotEmpty()
   relationshipToChild: string;
 
-  @Column()
+  @Column({ nullable: true, default: '' })
   @IsString()
   @Length(0, 100)
-  @IsNotEmpty()
-  @IsEmail()
   parentEmail: string;
 
   @Column()

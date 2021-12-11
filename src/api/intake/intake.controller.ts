@@ -97,7 +97,9 @@ export class IntakeController {
           replyTo: EfcEmployee.emailId,
           attachments: [],
         };
-        await sendEmail(smtp, mailOptions);
+        if (data.parentEmail != '' || null || undefined) {
+          await sendEmail(smtp, mailOptions);
+        }
         if (data) {
           return {
             statusCode: 200,
