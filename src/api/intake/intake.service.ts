@@ -116,9 +116,7 @@ export class IntakeService {
       isDelete: false,
       intakeId: Not(id),
       childName: updateIntakeDto.childName,
-      childMiddleName: updateIntakeDto.childMiddleName,
       childLastName: updateIntakeDto.childLastName,
-      parentName: updateIntakeDto.parentName,
       dateOfBirth: updateIntakeDto.dateOfBirth,
     });
   }

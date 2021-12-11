@@ -90,8 +90,7 @@ export class ServiceCoordinatorService {
       where: {
         isActive: true,
         isDelete: false,
-        emailId: serviceCoordinator.emailId,
-        phoneNo: serviceCoordinator.phoneNo,
+        emailId: serviceCoordinator.emailId.toLocaleLowerCase(),
         serviceCoordinatorId: Not(id),
         agency: { agencyId: Equal(serviceCoordinator.agencyId) },
       },
