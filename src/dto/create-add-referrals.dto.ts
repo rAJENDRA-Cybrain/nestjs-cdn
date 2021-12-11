@@ -66,7 +66,6 @@ export class CreateReferralsDto {
   relationshipToChild: string;
 
   @ApiPropertyOptional({ minLength: 0, maxLength: 100, default: '' })
-  @IsEmail()
   parentEmail: string;
 
   @IsString()
