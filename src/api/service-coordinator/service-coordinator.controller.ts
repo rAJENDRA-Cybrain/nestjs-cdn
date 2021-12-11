@@ -40,12 +40,10 @@ export class ServiceCoordinatorController {
       await this.serviceCoordinatorService.isSerCoordinatorExist(
         servCoordinatorDto.agencyId,
         servCoordinatorDto.emailId,
-        servCoordinatorDto.name,
-        servCoordinatorDto.phoneNo,
       );
     if (isSerCoordinatorExist) {
       throw new ConflictException(
-        `${servCoordinatorDto.name} is already exist.`,
+        `${servCoordinatorDto.emailId} is already exist.`,
       );
     }
     const data: ServiceCoordinatorEntity =

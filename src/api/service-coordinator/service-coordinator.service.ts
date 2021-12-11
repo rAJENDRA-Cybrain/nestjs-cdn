@@ -19,21 +19,17 @@ export class ServiceCoordinatorService {
   async isSerCoordinatorExist(
     agencyId,
     emailId,
-    name,
-    phoneNo,
   ): Promise<ServiceCoordinatorEntity> {
     return await this.serCoRepository
       .createQueryBuilder('serviceCoordinator')
       .leftJoin('serviceCoordinator.agency', 'agency')
       .where(
-        'serviceCoordinator.isActive = :ISACTIVE AND serviceCoordinator.isDelete = :ISDELETE AND serviceCoordinator.name = :NAME AND ' +
-          'serviceCoordinator.emailId = :EMAIL AND serviceCoordinator.phoneNo = :PHONE AND agency.agencyId = :AGENCYID',
+        'serviceCoordinator.isActive = :ISACTIVE AND serviceCoordinator.isDelete = :ISDELETE AND ' +
+          'serviceCoordinator.emailId = :EMAIL AND agency.agencyId = :AGENCYID',
         {
           ISACTIVE: true,
           ISDELETE: false,
-          NAME: name,
-          EMAIL: emailId,
-          PHONE: phoneNo,
+          EMAIL: emailId.toLocaleLowerCase(),
           AGENCYID: agencyId,
         },
       )
@@ -45,7 +41,7 @@ export class ServiceCoordinatorService {
     return await this.serCoRepository.save({
       name: data.name,
       phoneNo: data.phoneNo,
-      emailId: data.emailId,
+      emailId: data.emailId.toLocaleLowerCase(),
       agency: agency,
     });
   }

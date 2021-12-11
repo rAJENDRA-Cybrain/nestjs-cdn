@@ -27,9 +27,7 @@ export class IntakeService {
   ): Promise<IntakeEntity[]> {
     return await this.intakeRepository.find({
       childName: CreateReferralsDto.childName,
-      childMiddleName: CreateReferralsDto.childMiddleName,
       childLastName: CreateReferralsDto.childLastName,
-      parentName: CreateReferralsDto.parentName,
       dateOfBirth: CreateReferralsDto.dateOfBirth,
       isActive: true,
       isDelete: false,
