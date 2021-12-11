@@ -53,7 +53,8 @@ export class ReportsService {
     }
 
     for (let i = 0; i < userData.length; i++) {
-      const [ff, tp, tRef, tComp] = await Promise.all([
+      const [report, ff, tp, tRef, tComp] = await Promise.all([
+        await this.findEmpConversation(userData[i].userId, from_date, to_date),
         await this.findConversationsWiseNotes(
           userData[i].userId,
           '908fdda9-7cce-4f5a-be80-30907ca65feb',
@@ -77,7 +78,7 @@ export class ReportsService {
           to_date,
         ),
       ]);
-
+      userData[i]['report'] = report;
       userData[i]['Employee Name'] =
         userData[i].firstName + ' ' + userData[i].lastName;
       userData[i]['HOW MANY NEW REFERRALS DID YOU RECEIVE?'] = tRef.length;
@@ -99,6 +100,48 @@ export class ReportsService {
     } else {
       return [];
     }
+  }
+
+  async findEmpConversation(id, from_date, to_date) {
+    const query = await this.conversationRepository
+      .createQueryBuilder('coversationType')
+      .select([
+        'coversationType.conversationTypeId',
+        'coversationType.type',
+        'coversationType.description',
+        'childNotes',
+        'intakeChild',
+      ])
+      .leftJoin('coversationType.conversations', 'childNotes')
+      .leftJoin('childNotes.notesAddedBy', 'notesAddedBy')
+      .leftJoin('childNotes.intakeChild', 'intakeChild')
+      .orderBy({ 'childNotes.createdAt': 'ASC' })
+      .where(
+        'coversationType.isActive = :IsActive AND notesAddedBy.userId = :UserId AND childNotes.isActive = :NotesIsActive',
+        {
+          IsActive: true,
+          NotesIsActive: true,
+          UserId: id,
+        },
+      );
+    if ((from_date && to_date) != undefined) {
+      query
+        .andWhere(
+          `
+          DATE_TRUNC('day', "childNotes"."createdAt") >= :begin`,
+          {
+            begin: from_date,
+          },
+        )
+        .andWhere(
+          `
+          DATE_TRUNC('day', "childNotes"."createdAt")  <= :end`,
+          {
+            end: to_date,
+          },
+        );
+    }
+    return await query.getMany();
   }
 
   async findConversationsWiseNotes(id, convTypeId, from_date, to_date) {

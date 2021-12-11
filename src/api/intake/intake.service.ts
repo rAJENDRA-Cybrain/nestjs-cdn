@@ -75,11 +75,10 @@ export class IntakeService {
   }
 
   public async findAll(id, role): Promise<IntakeEntity[]> {
-    const query: any = await this.intakeRepository
+    const query: any = this.intakeRepository
       .createQueryBuilder('Intake')
       .select([
         'Intake',
-        'Intake.createdAt',
         'serviceCoordinator.serviceCoordinatorId',
         'serviceCoordinator.name',
         'serviceCoordinator.agency',
@@ -90,6 +89,7 @@ export class IntakeService {
         'efcEmployee.lastName',
         'efcEmployee.emailId',
       ])
+      .addSelect('createdAt', 'submitted_date')
       .leftJoinAndSelect('Intake.serviceCoordinator', 'serviceCoordinator')
       .leftJoinAndSelect('serviceCoordinator.agency', 'agency')
       .leftJoinAndSelect('Intake.efcEmployee', 'efcEmployee')
