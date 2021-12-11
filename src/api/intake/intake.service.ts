@@ -89,7 +89,6 @@ export class IntakeService {
         'efcEmployee.lastName',
         'efcEmployee.emailId',
       ])
-      .addSelect('createdAt', 'submitted_date')
       .leftJoinAndSelect('Intake.serviceCoordinator', 'serviceCoordinator')
       .leftJoinAndSelect('serviceCoordinator.agency', 'agency')
       .leftJoinAndSelect('Intake.efcEmployee', 'efcEmployee')
