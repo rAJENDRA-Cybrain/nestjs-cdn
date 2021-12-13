@@ -55,6 +55,9 @@ export class UserEntity {
   @Column({ select: false, default: false })
   fp_req_token_status: boolean;
 
+  @Column({ default: false })
+  first_login_status: boolean;
+
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   @CreateDateColumn()
   public createdAt: Date;

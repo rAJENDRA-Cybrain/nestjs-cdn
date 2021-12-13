@@ -25,12 +25,12 @@ export class ServiceCoordinatorService {
       .leftJoin('serviceCoordinator.agency', 'agency')
       .where(
         'serviceCoordinator.isActive = :ISACTIVE AND serviceCoordinator.isDelete = :ISDELETE AND ' +
-          'serviceCoordinator.emailId = :EMAIL AND agency.agencyId = :AGENCYID',
+          'serviceCoordinator.emailId = :EMAIL',
         {
           ISACTIVE: true,
           ISDELETE: false,
           EMAIL: emailId.toLocaleLowerCase(),
-          AGENCYID: agencyId,
+          //AGENCYID: agencyId, AND agency.agencyId = :AGENCYID
         },
       )
       .getOne();
@@ -92,7 +92,7 @@ export class ServiceCoordinatorService {
         isDelete: false,
         emailId: serviceCoordinator.emailId.toLocaleLowerCase(),
         serviceCoordinatorId: Not(id),
-        agency: { agencyId: Equal(serviceCoordinator.agencyId) },
+        //agency: { agencyId: Equal(serviceCoordinator.agencyId) },
       },
     });
   }

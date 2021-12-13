@@ -256,12 +256,16 @@ export class ManageChildService {
     if (email_log.length > 0) {
       const smtp = await this.smtpDetailsService.findActiveSmtp();
       for (let i = 0; i < email_log.length; i++) {
+        console.log(email_log[i]);
         const mailOptions = {
           email: email_log[i]['emailLogTo'],
           replyTo: email_log[i]['emailLogreplyTo'],
           subject: email_log[i]['emailLogSubject'],
           body: email_log[i]['emailLogBody'],
-          attachments: JSON.parse(email_log[i]['emailLogAttachments'] as any),
+          attachments:
+            email_log[i]['emailLogAttachments'].length > 0
+              ? JSON.parse(email_log[i]['emailLogAttachments'] as any)
+              : [],
         };
         await sendEmail(smtp, mailOptions);
         await this.updateEmailLogsStatus(email_log[i]['emailLogId']);
