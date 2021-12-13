@@ -91,6 +91,7 @@ export class AuthService {
         'user.lastName',
         'user.emailId',
         'user.password',
+        'user.first_login_status',
         'role.roleId',
         'role.role',
       ])

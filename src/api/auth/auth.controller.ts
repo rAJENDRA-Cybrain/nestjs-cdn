@@ -88,7 +88,10 @@ export class AuthController {
         return {
           statusCode: 200,
           message: 'Success.',
-          data: { access_token: await this.authService.generateJWT(payload) },
+          data: {
+            access_token: await this.authService.generateJWT(payload),
+            login_status: findUser.first_login_status,
+          },
         };
       } else {
         throw new UnauthorizedException('InValid Password.');
