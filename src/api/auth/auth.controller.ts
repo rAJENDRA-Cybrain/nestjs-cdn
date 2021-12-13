@@ -21,6 +21,7 @@ import {
   UpdateSignUpDto,
   UpdatePasswordDto,
   ForgotPasswordDto,
+  ForcePasswordDto,
 } from '../../dto';
 import { UserEntity, RoleEntity } from '../../database';
 import { RoleService } from '../role/role.service';
@@ -187,6 +188,52 @@ export class AuthController {
               message: `Password Updated Succesfully.`,
             };
           }
+        }
+      }
+    }
+  }
+
+  @Put('/force-change-password/:userId')
+  @Version('1')
+  @ApiOperation({ summary: 'Force change user password.' })
+  @ApiResponse({
+    status: 201,
+    description: 'successful operation',
+  })
+  public async forceChangePassword(
+    @Param('userId', new ParseUUIDPipe({ version: '4' })) userId: string,
+    @Body() ForcePasswordDto: ForcePasswordDto,
+  ) {
+    const findUser: UserEntity = await this.authService.isUserExistById(userId);
+    if (!findUser) {
+      throw new UnauthorizedException('User Not Exist.');
+    } else {
+      const hashPassword = await this.authService.hashPassword(
+        ForcePasswordDto.newPassword,
+      );
+      const smtp = await this.smtpDetailsService.findActiveSmtp();
+
+      const payload = {
+        userId: findUser.userId,
+        name: `${findUser.firstName} ${findUser.lastName}`,
+        emailId: findUser.emailId,
+        role: findUser.role,
+      };
+
+      if (hashPassword) {
+        const data = await this.authService.forceUpdatePassword(
+          userId,
+          hashPassword,
+        );
+        if (data) {
+          await this.authService.resetPasswordEmail(smtp, findUser);
+          return {
+            statusCode: 200,
+            message: `Password Updated Succesfully.`,
+            data: {
+              access_token: await this.authService.generateJWT(payload),
+            },
+          };
         }
       }
     }

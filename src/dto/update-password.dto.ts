@@ -20,3 +20,18 @@ export class UpdatePasswordDto {
   @ApiProperty({ minLength: 8, default: '' })
   newPassword: string;
 }
+
+export class ForcePasswordDto {
+  @IsString()
+  @ApiProperty({
+    minLength: 5,
+    maxLength: 50,
+    default: 'FCP',
+  })
+  source: string;
+
+  @IsString()
+  @MinLength(8)
+  @ApiProperty({ minLength: 8, default: '' })
+  newPassword: string;
+}

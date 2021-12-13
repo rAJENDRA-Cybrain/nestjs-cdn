@@ -119,10 +119,28 @@ export class AuthService {
     }
   }
   public async isUserExistById(id): Promise<UserEntity> {
-    return await this.userRepository.findOne({
-      userId: Equal(id),
-      status: 'Active',
-    });
+    return await this.userRepository
+      .createQueryBuilder('user')
+      .select([
+        'user.userId',
+        'user.firstName',
+        'user.lastName',
+        'user.emailId',
+        'user.password',
+        'user.first_login_status',
+        'role.roleId',
+        'role.role',
+      ])
+      .leftJoin('user.role', 'role')
+      .where('user.userId = :userId AND user.status = :Status', {
+        userId: id,
+        Status: 'Active',
+      })
+      .getOne();
+    // return await this.userRepository.findOne({
+    //   userId: Equal(id),
+    //   status: 'Active',
+    // });
   }
   public async update(userId: string, updateSignUpDto: UpdateSignUpDto, Role) {
     return await this.userRepository.update(userId, {
@@ -136,6 +154,13 @@ export class AuthService {
   public async updatePassword(userId: string, hash: string): Promise<any> {
     return await this.userRepository.update(userId, {
       password: hash,
+      fp_req_token_status: true,
+    });
+  }
+  public async forceUpdatePassword(userId: string, hash: string): Promise<any> {
+    return await this.userRepository.update(userId, {
+      password: hash,
+      first_login_status: true,
       fp_req_token_status: true,
     });
   }
