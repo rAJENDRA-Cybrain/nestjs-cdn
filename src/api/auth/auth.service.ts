@@ -183,6 +183,7 @@ export class AuthService {
       email: data.emailId,
       subject: `Welcome to  ${smtp.smtpDisplayName}`,
       body: mailer.mailerhtml({
+        smtpDisplayName: smtp.smtpDisplayName,
         emailId: data.emailId,
         password: original_password,
       }),
@@ -240,6 +241,7 @@ export class AuthService {
       email: emailId,
       subject: `${smtp.smtpDisplayName} Reset Password Assistance.`,
       body: fp_mailer.mailerhtml({
+        smtpDisplayName: smtp.smtpDisplayName,
         request_link: `https://childcarecrm.cyberschoolmanager.com/auth/reset-password/${fp_req_token}`,
       }),
       attachments: [],
@@ -252,7 +254,9 @@ export class AuthService {
     const mailOptions = {
       email: userData.emailId,
       subject: `${smtp.smtpDisplayName} Password Has Been Updated.`,
-      body: fp_mailer.resetPasswordThankYouHtml(),
+      body: fp_mailer.resetPasswordThankYouHtml({
+        smtpDisplayName: smtp.smtpDisplayName,
+      }),
       attachments: [],
     };
     await sendEmail(smtp, mailOptions);

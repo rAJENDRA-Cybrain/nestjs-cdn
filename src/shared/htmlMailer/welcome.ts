@@ -35,9 +35,9 @@ export var mailer = {
             `                    style="font-family: arial, helvetica, sans-serif; font-size: 14px; line-height: 20px;">` +
             `                  <p>` +
             `                  <br /> <br />` +
-            `				  <b>Welcome to Childcare CRM,</b><br />` +
+            `				  <b>Welcome to ${responseForEmail.smtpDisplayName},</b><br />` +
             `                  <br />` +
-            `				  Your account has been created successfully. To visit Childcare CRM, please find the new login credentials.` +
+            `				  Your account has been created successfully. To visit ${responseForEmail.smtpDisplayName}, please find the new login credentials.` +
             `				  <br />` +
             `				  <br />` +
             `				  <br />` +
@@ -53,12 +53,12 @@ export var mailer = {
             `                  <br />` +
             `				  ` +
             `				  ` +
-            `                  Thank you for joining Childcare CRM.<br />` +
+            `                  Thank you for joining ${responseForEmail.smtpDisplayName}.<br />` +
             `                  <br />` +
             `				  <br />` +
             `				  <br />` +
             `                  Warm Regards,</p>` +
-            `                  <p>Childcare CRM Team<br />` +
+            `                  <p>${responseForEmail.smtpDisplayName} Team<br />` +
             `` +
             `                  <br />` +
             `                  </p>` +

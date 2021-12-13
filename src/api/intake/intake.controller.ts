@@ -61,7 +61,7 @@ export class IntakeController {
 
     if (isChildrenExist.length > 0) {
       throw new ConflictException(
-        `${createReferralsDto.childName} ${createReferralsDto.childMiddleName} ${createReferralsDto.childLastName}already exist.`,
+        `${createReferralsDto.childName} ${createReferralsDto.childMiddleName} ${createReferralsDto.childLastName} already exist.`,
       );
     } else {
       if (createReferralsDto.isReferal === 'Yes') {
@@ -192,7 +192,7 @@ export class IntakeController {
   @Delete(':intakeId')
   @Version('1')
   @ApiOperation({
-    summary: 'Archive children by intakeId.',
+    summary: 'Delete children by intakeId.',
   })
   @ApiResponse({
     status: 200,
@@ -213,11 +213,36 @@ export class IntakeController {
       if (data.affected > 0) {
         return {
           statusCode: 201,
-          message: `Children Archived Succesfully.`,
+          message: `Children Deleted Succesfully.`,
         };
       } else {
         throw new InternalServerErrorException();
       }
+    }
+  }
+
+  @Put('archive/:intakeId')
+  @Version('1')
+  @ApiOperation({
+    summary: 'Archive children by intakeId.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'successful operation',
+  })
+  async ArchiveChildren(
+    @Param('intakeId', new ParseUUIDPipe({ version: '4' }))
+    id: string,
+  ): Promise<any> {
+    const data = await this.intakeService.archiveChildren(id);
+    console.log(data);
+    if (data.affected > 0) {
+      return {
+        statusCode: 201,
+        message: `Children Archived Succesfully.`,
+      };
+    } else {
+      throw new InternalServerErrorException();
     }
   }
 

@@ -227,6 +227,12 @@ export class IntakeService {
     });
   }
 
+  async archiveChildren(id: string) {
+    return this.intakeRepository.update(id, {
+      isActive: false,
+    });
+  }
+
   public async updateAdditionalChildren(
     id: string,
     data: UpdateAdditionalChildrenDto,
