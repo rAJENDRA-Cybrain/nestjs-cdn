@@ -87,6 +87,48 @@ export class ManageChildService {
     }
   }
 
+  async findArchivedChild(userId: string, role: any) {
+    if (role.role == 'Super Admin') {
+      return await this.intakeRepository.find({
+        relations: [
+          'serviceCoordinator',
+          'serviceCoordinator.agency',
+          'efcEmployee',
+        ],
+        where: { isActive: false, isDelete: false },
+        order: {
+          createdAt: 'DESC',
+        },
+      });
+    }
+    if (role.role == 'Efc Employee') {
+      return await this.intakeRepository.find({
+        relations: [
+          'serviceCoordinator',
+          'serviceCoordinator.agency',
+          'efcEmployee',
+        ],
+        where: { isActive: false, isDelete: false, efcEmployee: Equal(userId) },
+        order: {
+          createdAt: 'DESC',
+        },
+      });
+    }
+    if (role.role == 'Operator') {
+      return await this.intakeRepository.find({
+        relations: [
+          'serviceCoordinator',
+          'serviceCoordinator.agency',
+          'efcEmployee',
+        ],
+        where: { isActive: false, isDelete: false, addedBy: Equal(userId) },
+        order: {
+          createdAt: 'DESC',
+        },
+      });
+    }
+  }
+
   public async save(
     createNotesDto: CreateManageChildNotesDto,
     convData,

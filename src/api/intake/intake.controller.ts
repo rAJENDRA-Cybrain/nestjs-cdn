@@ -235,7 +235,6 @@ export class IntakeController {
     id: string,
   ): Promise<any> {
     const data = await this.intakeService.archiveChildren(id);
-    console.log(data);
     if (data.affected > 0) {
       return {
         statusCode: 201,
