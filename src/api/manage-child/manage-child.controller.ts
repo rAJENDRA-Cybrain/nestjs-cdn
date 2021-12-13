@@ -128,6 +128,33 @@ export class ManageChildController {
     }
   }
 
+  @Get('/archived')
+  @Version('1')
+  @ApiOperation({ summary: 'Get all archived children.' })
+  @ApiResponse({
+    status: 200,
+    description: 'successful operation',
+  })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  public async findArchivedChildren(@Request() req) {
+    const { userId, role } = req.user['payload'];
+    const data = await this.manageChildService.findArchivedChild(userId, role);
+    if (data.length > 0) {
+      return {
+        statusCode: 200,
+        message: `Success.`,
+        data: data,
+      };
+    } else {
+      return {
+        statusCode: 200,
+        message: `No Data Found..`,
+        data: [],
+      };
+    }
+  }
+
   @Get('/notes/:intakeId')
   @Version('1')
   @ApiOperation({ summary: 'Get individual children notes by intakeId.' })
