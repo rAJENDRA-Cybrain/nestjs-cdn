@@ -128,7 +128,7 @@ export class ManageChildController {
     }
   }
 
-  @Get('/archived')
+  @Get('/archived-children')
   @Version('1')
   @ApiOperation({ summary: 'Get all archived children.' })
   @ApiResponse({
