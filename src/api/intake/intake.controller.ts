@@ -213,7 +213,7 @@ export class IntakeController {
       if (data.affected > 0) {
         return {
           statusCode: 201,
-          message: `Children Deleted Succesfully.`,
+          message: `Children deleted succesfully.`,
         };
       } else {
         throw new InternalServerErrorException();
@@ -238,7 +238,7 @@ export class IntakeController {
     if (data.affected > 0) {
       return {
         statusCode: 201,
-        message: `Children Archived Succesfully.`,
+        message: `Children archived succesfully.`,
       };
     } else {
       throw new InternalServerErrorException();

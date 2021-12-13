@@ -143,7 +143,7 @@ export class AgencyController {
     if (isStatusUpdated.affected > 0) {
       return {
         statusCode: 201,
-        message: `Archived succesfully.`,
+        message: `Data deleted succesfully.`,
         data: isStatusUpdated,
       };
     }

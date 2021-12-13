@@ -351,7 +351,7 @@ export class AuthController {
         if (isStatusUpdated.affected > 0) {
           return {
             statusCode: 201,
-            message: `User archived succesfully.`,
+            message: `User deleted succesfully.`,
           };
         }
       }

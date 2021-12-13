@@ -124,7 +124,7 @@ export class RecordConversationController {
     if (data.affected > 0) {
       return {
         statusCode: 201,
-        message: `Archived Succesfully.`,
+        message: `Data deleted succesfully.`,
       };
     } else {
       throw new InternalServerErrorException();
