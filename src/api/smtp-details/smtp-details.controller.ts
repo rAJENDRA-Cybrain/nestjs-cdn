@@ -147,7 +147,7 @@ export class SmtpDetailsController {
       if (isStatusUpdated.affected > 0) {
         return {
           statusCode: 201,
-          message: `Smtp details archived succesfully.`,
+          message: `Smtp details deleted succesfully.`,
         };
       }
     }

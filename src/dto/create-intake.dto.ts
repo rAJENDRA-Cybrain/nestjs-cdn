@@ -82,10 +82,7 @@ export class CreateIntakeDto {
   @IsNotEmpty()
   relationshipToChild: string;
 
-  @IsString()
-  @ApiProperty({ minLength: 0, maxLength: 100, default: '' })
-  @IsNotEmpty()
-  @IsEmail()
+  @ApiPropertyOptional({ minLength: 0, maxLength: 100, default: '' })
   parentEmail: string;
 
   @IsString()
