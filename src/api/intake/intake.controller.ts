@@ -12,6 +12,7 @@ import {
   Delete,
   UseGuards,
   Request,
+  ParseBoolPipe,
 } from '@nestjs/common';
 import { IntakeService } from './intake.service';
 import { ServiceCoordinatorService } from '../service-coordinator/service-coordinator.service';
@@ -221,7 +222,7 @@ export class IntakeController {
     }
   }
 
-  @Put('archive/:intakeId')
+  @Put('archive/:status/:intakeId')
   @Version('1')
   @ApiOperation({
     summary: 'Archive children by intakeId.',
@@ -231,14 +232,17 @@ export class IntakeController {
     description: 'successful operation',
   })
   async ArchiveChildren(
+    @Param('status', new ParseBoolPipe()) status: boolean,
     @Param('intakeId', new ParseUUIDPipe({ version: '4' }))
     id: string,
   ): Promise<any> {
-    const data = await this.intakeService.archiveChildren(id);
+    const data = await this.intakeService.archiveChildren(status, id);
     if (data.affected > 0) {
       return {
         statusCode: 201,
-        message: `Children archived succesfully.`,
+        message: status
+          ? `Child recovered succesfully.`
+          : `Child archived successfully.`,
       };
     } else {
       throw new InternalServerErrorException();

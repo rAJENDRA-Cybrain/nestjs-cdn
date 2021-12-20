@@ -227,9 +227,9 @@ export class IntakeService {
     });
   }
 
-  async archiveChildren(id: string) {
+  async archiveChildren(status: boolean, id: string) {
     return this.intakeRepository.update(id, {
-      isActive: false,
+      isActive: status,
     });
   }
 
