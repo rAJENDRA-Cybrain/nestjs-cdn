@@ -66,9 +66,6 @@ export class IntakeController {
         isExist: true,
         data: isChildrenExist,
       };
-      //   throw new ConflictException(
-      //     `${createReferralsDto.childName} ${createReferralsDto.childMiddleName} ${createReferralsDto.childLastName} already exist.`,
-      //   );
     } else {
       if (createReferralsDto.isReferal === 'Yes') {
         this.serviceCoordinator =
@@ -159,41 +156,41 @@ export class IntakeController {
     intakeId: string,
     @Body() updateIntakeDto: UpdateIntakeDto,
   ) {
-    const isChildExistByOtherId: IntakeEntity =
-      await this.intakeService.isChildExistByOtherId(intakeId, updateIntakeDto);
+    // const isChildExistByOtherId: IntakeEntity =
+    //   await this.intakeService.isChildExistByOtherId(intakeId, updateIntakeDto);
 
-    if (isChildExistByOtherId) {
-      throw new ConflictException(
-        `${updateIntakeDto.childName} ${updateIntakeDto.childMiddleName} ${updateIntakeDto.childLastName} already exist.`,
-      );
-    } else {
-      if (updateIntakeDto.isReferal === 'Yes') {
-        this.serviceCoordinator =
-          await this.serviceCoordinatorService.isServiceCoExistById(
-            updateIntakeDto.serviceCoordinatorId,
-          );
-      }
-      if (updateIntakeDto.efcEmployeeId) {
-        this.efcEmployee = await this.intakeService.findEfcEmployee(
-          updateIntakeDto.efcEmployeeId,
+    // if (isChildExistByOtherId) {
+    //   throw new ConflictException(
+    //     `${updateIntakeDto.childName} ${updateIntakeDto.childMiddleName} ${updateIntakeDto.childLastName} already exist.`,
+    //   );
+    // } else {
+    if (updateIntakeDto.isReferal === 'Yes') {
+      this.serviceCoordinator =
+        await this.serviceCoordinatorService.isServiceCoExistById(
+          updateIntakeDto.serviceCoordinatorId,
         );
-      }
-      const data = await this.intakeService.update(
-        intakeId,
-        updateIntakeDto,
-        this.serviceCoordinator,
-        this.efcEmployee,
-      );
-
-      if (data.affected > 0) {
-        return {
-          statusCode: 201,
-          message: `Updated Succesfully.`,
-        };
-      } else {
-        throw new InternalServerErrorException();
-      }
     }
+    if (updateIntakeDto.efcEmployeeId) {
+      this.efcEmployee = await this.intakeService.findEfcEmployee(
+        updateIntakeDto.efcEmployeeId,
+      );
+    }
+    const data = await this.intakeService.update(
+      intakeId,
+      updateIntakeDto,
+      this.serviceCoordinator,
+      this.efcEmployee,
+    );
+
+    if (data.affected > 0) {
+      return {
+        statusCode: 201,
+        message: `Updated Succesfully.`,
+      };
+    } else {
+      throw new InternalServerErrorException();
+    }
+    //}
   }
 
   @Delete(':intakeId')
