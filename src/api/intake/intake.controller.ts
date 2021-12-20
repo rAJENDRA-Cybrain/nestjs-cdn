@@ -60,10 +60,15 @@ export class IntakeController {
     const isChildrenExist: IntakeEntity[] =
       await this.intakeService.isChildExistForReferrals(createReferralsDto);
 
-    if (isChildrenExist.length > 0) {
-      throw new ConflictException(
-        `${createReferralsDto.childName} ${createReferralsDto.childMiddleName} ${createReferralsDto.childLastName} already exist.`,
-      );
+    if (isChildrenExist.length > 0 && !createReferralsDto.isForced) {
+      return {
+        statusCode: 200,
+        isExist: true,
+        data: isChildrenExist,
+      };
+      //   throw new ConflictException(
+      //     `${createReferralsDto.childName} ${createReferralsDto.childMiddleName} ${createReferralsDto.childLastName} already exist.`,
+      //   );
     } else {
       if (createReferralsDto.isReferal === 'Yes') {
         this.serviceCoordinator =
@@ -104,6 +109,7 @@ export class IntakeController {
         if (data) {
           return {
             statusCode: 200,
+            isExist: false,
             message: `Referral saved succesfully.`,
           };
         }

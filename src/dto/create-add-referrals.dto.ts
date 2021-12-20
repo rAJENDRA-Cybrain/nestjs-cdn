@@ -125,4 +125,8 @@ export class CreateReferralsDto {
   @IsUUID()
   @ApiProperty({ minLength: 0, maxLength: 100, default: '' })
   addedBy: string;
+
+  @IsNotEmpty()
+  @ApiProperty({ default: false })
+  isForced: boolean;
 }
