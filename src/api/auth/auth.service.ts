@@ -1,6 +1,6 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from 'src/database';
+import { IntakeEntity, UserEntity } from 'src/database';
 import { Equal, Not, Repository } from 'typeorm';
 import { SignUpDto, UpdateSignUpDto } from '../../dto';
 import * as bcrypt from 'bcrypt';
@@ -14,6 +14,8 @@ export class AuthService {
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
+    @InjectRepository(IntakeEntity)
+    private intakeRepository: Repository<IntakeEntity>,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -28,7 +30,7 @@ export class AuthService {
   }
 
   public async findAllActiveUser(): Promise<UserEntity[]> {
-    return await this.userRepository
+    const userData: UserEntity[] = await this.userRepository
       .createQueryBuilder('user')
       .select([
         'user.userId',
@@ -45,6 +47,30 @@ export class AuthService {
       })
       .orderBy({ 'user.createdAt': 'DESC' })
       .getMany();
+
+    if (userData.length > 0) {
+      for (let i = 0; i < userData.length; i++) {
+        userData[i]['count'] = await (
+          await this.checkUserIntakes(userData[i].userId)
+        ).length;
+      }
+    }
+
+    return userData;
+  }
+
+  public async checkUserIntakes(userId) {
+    const query = await this.intakeRepository
+      .createQueryBuilder('Intake')
+      .select(['Intake', 'efcEmployee.userId'])
+      .leftJoin('Intake.efcEmployee', 'efcEmployee')
+      .orderBy({ 'Intake.createdAt': 'ASC' })
+      .where('Intake.isActive = :IsActive AND efcEmployee.userId = :userId', {
+        IsActive: true,
+        userId: userId,
+      });
+
+    return await query.getMany();
   }
 
   public async findAllActiveEfcEmployeeUser(): Promise<UserEntity[]> {

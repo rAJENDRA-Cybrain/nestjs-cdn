@@ -11,7 +11,6 @@ import {
 } from '../../database';
 import { GenerateHtmlToPdf } from '../../dto';
 import * as puppeteer from 'puppeteer';
-import { Readable } from 'stream';
 import { AuthService } from '../auth/auth.service';
 
 export interface PDFRenderOptions {
