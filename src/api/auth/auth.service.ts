@@ -19,6 +19,23 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
+  public async reAssignEFCEmployee(from, to) {
+    const userIntakes = await this.checkUserIntakes(from);
+    const findUser: any = await this.isUserExistById(to);
+    if (findUser.role?.role === 'Efc Employee') {
+      if (userIntakes.length > 0) {
+        for (let index = 0; index < userIntakes.length; index++) {
+          await this.intakeRepository.update(userIntakes[index].intakeId, {
+            efcEmployee: findUser,
+          });
+        }
+      }
+      return true;
+    } else {
+      throw new ConflictException('Assigned user is not an efc employee.');
+    }
+  }
+
   public async save(signUpDto: SignUpDto, role) {
     return this.userRepository.save({
       firstName: signUpDto.firstName,

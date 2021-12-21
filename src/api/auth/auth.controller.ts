@@ -447,4 +447,28 @@ export class AuthController {
       }
     }
   }
+
+  @Put('/:from_userid/:to_userid/reassign-efcemployee')
+  @Version('1')
+  @ApiOperation({ summary: 'ReAssign Efc Employee.' })
+  @ApiResponse({
+    status: 201,
+    description: 'successful operation',
+  })
+  public async ReAssignEFCEmployee(
+    @Param('from_userid', new ParseUUIDPipe({ version: '4' }))
+    from_userid: string,
+    @Param('to_userid', new ParseUUIDPipe({ version: '4' })) to_userid: string,
+  ) {
+    const data = await this.authService.reAssignEFCEmployee(
+      from_userid,
+      to_userid,
+    );
+    if (data) {
+      return {
+        statusCode: 200,
+        message: `Re-Assignment of efc employee has been updated succesfully.`,
+      };
+    }
+  }
 }
