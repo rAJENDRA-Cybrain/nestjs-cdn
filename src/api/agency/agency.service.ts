@@ -59,10 +59,16 @@ export class AgencyService {
   async archiveAgency(id: string) {
     const data = await this.isAssignedToAnyIntake(id);
     const Coodinator: any = await this.isServiceCoOrdinatorAssigned(id);
-    if (data.length && Coodinator.includeServiceCoordinator.length) {
-      throw new ConflictException(
-        'System Restricted. Agency already assigned to children.',
-      );
+
+    if (data.length || Coodinator.includeServiceCoordinator.length) {
+      let msg = '';
+      if (data.length) {
+        msg = 'System Restricted. Agency already assigned to children.';
+      } else {
+        msg =
+          'System Restricted. Agency already assigned to Service Coordinator.';
+      }
+      throw new ConflictException(msg);
     } else {
       return await this.agencyRepository.update(id, {
         isActive: false,

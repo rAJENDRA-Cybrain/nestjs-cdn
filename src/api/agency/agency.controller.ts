@@ -140,7 +140,7 @@ export class AgencyController {
     agencyId: string,
   ) {
     const isStatusUpdated = await this.agencyService.archiveAgency(agencyId);
-    if (isStatusUpdated.affected > 0) {
+    if (isStatusUpdated) {
       return {
         statusCode: 201,
         message: `Data deleted succesfully.`,
