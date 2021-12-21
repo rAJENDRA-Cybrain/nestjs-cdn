@@ -2,14 +2,16 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AgencyEntity, IntakeEntity } from 'src/database';
 import { CreateAgencyDto, UpdateAgencyDto } from 'src/dto';
+//import { ServiceCoordinatorService } from '../service-coordinator/service-coordinator.service';
 import { Not, Repository } from 'typeorm';
+
 @Injectable()
 export class AgencyService {
   constructor(
     @InjectRepository(AgencyEntity)
     private agencyRepository: Repository<AgencyEntity>,
     @InjectRepository(IntakeEntity)
-    private intakeRepository: Repository<IntakeEntity>,
+    private intakeRepository: Repository<IntakeEntity>, // private _serviceCoOrdinator: ServiceCoordinatorService,
   ) {}
 
   public async findAllAgency(): Promise<AgencyEntity[]> {
@@ -56,7 +58,8 @@ export class AgencyService {
 
   async archiveAgency(id: string) {
     const data = await this.isAssignedToAnyIntake(id);
-    if (data.length) {
+    const Coodinator: any = await this.isServiceCoOrdinatorAssigned(id);
+    if (data.length && Coodinator.includeServiceCoordinator.length) {
       throw new ConflictException(
         'System Restricted. Agency already assigned to children.',
       );
@@ -66,6 +69,23 @@ export class AgencyService {
         isDelete: true,
       });
     }
+  }
+
+  async isServiceCoOrdinatorAssigned(id) {
+    const query = await this.agencyRepository
+      .createQueryBuilder('Agency')
+      .select(['Agency', 'service'])
+      .leftJoin('Agency.includeServiceCoordinator', 'service')
+      .where(
+        'Agency.isActive = :IsActive AND Agency.agencyId = :agencyId AND service.isActive = :s_IsActive',
+        {
+          IsActive: true,
+          agencyId: id,
+          s_IsActive: true,
+        },
+      );
+
+    return await query.getOne();
   }
 
   async isAssignedToAnyIntake(id) {
