@@ -255,6 +255,11 @@ export class IntakeEntity {
   @Length(0, 20)
   epContinueStatus: string;
 
+  @Column({ nullable: true, default: '' })
+  @IsString()
+  @Length(0, 20)
+  epExitReason: string;
+
   @Column({ nullable: true, type: 'date' })
   epCompletedDate: Date;
 

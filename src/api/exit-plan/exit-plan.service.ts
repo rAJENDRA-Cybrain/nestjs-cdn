@@ -58,6 +58,7 @@ export class ExitPlanService {
       epQuestionToParentThirdAns: dto.epQuestionToParentThirdAns,
       epQuestionToParentThirdAAns: dto.epQuestionToParentThirdAAns,
       epQuestionToParentFourthAns: dto.epQuestionToParentFourthAns,
+      epExitReason: dto.epExitReason,
       epContinueStatus: dto.epContinueStatus,
       epCompletedDate: dto.epCompletedDate,
     });

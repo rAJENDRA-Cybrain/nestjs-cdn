@@ -44,6 +44,10 @@ export class UpdateExitPlanDto {
 
   @IsString()
   @ApiProperty({ minLength: 0, maxLength: 100, default: '' })
+  epExitReason: string;
+
+  @IsString()
+  @ApiProperty({ minLength: 0, maxLength: 100, default: '' })
   epContinueStatus: string;
 
   @ApiProperty({ minLength: 0, maxLength: 50, default: null })
