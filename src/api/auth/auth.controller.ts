@@ -57,7 +57,9 @@ export class AuthController {
       auth_key,
     );
     if (!findUser) {
-      throw new UnauthorizedException('InValid User.');
+      throw new UnauthorizedException(
+        'Authentication Failed.  Please retry with a correct username and password.',
+      );
     } else {
       const checkPassword: boolean = await this.authService.comparePassword(
         auth_credentials,
