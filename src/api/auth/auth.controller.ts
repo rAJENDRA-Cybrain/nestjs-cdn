@@ -136,7 +136,7 @@ export class AuthController {
         throw new BadRequestException('Please provide valid roleId');
       }
     } else {
-      throw new ConflictException('User Already Exists');
+      throw new ConflictException('User already exists');
     }
   }
 

@@ -266,9 +266,7 @@ export class IntakeController {
       await this.intakeService.isAdditionalChildrenExist(addChildrenDto);
 
     if (findAddChildrenExist) {
-      throw new ConflictException(
-        `${addChildrenDto.childName} already exists`,
-      );
+      throw new ConflictException(`${addChildrenDto.childName} already exists`);
     }
     const data: AdditionalChildrenEntity =
       await this.intakeService.saveAdditionalChildren(addChildrenDto);

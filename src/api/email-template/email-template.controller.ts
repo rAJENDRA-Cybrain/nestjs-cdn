@@ -53,9 +53,7 @@ export class EmailTemplateController {
     @UploadedFiles() files: Express.Multer.File,
   ) {
     if (await this.emailTemplateService.findIsExist(template)) {
-      throw new ConflictException(
-        `${template.templateTitle} already exists`,
-      );
+      throw new ConflictException(`${template.templateTitle} already exists`);
     } else {
       const data = await this.emailTemplateService.saveEmailTemplate(template);
       if (data) {
@@ -162,9 +160,7 @@ export class EmailTemplateController {
         template,
       );
     if (isExist) {
-      throw new ConflictException(
-        `${template.templateTitle} already exists`,
-      );
+      throw new ConflictException(`${template.templateTitle} already exists`);
     } else {
       const updateEmailTemp =
         await this.emailTemplateService.updateEmailTemplate(
