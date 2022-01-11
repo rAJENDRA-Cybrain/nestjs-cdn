@@ -67,9 +67,13 @@ export class AuthService {
 
     if (userData.length > 0) {
       for (let i = 0; i < userData.length; i++) {
-        userData[i]['count'] = await (
-          await this.checkUserIntakes(userData[i].userId)
-        ).length;
+        let Intake = [];
+        Intake = await this.checkUserIntakes(userData[i].userId);
+        userData[i]['Intake'] = Intake;
+        userData[i]['count'] = Intake.length;
+        // userData[i]['count'] = await (
+        //   await this.checkUserIntakes(userData[i].userId)
+        // ).length;
       }
     }
 
@@ -79,7 +83,12 @@ export class AuthService {
   public async checkUserIntakes(userId) {
     const query = await this.intakeRepository
       .createQueryBuilder('Intake')
-      .select(['Intake', 'efcEmployee.userId'])
+      .select([
+        'Intake.intakeId',
+        'Intake.childName',
+        'Intake.childMiddleName',
+        'Intake.childLastName',
+      ])
       .leftJoin('Intake.efcEmployee', 'efcEmployee')
       .orderBy({ 'Intake.createdAt': 'ASC' })
       .where('Intake.isActive = :IsActive AND efcEmployee.userId = :userId', {
