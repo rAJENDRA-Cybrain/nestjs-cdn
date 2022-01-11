@@ -69,7 +69,7 @@ export class AuthService {
       for (let i = 0; i < userData.length; i++) {
         let Intake = [];
         Intake = await this.checkUserIntakes(userData[i].userId);
-        userData[i]['Intake'] = Intake;
+        userData[i]['intake'] = Intake;
         userData[i]['count'] = Intake.length;
         // userData[i]['count'] = await (
         //   await this.checkUserIntakes(userData[i].userId)
@@ -81,7 +81,7 @@ export class AuthService {
   }
 
   public async checkUserIntakes(userId) {
-    const query = await this.intakeRepository
+    const query = this.intakeRepository
       .createQueryBuilder('Intake')
       .select([
         'Intake.intakeId',

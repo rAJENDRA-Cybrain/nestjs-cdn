@@ -58,7 +58,7 @@ export class AgencyController {
     );
     if (isExist) {
       throw new ConflictException(
-        `${createAgencyDto.agencyName} is already exist.`,
+        `${createAgencyDto.agencyName} already exists`,
       );
     }
     const data: AgencyEntity = await this.agencyService.save(createAgencyDto);

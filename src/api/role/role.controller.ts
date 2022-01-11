@@ -55,7 +55,7 @@ export class RoleController {
     const { role } = createRoleDto;
     const isRoleExist: RoleEntity = await this.roleService.isRoleExist(role);
     if (isRoleExist) {
-      throw new ConflictException(`${role} is already exist.`);
+      throw new ConflictException(`${role} already exists`);
     }
     const data: RoleEntity = await this.roleService.save(createRoleDto);
     if (data) {

@@ -54,7 +54,7 @@ export class EmailTemplateController {
   ) {
     if (await this.emailTemplateService.findIsExist(template)) {
       throw new ConflictException(
-        `${template.templateTitle} is already exist.`,
+        `${template.templateTitle} already exists`,
       );
     } else {
       const data = await this.emailTemplateService.saveEmailTemplate(template);
@@ -163,7 +163,7 @@ export class EmailTemplateController {
       );
     if (isExist) {
       throw new ConflictException(
-        `${template.templateTitle} is already exist.`,
+        `${template.templateTitle} already exists`,
       );
     } else {
       const updateEmailTemp =

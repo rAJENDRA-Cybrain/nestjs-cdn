@@ -37,7 +37,7 @@ export class SmtpDetailsController {
       await this.smtpDetailsService.isSmtpDetailsExist(createSmtpDetailDto);
     if (isExist) {
       throw new ConflictException(
-        `${createSmtpDetailDto.smtpUserName} is already exist.`,
+        `${createSmtpDetailDto.smtpUserName} already exists`,
       );
     } else {
       const data: SmtpDetailEntity = await this.smtpDetailsService.save(

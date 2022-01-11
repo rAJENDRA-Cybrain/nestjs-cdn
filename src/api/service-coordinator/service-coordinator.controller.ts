@@ -43,7 +43,7 @@ export class ServiceCoordinatorController {
       );
     if (isSerCoordinatorExist) {
       throw new ConflictException(
-        `${servCoordinatorDto.emailId} is already exist.`,
+        `${servCoordinatorDto.emailId} already exists`,
       );
     }
     const data: ServiceCoordinatorEntity =
@@ -102,7 +102,7 @@ export class ServiceCoordinatorController {
       );
     console.log(isExist);
     if (isExist) {
-      throw new ConflictException(`${updateData.name} is already exist.`);
+      throw new ConflictException(`${updateData.name} already exists`);
     }
     const data = await this.serviceCoordinatorService.update(
       serviceCoordinatorId,

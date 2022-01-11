@@ -267,7 +267,7 @@ export class IntakeController {
 
     if (findAddChildrenExist) {
       throw new ConflictException(
-        `${addChildrenDto.childName} is already exist.`,
+        `${addChildrenDto.childName} already exists`,
       );
     }
     const data: AdditionalChildrenEntity =
