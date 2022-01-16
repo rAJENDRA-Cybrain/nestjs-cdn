@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsString, IsUUID, MinLength } from 'class-validator';
+import { IsArray, IsEmail, IsString, IsUUID, MinLength } from 'class-validator';
 
 export class SignUpDto {
   @IsString()
@@ -30,4 +30,23 @@ export class ForgotPasswordDto {
   @IsEmail()
   @ApiProperty({ minLength: 0, maxLength: 100, default: '' })
   emailId: string;
+}
+
+export class Format {
+  @ApiProperty({ default: '' })
+  @IsUUID()
+  intakeId: string;
+
+  @ApiProperty({ default: '' })
+  @IsUUID()
+  efcEmployeeId: string;
+}
+export class BulkReAssignIntakes {
+  @ApiProperty({ default: '' })
+  @IsUUID()
+  userId: string;
+
+  @ApiProperty({ type: Format, isArray: true })
+  @IsArray()
+  reassignChilds: Array<Format>;
 }

@@ -2,7 +2,7 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IntakeEntity, UserEntity } from 'src/database';
 import { Equal, Not, Repository } from 'typeorm';
-import { SignUpDto, UpdateSignUpDto } from '../../dto';
+import { BulkReAssignIntakes, SignUpDto, UpdateSignUpDto } from '../../dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { sendEmail } from 'src/shared/node-mailer';
@@ -19,6 +19,22 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
+  public async reAssignChildren(data: BulkReAssignIntakes) {
+    const { reassignChilds } = data;
+    if (reassignChilds.length > 0) {
+      for (let index = 0; index < reassignChilds.length; index++) {
+        const findUser: any = await this.isUserExistById(
+          reassignChilds[index].efcEmployeeId,
+        );
+        await this.intakeRepository.update(reassignChilds[index].intakeId, {
+          efcEmployee: findUser,
+        });
+      }
+      return true;
+    } else {
+      throw new ConflictException('Please assign childrens.');
+    }
+  }
   public async reAssignEFCEmployee(from, to) {
     const userIntakes = await this.checkUserIntakes(from);
     const findUser: any = await this.isUserExistById(to);
@@ -107,6 +123,7 @@ export class AuthService {
         'user.firstName',
         'user.lastName',
         'user.emailId',
+        'role.role',
       ])
       .leftJoin('user.role', 'role')
       .where('user.status = :status AND role.roleId =:RoleId', {
@@ -258,7 +275,7 @@ export class AuthService {
       if (!this.comparePassword(password, findUser.password)) return null;
       return findUser;
     } catch (err) {
-      console.log(err);
+      throw new Error(err);
     }
   }
 

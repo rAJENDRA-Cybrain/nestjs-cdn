@@ -21,6 +21,7 @@ import {
   UpdateSignUpDto,
   UpdatePasswordDto,
   ForgotPasswordDto,
+  BulkReAssignIntakes,
   ForcePasswordDto,
 } from '../../dto';
 import { UserEntity, RoleEntity } from '../../database';
@@ -466,6 +467,27 @@ export class AuthController {
       from_userid,
       to_userid,
     );
+    if (data) {
+      return {
+        statusCode: 200,
+        message: `Re-Assignment of efc employee has been updated succesfully.`,
+      };
+    }
+  }
+
+  @Put('/reassign-children-to-another-efc-employee/:userId')
+  @Version('1')
+  @ApiOperation({ summary: 'ReAssign Children.' })
+  @ApiResponse({
+    status: 201,
+    description: 'successful operation',
+  })
+  public async ReAssignChildrenToAnotherEmployee(
+    @Param('userId', new ParseUUIDPipe({ version: '4' })) userId: string,
+    @Body() dto: BulkReAssignIntakes,
+  ) {
+    console.log(userId);
+    const data = await this.authService.reAssignChildren(dto);
     if (data) {
       return {
         statusCode: 200,
