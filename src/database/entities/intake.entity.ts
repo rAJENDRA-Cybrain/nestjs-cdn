@@ -118,6 +118,11 @@ export class IntakeEntity {
   @Length(0, 100)
   parentEmail: string;
 
+  @Column({ nullable: true, default: '' })
+  @IsString()
+  @Length(0, 100)
+  parentSecondaryEmail: string;
+
   @Column()
   @IsString()
   @Length(0, 500)

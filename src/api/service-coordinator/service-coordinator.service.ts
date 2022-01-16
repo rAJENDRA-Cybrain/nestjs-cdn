@@ -76,7 +76,7 @@ export class ServiceCoordinatorService {
         },
       )
       .orderBy({
-        'serviceCoordinator.createdAt': 'ASC',
+        'LOWER(serviceCoordinator.name)': 'ASC',
       })
       .getMany();
   }

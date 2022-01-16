@@ -68,10 +68,23 @@ export class CreateReferralsDto {
   @ApiPropertyOptional({ minLength: 0, maxLength: 100, default: '' })
   parentEmail: string;
 
+  @ApiPropertyOptional({ minLength: 0, maxLength: 100, default: '' })
+  parentSecondaryEmail: string;
+
   @IsString()
   @ApiProperty({ minLength: 0, maxLength: 14, default: '' })
   @IsNotEmpty()
   homePhnNo: string;
+
+  @IsString()
+  @ApiPropertyOptional({ minLength: 0, maxLength: 14, default: '' })
+  @IsNotEmpty()
+  cellPhnNo: string;
+
+  @IsString()
+  @ApiPropertyOptional({ minLength: 0, maxLength: 14, default: '' })
+  @IsNotEmpty()
+  workPhnNo: string;
 
   @IsString()
   @ApiProperty({ minLength: 0, maxLength: 100, default: 'Yes' })
