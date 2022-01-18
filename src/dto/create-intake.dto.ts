@@ -111,14 +111,11 @@ export class CreateIntakeDto {
 
   @IsString()
   @ApiProperty({ minLength: 0, maxLength: 14, default: '' })
-  @IsNotEmpty()
   homePhnNo: string;
 
-  @IsString()
   @ApiPropertyOptional({ minLength: 0, maxLength: 14, default: '' })
   cellPhnNo: string;
 
-  @IsString()
   @ApiPropertyOptional({ minLength: 0, maxLength: 14, default: '' })
   workPhnNo: string;
 

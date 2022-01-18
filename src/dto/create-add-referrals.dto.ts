@@ -78,12 +78,10 @@ export class CreateReferralsDto {
 
   @IsString()
   @ApiPropertyOptional({ minLength: 0, maxLength: 14, default: '' })
-  @IsNotEmpty()
   cellPhnNo: string;
 
   @IsString()
   @ApiPropertyOptional({ minLength: 0, maxLength: 14, default: '' })
-  @IsNotEmpty()
   workPhnNo: string;
 
   @IsString()
