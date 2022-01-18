@@ -25,13 +25,19 @@ export class IntakeService {
   async isChildExistForReferrals(
     CreateReferralsDto: CreateReferralsDto,
   ): Promise<IntakeEntity[]> {
-    return await this.intakeRepository.find({
-      childName: CreateReferralsDto.childName,
-      childLastName: CreateReferralsDto.childLastName,
-      dateOfBirth: CreateReferralsDto.dateOfBirth,
-      isActive: true,
-      isDelete: false,
-    });
+    return await this.intakeRepository
+      .createQueryBuilder('Intake')
+      .where(
+        'LOWER(Intake.childName) = LOWER(:childName) AND LOWER(Intake.childLastName) =  LOWER(:childLastName) AND Intake.dateOfBirth = :dateOfBirth AND Intake.isActive = :isActive AND Intake.isDelete = :isDelete',
+        {
+          childName: CreateReferralsDto.childName.toLowerCase(),
+          childLastName: CreateReferralsDto.childLastName.toLowerCase(),
+          dateOfBirth: CreateReferralsDto.dateOfBirth,
+          isActive: true,
+          isDelete: false,
+        },
+      )
+      .getMany();
   }
 
   async findEfcEmployee(id) {
