@@ -99,13 +99,7 @@ export class AuthService {
   public async checkUserIntakes(userId) {
     const query = this.intakeRepository
       .createQueryBuilder('Intake')
-      .select([
-        'Intake.intakeId',
-        'Intake.childName',
-        'Intake.childMiddleName',
-        'Intake.childLastName',
-      ])
-      .leftJoin('Intake.efcEmployee', 'efcEmployee')
+      .leftJoinAndSelect('Intake.efcEmployee', 'efcEmployee')
       .orderBy({ 'Intake.createdAt': 'ASC' })
       .where('Intake.isActive = :IsActive AND efcEmployee.userId = :userId', {
         IsActive: true,

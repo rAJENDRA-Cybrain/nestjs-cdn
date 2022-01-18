@@ -131,9 +131,7 @@ export class CreateIntakeDto {
   @ApiPropertyOptional({ minLength: 0, maxLength: 100, default: [] })
   reasonForReferal: Array<string>;
 
-  @IsString()
   @ApiProperty({ minLength: 0, maxLength: 100, default: '' })
-  @IsNotEmpty()
   earlyStartServices: string;
 
   @IsString()
