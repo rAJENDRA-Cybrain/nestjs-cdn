@@ -20,6 +20,26 @@ export class UpdateExitPlanDto {
 
   @IsString()
   @ApiProperty({ minLength: 0, maxLength: 3, default: '' })
+  tpQuestionToParentOneAns: string;
+
+  @IsString()
+  @ApiProperty({ minLength: 0, maxLength: 3, default: '' })
+  tpQuestionToParentTwoAns: string;
+
+  @IsString()
+  @ApiProperty({ minLength: 0, maxLength: 3, default: '' })
+  tpQuestionToParentThirdAns: string;
+
+  @IsString()
+  @ApiProperty({ minLength: 0, maxLength: 3, default: '' })
+  tpQuestionToParentThirdAAns: string;
+
+  @IsString()
+  @ApiProperty({ minLength: 0, maxLength: 3, default: '' })
+  tpQuestionToParentFourthAns: string;
+
+  @IsString()
+  @ApiProperty({ minLength: 0, maxLength: 3, default: '' })
   isEligibleForKERN: string;
 
   @IsString()

@@ -96,6 +96,10 @@ export class CreateReferralsDto {
   otherLang: string;
 
   @IsString()
+  @ApiPropertyOptional({ minLength: 0, maxLength: 100, default: '' })
+  otherLanguage: string;
+
+  @IsString()
   @ApiProperty({ minLength: 0, maxLength: 200, default: '' })
   @IsNotEmpty()
   state: string;

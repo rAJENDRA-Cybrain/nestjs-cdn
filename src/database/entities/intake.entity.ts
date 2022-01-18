@@ -89,6 +89,11 @@ export class IntakeEntity {
   @Length(0, 200)
   otherLang: string;
 
+  @Column({ nullable: true })
+  @IsString()
+  @Length(0, 200)
+  otherLanguage: string;
+
   @Column()
   @IsString()
   @Length(0, 500)

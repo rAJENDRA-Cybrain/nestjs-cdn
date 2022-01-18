@@ -66,6 +66,10 @@ export class CreateIntakeDto {
   @ApiPropertyOptional({ minLength: 0, maxLength: 100, default: '' })
   otherLang: string;
 
+  @IsString()
+  @ApiPropertyOptional({ minLength: 0, maxLength: 100, default: '' })
+  otherLanguage: string;
+
   // parent Details
   @IsString()
   @ApiProperty({ minLength: 0, maxLength: 100, default: '' })
