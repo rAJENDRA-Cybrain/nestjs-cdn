@@ -35,7 +35,8 @@ import {
   AdditionalChildrenEntity,
 } from '../../database';
 import { sendEmail } from 'src/shared/node-mailer';
-import { mailer } from 'src/shared/htmlMailer/early-intake';
+import { mailer } from 'src/shared/htmlMailer/early-start-intake-template';
+
 import { SmtpDetailsService } from '../smtp-details/smtp-details.service';
 import { AuthGuard } from '@nestjs/passport';
 @Controller('intake-children')
@@ -96,7 +97,10 @@ export class IntakeController {
         const mailOptions = {
           email: data.parentEmail,
           subject: 'Welcome to EFC Early Start Family Resource Center',
-          body: mailer.mailerhtml(EmailData),
+          body:
+            createReferralsDto.otherLanguage === 'Spanish'
+              ? mailer.spanish()
+              : mailer.english(),
           replyTo: EfcEmployee.emailId,
           attachments: [],
         };
