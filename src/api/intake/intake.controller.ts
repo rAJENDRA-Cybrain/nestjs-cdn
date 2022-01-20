@@ -94,16 +94,18 @@ export class IntakeController {
           childName: `${data.childName} ${data.childMiddleName} ${data.childLastName}`,
           parentsName: data.parentName,
         };
+        const email_body =
+          createReferralsDto.otherLanguage === 'Spanish'
+            ? mailer.spanish()
+            : mailer.english();
         const mailOptions = {
           email: data.parentEmail,
           subject: 'Welcome to EFC Early Start Family Resource Center',
-          body:
-            createReferralsDto.otherLanguage === 'Spanish'
-              ? mailer.spanish()
-              : mailer.english(),
+          body: email_body,
           replyTo: EfcEmployee.emailId,
           attachments: [],
         };
+
         if (data.parentEmail != '' || null || undefined) {
           await sendEmail(smtp, mailOptions);
         }

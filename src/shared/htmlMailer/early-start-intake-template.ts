@@ -18,8 +18,8 @@ export var mailer = {
         `                <img src="https://childcarecrm.cyberschoolmanager.com/assets/images/logo_family.png">`+
         `            </div>`+
         `            <div style="float: right; width: 68%;text-align: right;margin-top: 25px;">`+
-        `                <h3 style="color: #0094df;font-size: 36px;margin: 0;">Exceptional Family Resource Center</h3>`+
-        `                <p style="color: #0094df;line-height: 29px;font-size: 23px;margin-top: 0;">`+
+        `                <h3 style="color: #0094df;font-size: 28px;margin: 0;">Exceptional Family Resource Center</h3>`+
+        `                <p style="color: #0094df;line-height: 29px;font-size: 18px;margin-top: 0;">`+
         `                    <i>A Center for Families of Children with Developmental Disabilities<br>`+
         `                        A 501 © 3 Not-for-Profit Public Charitable Organization</i>`+
         `                </p>`+
@@ -102,8 +102,8 @@ export var mailer = {
       `                <img src="https://childcarecrm.cyberschoolmanager.com/assets/images/logo_family.png">`+
       `            </div>`+
       `            <div style="float: right;width: 68%;text-align: right;margin-top: 25px;">`+
-      `                <h3 style="color: #0094df;font-size: 42px;margin: 0;">Exceptional Family Resource Center</h3>`+
-      `                <p style=" color: #0094df;line-height: 29px;font-size: 24px;margin-top: 0;"><i>A Center for Families of`+
+      `                <h3 style="color: #0094df;font-size: 28px;margin: 0;">Exceptional Family Resource Center</h3>`+
+      `                <p style=" color: #0094df;line-height: 29px;font-size: 18px;margin-top: 0;"><i>A Center for Families of`+
       `                        Children with Developmental Disabilities<br>`+
       `                        A 501 © 3 Not-for-Profit Public Charitable Organization</i></p>`+
       `            </div>`+
