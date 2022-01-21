@@ -27,6 +27,21 @@ export class IntakeService {
   ): Promise<IntakeEntity[]> {
     return await this.intakeRepository
       .createQueryBuilder('Intake')
+      .select([
+        'Intake',
+        'serviceCoordinator.serviceCoordinatorId',
+        'serviceCoordinator.name',
+        'serviceCoordinator.agency',
+        'serviceCoordinator.phoneNo',
+        'serviceCoordinator.emailId',
+        'efcEmployee.userId',
+        'efcEmployee.firstName',
+        'efcEmployee.lastName',
+        'efcEmployee.emailId',
+      ])
+      .leftJoinAndSelect('Intake.serviceCoordinator', 'serviceCoordinator')
+      .leftJoinAndSelect('serviceCoordinator.agency', 'agency')
+      .leftJoinAndSelect('Intake.efcEmployee', 'efcEmployee')
       .where(
         'LOWER(Intake.childName) = LOWER(:childName) AND LOWER(Intake.childLastName) =  LOWER(:childLastName) AND Intake.dateOfBirth = :dateOfBirth AND Intake.isActive = :isActive AND Intake.isDelete = :isDelete',
         {
@@ -56,6 +71,7 @@ export class IntakeService {
       childLastName: createReferralsDto.childLastName,
       dateOfBirth: createReferralsDto.dateOfBirth,
       dateOfReceived: createReferralsDto.dateOfReceived,
+      dateOfIntake: createReferralsDto.dateOfIntake,
       gender: createReferralsDto.gender,
       childDiagnosis: createReferralsDto.childDiagnosis,
       ethnicity: createReferralsDto.ethnicity,
@@ -75,6 +91,10 @@ export class IntakeService {
       city: createReferralsDto.city,
       zipcode: createReferralsDto.zipcode,
       address: createReferralsDto.address,
+      secondaryMailAddress: createReferralsDto.secondaryMailAddress,
+      secondaryMailState: createReferralsDto.secondaryMailState,
+      secondaryMailCity: createReferralsDto.secondaryMailCity,
+      secondaryMailZipcode: createReferralsDto.secondaryMailZipcode,
       isReferal: createReferralsDto.isReferal,
       reasonForReferal: createReferralsDto.reasonForReferal,
       serviceCoordinator:
@@ -143,6 +163,7 @@ export class IntakeService {
       gender: updateIntakeDto.gender,
       dateOfBirth: updateIntakeDto.dateOfBirth,
       dateOfReceived: updateIntakeDto.dateOfReceived,
+      dateOfIntake: updateIntakeDto.dateOfIntake,
       preSchool: updateIntakeDto.preSchool,
       dayCare: updateIntakeDto.dayCare,
       childDiagnosis: updateIntakeDto.childDiagnosis,
@@ -163,6 +184,10 @@ export class IntakeService {
       cellPhnNo: updateIntakeDto.cellPhnNo,
       workPhnNo: updateIntakeDto.workPhnNo,
       isReferal: updateIntakeDto.isReferal,
+      secondaryMailAddress: updateIntakeDto.secondaryMailAddress,
+      secondaryMailState: updateIntakeDto.secondaryMailState,
+      secondaryMailCity: updateIntakeDto.secondaryMailCity,
+      secondaryMailZipcode: updateIntakeDto.secondaryMailZipcode,
       reasonForReferal: updateIntakeDto.reasonForReferal,
       earlyStartServices: updateIntakeDto.earlyStartServices,
       otherRelevantInformation: updateIntakeDto.otherRelevantInformation,

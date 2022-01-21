@@ -30,6 +30,10 @@ export class CreateIntakeDto {
   @ApiProperty({ minLength: 0, maxLength: 50 })
   dateOfReceived: Date;
 
+  @IsNotEmpty()
+  @ApiProperty({ minLength: 0, maxLength: 50 })
+  dateOfIntake: Date;
+
   @IsString()
   @ApiProperty({ minLength: 0, maxLength: 20, default: '' })
   @IsNotEmpty()
@@ -108,6 +112,20 @@ export class CreateIntakeDto {
   @ApiProperty({ minLength: 0, maxLength: 10, default: '' })
   @IsNotEmpty()
   zipcode: string;
+
+  //secondary Mail Address
+
+  @ApiPropertyOptional({ minLength: 0, maxLength: 200, default: '' })
+  secondaryMailAddress: string;
+
+  @ApiPropertyOptional({ minLength: 0, maxLength: 200, default: '' })
+  secondaryMailState: string;
+
+  @ApiPropertyOptional({ minLength: 0, maxLength: 200, default: '' })
+  secondaryMailCity: string;
+
+  @ApiPropertyOptional({ minLength: 0, maxLength: 10, default: '' })
+  secondaryMailZipcode: string;
 
   @IsString()
   @ApiProperty({ minLength: 0, maxLength: 14, default: '' })

@@ -30,6 +30,10 @@ export class CreateReferralsDto {
   @ApiProperty({ minLength: 0, maxLength: 50 })
   dateOfReceived: Date;
 
+  @IsNotEmpty()
+  @ApiProperty({ minLength: 0, maxLength: 50 })
+  dateOfIntake: Date;
+
   @IsString()
   @ApiProperty({ minLength: 0, maxLength: 20, default: '' })
   @IsNotEmpty()
@@ -116,6 +120,20 @@ export class CreateReferralsDto {
   @ApiProperty({ minLength: 0, maxLength: 200, default: '' })
   @IsNotEmpty()
   address: string;
+
+  //secondary Mail Address
+
+  @ApiPropertyOptional({ minLength: 0, maxLength: 200, default: '' })
+  secondaryMailAddress: string;
+
+  @ApiPropertyOptional({ minLength: 0, maxLength: 200, default: '' })
+  secondaryMailState: string;
+
+  @ApiPropertyOptional({ minLength: 0, maxLength: 200, default: '' })
+  secondaryMailCity: string;
+
+  @ApiPropertyOptional({ minLength: 0, maxLength: 10, default: '' })
+  secondaryMailZipcode: string;
 
   // Reason For Referrals
   @IsArray()

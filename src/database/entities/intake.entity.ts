@@ -151,6 +151,18 @@ export class IntakeEntity {
   @IsNotEmpty()
   zipcode: string;
 
+  @Column({ nullable: true, default: '' })
+  secondaryMailAddress: string;
+
+  @Column({ nullable: true, default: '' })
+  secondaryMailState: string;
+
+  @Column({ nullable: true, default: '' })
+  secondaryMailCity: string;
+
+  @Column({ nullable: true, default: '' })
+  secondaryMailZipcode: string;
+
   @Column()
   @IsString()
   @Length(0, 14)
@@ -272,6 +284,9 @@ export class IntakeEntity {
 
   @Column({ nullable: true, type: 'date' })
   epCompletedDate: Date;
+
+  @Column({ nullable: true, type: 'date' })
+  dateOfIntake: Date;
 
   @Column({ default: true })
   @IsBoolean()
