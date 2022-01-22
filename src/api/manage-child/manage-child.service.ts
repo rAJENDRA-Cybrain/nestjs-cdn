@@ -241,13 +241,20 @@ export class ManageChildService {
   }
 
   async findTriggeredEmailToAChild(intakeId) {
-    return await this.emailLogsRepository
+    const data = await this.emailLogsRepository
       .createQueryBuilder('emailLogs')
       .select(['emailLogs'])
       .innerJoin('emailLogs.intake', 'intake')
       .where('intake.intakeId = :intakeId', { intakeId: intakeId })
       .orderBy({ 'emailLogs.createdAt': 'DESC' })
       .getMany();
+
+    for (let index = 0; index < data.length; index++) {
+      const user = await this.authService.isUserExistById(data[index].addedBy);
+      data[index]['user'] = user?.firstName + ' ' + user?.lastName || '';
+    }
+
+    return data;
   }
 
   async updateEmailLogsStatus(logId: string) {

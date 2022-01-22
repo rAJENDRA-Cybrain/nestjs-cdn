@@ -165,12 +165,44 @@ export class ManageChildController {
   public async find(
     @Param('intakeId', new ParseUUIDPipe({ version: '4' })) intakeId: string,
   ) {
-    const notesData = await this.manageChildService.findNotes(intakeId);
-    if (notesData) {
+    const result = [];
+    const [notesData, emailLogs] = await Promise.all([
+      await this.manageChildService.findNotes(intakeId),
+      await this.manageChildService.findTriggeredEmailToAChild(intakeId),
+    ]);
+    if (notesData?.childNotes?.length > 0) {
+      notesData.childNotes.forEach((e) => {
+        result.push({
+          id: e.notesId,
+          subject: e.conversationType.description,
+          content: e.notes,
+          date: e.date,
+          timestamp: e.timestamp,
+          addedBy: e.notesAddedBy.firstName + ' ' + e.notesAddedBy.lastName,
+          createdAt: e.createdAt,
+          format: 'note',
+        });
+      });
+    }
+    if (emailLogs.length > 0) {
+      emailLogs.forEach((e: any) => {
+        result.push({
+          id: e.emailLogId,
+          subject: e.emailLogSubject,
+          content: e.emailLogBody,
+          date: '',
+          timestamp: '',
+          addedBy: e?.user || '',
+          createdAt: e.createdAt,
+          format: 'email',
+        });
+      });
+    }
+    if (result.length > 0) {
       return {
         statusCode: 200,
         message: `Success.`,
-        data: notesData,
+        data: result,
       };
     } else {
       return {
