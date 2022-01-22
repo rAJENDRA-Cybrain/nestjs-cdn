@@ -172,6 +172,7 @@ export class ManageChildController {
     ]);
     if (notesData?.childNotes?.length > 0) {
       notesData.childNotes.forEach((e) => {
+        console.log(e);
         result.push({
           id: e.notesId,
           subject: e.conversationType.description,
@@ -180,6 +181,7 @@ export class ManageChildController {
           timestamp: e.timestamp,
           addedBy: e.notesAddedBy.firstName + ' ' + e.notesAddedBy.lastName,
           createdAt: e.createdAt,
+          conversationTypeId: e.conversationType.conversationTypeId,
           format: 'note',
         });
       });
@@ -194,6 +196,7 @@ export class ManageChildController {
           timestamp: '',
           addedBy: e?.user || '',
           createdAt: e.createdAt,
+          conversationTypeId: '',
           format: 'email',
         });
       });
