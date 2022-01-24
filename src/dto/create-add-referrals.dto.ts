@@ -154,6 +154,15 @@ export class CreateReferralsDto {
   @ApiPropertyOptional({ minLength: 0, maxLength: 100, default: '' })
   serviceCoordinatorId: string;
 
+  @ApiPropertyOptional({ default: '' })
+  welcomeEmailContent: string;
+
+  @ApiPropertyOptional({ default: '' })
+  welcomeEmailSubject: string;
+
+  @ApiPropertyOptional({ minLength: 0, maxLength: 100, default: [] })
+  welcomeEmailAttachments: Array<string>;
+
   @IsString()
   @IsUUID()
   @ApiProperty({ minLength: 0, maxLength: 100, default: '' })

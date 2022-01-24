@@ -2,7 +2,7 @@
 /* eslint-disable no-var */
 export var mailer = {
 
-  english: () => {
+  english: (content: any) => {
 
     const Html = 
         `<!doctype html>`+
@@ -28,37 +28,7 @@ export var mailer = {
         `        <div>`+
         `            <h5 style="text-align: center;font-size: 24px;margin: 20px 0;">`+
         `                Welcome to EFC Early Start Family Resource Center<br>Exceptional Family Center</h5>`+
-        `            <p style="font-size: 16px;line-height: 30px;margin: 0;"><strong>Dear Parent</strong></p>`+
-        `            <p style="line-height: 24px;">`+
-        `                Welcome to EFC’s Early Start Resource Center, Kern Regional Center or another community agency has referred your child.`+
-        `            </p>`+
-        `            <p style="line-height: 24px;">`+
-        `                When a family has a typical child, we have a natural support system, we have family and friends that`+
-        `                have the`+
-        `                experience of raising a child, and when something comes up you have somebody to call. When a family has`+
-        `                a child with disability or special needs those supports aren’t always adequate and so we became a little`+
-        `                more isolated and we need somebody who understands, somebody that has been there. Our goal is to give`+
-        `                you the support and understanding you need. Our team, Grace, Maria, Albeza and I are parents or`+
-        `                grandparents of a child who has been in Early Start /has a Developmental Disability. We also have the`+
-        `                experience and knowledge of navigating Kern Regional Center’s System.</p>`+
-        `            <p style="line-height: 24px;">`+
-        `                We believe that family is the single most important influence on the growth and development of a young`+
-        `                child. Early`+
-        `                childhood intervention and family supports systems help in the building resilience in the family.</p>`+
-        `            <p style="line-height: 24px;">`+
-        `                Our Early Start Family Resource Center provides a variety of family support services.</p>`+
-        `            <ul style="line-height: 24px;">`+
-        `                <li>Parent to parent support services </li>`+
-        `                <li>Training and conferences</li>`+
-        `                <li>Resources and information</li>`+
-        `                <li>Referral services</li>`+
-        `                <li>Assistance at transition at age three</li>`+
-        `            </ul>`+
-        `            <p style="line-height: 24px;">One of our Early Start team members will be calling you to discuss in further`+
-        `                our services. If you would like to meet`+
-        `                with us immediately or have any questions, please don’t hesitate to give me`+
-        `                a call at <a href="tel:(661) 873-4973">(661) 873-4973.</a>`+
-        `            </p>`+
+        `             ${content} `+
         `            <p>Warm Regards,</p>`+
         `            <p><img src="http://testwebsites.cybraintech.com/Childcare-CRM/assets/images/v-sign.jpg"></p>`+
         `            <p>Executive Director<br>Exceptional Family Center/Early Start Family Resource Center</p>`+
@@ -167,3 +137,38 @@ export var mailer = {
     return Html;
   }
 };
+
+
+
+
+// <p style="font-size: 16px;line-height: 30px;margin: 0;"><strong>Dear Parent</strong></p>`+
+//         `            <p style="line-height: 24px;">`+
+//         `                Welcome to EFC’s Early Start Resource Center, Kern Regional Center or another community agency has referred your child.`+
+//         `            </p>`+
+//         `            <p style="line-height: 24px;">`+
+//         `                When a family has a typical child, we have a natural support system, we have family and friends that`+
+//         `                have the`+
+//         `                experience of raising a child, and when something comes up you have somebody to call. When a family has`+
+//         `                a child with disability or special needs those supports aren’t always adequate and so we became a little`+
+//         `                more isolated and we need somebody who understands, somebody that has been there. Our goal is to give`+
+//         `                you the support and understanding you need. Our team, Grace, Maria, Albeza and I are parents or`+
+//         `                grandparents of a child who has been in Early Start /has a Developmental Disability. We also have the`+
+//         `                experience and knowledge of navigating Kern Regional Center’s System.</p>`+
+//         `            <p style="line-height: 24px;">`+
+//         `                We believe that family is the single most important influence on the growth and development of a young`+
+//         `                child. Early`+
+//         `                childhood intervention and family supports systems help in the building resilience in the family.</p>`+
+//         `            <p style="line-height: 24px;">`+
+//         `                Our Early Start Family Resource Center provides a variety of family support services.</p>`+
+//         `            <ul style="line-height: 24px;">`+
+//         `                <li>Parent to parent support services </li>`+
+//         `                <li>Training and conferences</li>`+
+//         `                <li>Resources and information</li>`+
+//         `                <li>Referral services</li>`+
+//         `                <li>Assistance at transition at age three</li>`+
+//         `            </ul>`+
+//         `            <p style="line-height: 24px;">One of our Early Start team members will be calling you to discuss in further`+
+//         `                our services. If you would like to meet`+
+//         `                with us immediately or have any questions, please don’t hesitate to give me`+
+//         `                a call at <a href="tel:(661) 873-4973">(661) 873-4973.</a>`+
+//         `            </p>`+

@@ -172,7 +172,6 @@ export class ManageChildController {
     ]);
     if (notesData?.childNotes?.length > 0) {
       notesData.childNotes.forEach((e) => {
-        console.log(e);
         result.push({
           id: e.notesId,
           subject: e.conversationType.description,

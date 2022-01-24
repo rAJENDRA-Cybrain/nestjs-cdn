@@ -87,23 +87,26 @@ export class IntakeController {
           this.serviceCoordinator,
           EfcEmployee,
         );
-        const EmailData = {
-          timestamp: `${new Date().toLocaleString('default', {
-            month: 'long',
-          })}  ${new Date().getDate()}, ${new Date().getFullYear()}`,
-          childName: `${data.childName} ${data.childMiddleName} ${data.childLastName}`,
-          parentsName: data.parentName,
-        };
+        // const EmailData = {
+        //   timestamp: `${new Date().toLocaleString('default', {
+        //     month: 'long',
+        //   })}  ${new Date().getDate()}, ${new Date().getFullYear()}`,
+        //   childName: `${data.childName} ${data.childMiddleName} ${data.childLastName}`,
+        //   parentsName: data.parentName,
+        // };
         const email_body =
           createReferralsDto.otherLanguage === 'Spanish'
             ? mailer.spanish()
-            : mailer.english();
+            : mailer.english(createReferralsDto.welcomeEmailContent);
         const mailOptions = {
           email: data.parentEmail,
-          subject: 'Welcome to EFC Early Start Family Resource Center',
+          subject:
+            createReferralsDto.welcomeEmailSubject === ''
+              ? 'Welcome to EFC Early Start Family Resource Center'
+              : createReferralsDto.welcomeEmailSubject,
           body: email_body,
           replyTo: EfcEmployee.emailId,
-          attachments: [],
+          attachments: createReferralsDto.welcomeEmailAttachments || [],
         };
 
         if (data.parentEmail != '' || null || undefined) {
