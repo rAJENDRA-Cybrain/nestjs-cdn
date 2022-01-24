@@ -36,10 +36,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   const document = SwaggerModule.createDocument(app, config);
 
-  app.enableCors({
-    origin: true,
-    credentials: true 
-  });
+  app.enableCors({ origin: true, credentials: true });
 
 //   const whitelist = ['http://localhost:4567'];
 //   app.enableCors({

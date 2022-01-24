@@ -96,7 +96,7 @@ export class IntakeController {
         // };
         const email_body =
           createReferralsDto.otherLanguage === 'Spanish'
-            ? mailer.spanish()
+            ? mailer.spanish(createReferralsDto.welcomeEmailContent)
             : mailer.english(createReferralsDto.welcomeEmailContent);
         const mailOptions = {
           email: data.parentEmail,

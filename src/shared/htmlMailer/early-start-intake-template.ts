@@ -56,7 +56,7 @@ export var mailer = {
 
     return Html;
   },
-  spanish: () => {
+  spanish: (content) => {
   
     const Html = 
       `<!doctype html>`+
@@ -83,36 +83,7 @@ export var mailer = {
       `                Bienvenido al Centro de Recursos Familiares Early Start`+
       `                <br>ExceptionalFamily Center`+
       `            </h5>`+
-      `            <p style="font-size: 16px;line-height: 30px; margin: 0;"><strong>Queridos</strong></p>`+
-      `            <p style="line-height: 24px;">El Centro Regional de Kern ha referido a su hijo a nuestro Centro de`+
-      `                Recursos.En este tiempo de crisis de salud pública sin precedentes, esperamos que usted y su familia`+
-      `                estén bien. El Centro de Recursos Familiares de Early Start / Exceptional Family Center (EFC) continúa`+
-      `                abierto de lunes a viernes de 9 am a 5 pm durante el brote de virus COVID-19. Sin embargo, la oficina de`+
-      `                EFC permanecerá cerrada al público hasta nuevo aviso.</p>`+
-      `            <p style="line-height: 24px;">Cuando una familia tiene un hijo típico, tenemos un sistema de apoyo natural,`+
-      `                tenemos familiares y amigos que tienen la experiencia de criar a un niño, y cuando surge algo tienes a`+
-      `                alguien a quien llamar. Cuando una familia tiene un hijo con discapacidad o necesidades especiales esos`+
-      `                apoyos no siempre son adecuados y por eso nos quedamos un poco más aislados y necesitamos a alguien que`+
-      `                entienda, alguien que este allí. Nuestro objetivo es brindarle el apoyo y la comprensión que Usted`+
-      `                necesita. Nuestro equipo, Grace, María, Alicia, Vicky, Marcella y yo somos padres o abuelos de un niño`+
-      `                que ha estado en Early Start / tiene una discapacidad del desarrollo. También tenemos la experiencia y`+
-      `                el conocimiento de navegar por el Sistema del Centro Regional de Kern. </p>`+
-      `            <p style="line-height: 24px;">Creemos que la familia es la influencia más importante en el crecimiento y`+
-      `                desarrollo de un niño pequeño. La intervención en la primera infancia y los sistemas de apoyo familiar`+
-      `                ayudan a desarrollar la resiliencia en la familia.</p>`+
-      `            <p style="line-height: 24px;">Nuestro Centro de Recursos de EarlyStart o Comienzo Temprano provee una`+
-      `                variedad de servicios de apoyo familiar:</p>`+
-      `            <ul style="line-height: 24px;">`+
-      `                <li>Apoyo de Padre a Padre</li>`+
-      `                <li>Entrenamientos y Conferencias</li>`+
-      `                <li>Recursos e Información</li>`+
-      `                <li>Referencias</li>`+
-      `                <li>Asistencia en la Transición a los 3 años</li>`+
-      `            </ul>`+
-      `            <p style="line-height: 24px;">Uno de los miembros de nuestro equipo de Early Start se pondrá en contacto con`+
-      `                usted vía telefónica para hablar sobre nuestros servicios.</p>`+
-      `            <p> Si tiene alguna pregunta, no dude en comunicarse conmigo al<a href="tel:(661) 873-4973">(661)`+
-      `                    873-4973.</a></p>`+
+      `             ${content} `+
       `            <p>Saludos Cordiales</p>`+
       `            <p><img src="http://testwebsites.cybraintech.com/Childcare-CRM/assets/images/v-sign.jpg"></p>`+
       `            <p>Executive Director<br>Exceptional Family Center/Early Start Family Resource Center</p>`+
@@ -172,3 +143,38 @@ export var mailer = {
 //         `                with us immediately or have any questions, please don’t hesitate to give me`+
 //         `                a call at <a href="tel:(661) 873-4973">(661) 873-4973.</a>`+
 //         `            </p>`+
+
+
+
+
+
+// `            <p style="font-size: 16px;line-height: 30px; margin: 0;"><strong>Queridos</strong></p>`+
+// `            <p style="line-height: 24px;">El Centro Regional de Kern ha referido a su hijo a nuestro Centro de`+
+// `                Recursos.En este tiempo de crisis de salud pública sin precedentes, esperamos que usted y su familia`+
+// `                estén bien. El Centro de Recursos Familiares de Early Start / Exceptional Family Center (EFC) continúa`+
+// `                abierto de lunes a viernes de 9 am a 5 pm durante el brote de virus COVID-19. Sin embargo, la oficina de`+
+// `                EFC permanecerá cerrada al público hasta nuevo aviso.</p>`+
+// `            <p style="line-height: 24px;">Cuando una familia tiene un hijo típico, tenemos un sistema de apoyo natural,`+
+// `                tenemos familiares y amigos que tienen la experiencia de criar a un niño, y cuando surge algo tienes a`+
+// `                alguien a quien llamar. Cuando una familia tiene un hijo con discapacidad o necesidades especiales esos`+
+// `                apoyos no siempre son adecuados y por eso nos quedamos un poco más aislados y necesitamos a alguien que`+
+// `                entienda, alguien que este allí. Nuestro objetivo es brindarle el apoyo y la comprensión que Usted`+
+// `                necesita. Nuestro equipo, Grace, María, Alicia, Vicky, Marcella y yo somos padres o abuelos de un niño`+
+// `                que ha estado en Early Start / tiene una discapacidad del desarrollo. También tenemos la experiencia y`+
+// `                el conocimiento de navegar por el Sistema del Centro Regional de Kern. </p>`+
+// `            <p style="line-height: 24px;">Creemos que la familia es la influencia más importante en el crecimiento y`+
+// `                desarrollo de un niño pequeño. La intervención en la primera infancia y los sistemas de apoyo familiar`+
+// `                ayudan a desarrollar la resiliencia en la familia.</p>`+
+// `            <p style="line-height: 24px;">Nuestro Centro de Recursos de EarlyStart o Comienzo Temprano provee una`+
+// `                variedad de servicios de apoyo familiar:</p>`+
+// `            <ul style="line-height: 24px;">`+
+// `                <li>Apoyo de Padre a Padre</li>`+
+// `                <li>Entrenamientos y Conferencias</li>`+
+// `                <li>Recursos e Información</li>`+
+// `                <li>Referencias</li>`+
+// `                <li>Asistencia en la Transición a los 3 años</li>`+
+// `            </ul>`+
+// `            <p style="line-height: 24px;">Uno de los miembros de nuestro equipo de Early Start se pondrá en contacto con`+
+// `                usted vía telefónica para hablar sobre nuestros servicios.</p>`+
+// `            <p> Si tiene alguna pregunta, no dude en comunicarse conmigo al<a href="tel:(661) 873-4973">(661)`+
+// `                    873-4973.</a></p>`+
