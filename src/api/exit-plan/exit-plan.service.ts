@@ -31,7 +31,7 @@ export class ExitPlanService {
       .leftJoinAndSelect('Intake.serviceCoordinator', 'serviceCoordinator')
       .leftJoinAndSelect('serviceCoordinator.agency', 'agency')
       .leftJoin('Intake.efcEmployee', 'efcEmployee')
-      .orderBy({ 'Intake.createdAt': 'DESC' })
+      .orderBy({ 'Intake.dateOfReceived': 'DESC' })
       .where('Intake.isActive = :IsActive', {
         IsActive: true,
       });

@@ -122,7 +122,7 @@ export class IntakeService {
       .leftJoinAndSelect('Intake.serviceCoordinator', 'serviceCoordinator')
       .leftJoinAndSelect('serviceCoordinator.agency', 'agency')
       .leftJoinAndSelect('Intake.efcEmployee', 'efcEmployee')
-      .orderBy({ 'Intake.createdAt': 'ASC' })
+      .orderBy({ 'Intake.dateOfReceived': 'DESC' })
       .where('Intake.isActive = :IsActive', {
         IsActive: true,
       });

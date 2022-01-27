@@ -55,7 +55,7 @@ export class ManageChildService {
         ],
         where: { isActive: true },
         order: {
-          createdAt: 'DESC',
+          dateOfReceived: 'DESC',
         },
       });
     }
@@ -68,7 +68,7 @@ export class ManageChildService {
         ],
         where: { isActive: true, efcEmployee: Equal(userId) },
         order: {
-          createdAt: 'DESC',
+          dateOfReceived: 'DESC',
         },
       });
     }
@@ -81,7 +81,7 @@ export class ManageChildService {
         ],
         where: { isActive: true, addedBy: Equal(userId) },
         order: {
-          createdAt: 'DESC',
+          dateOfReceived: 'DESC',
         },
       });
     }
@@ -97,7 +97,7 @@ export class ManageChildService {
         ],
         where: { isActive: false, isDelete: false },
         order: {
-          createdAt: 'DESC',
+          dateOfReceived: 'DESC',
         },
       });
     }
@@ -110,7 +110,7 @@ export class ManageChildService {
         ],
         where: { isActive: false, isDelete: false, efcEmployee: Equal(userId) },
         order: {
-          createdAt: 'DESC',
+          dateOfReceived: 'DESC',
         },
       });
     }
@@ -123,7 +123,7 @@ export class ManageChildService {
         ],
         where: { isActive: false, isDelete: false, addedBy: Equal(userId) },
         order: {
-          createdAt: 'DESC',
+          dateOfReceived: 'DESC',
         },
       });
     }

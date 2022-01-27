@@ -135,7 +135,6 @@ export class IntakeController {
   public async findAllChildren(@Request() req) {
     const { userId, role } = req.user['payload'];
     const data: IntakeEntity[] = await this.intakeService.findAll(userId, role);
-    console.log(data);
     if (data.length > 0) {
       return {
         statusCode: 200,

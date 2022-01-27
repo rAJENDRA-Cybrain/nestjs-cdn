@@ -15,7 +15,16 @@ export class ConversationTypeService {
   }
 
   public async findAll(): Promise<ConversationTypeEntity[]> {
-    return await this.convTypeRepository.find();
+    return await this.convTypeRepository
+      .createQueryBuilder('conversationType')
+      .where('conversationType.isActive = :isActive', {
+        isActive: true,
+      })
+      .orderBy({
+        'LOWER(conversationType.description)': 'ASC',
+        'LOWER(conversationType.type)': 'ASC',
+      })
+      .getMany();
   }
 
   public async findById(id): Promise<ConversationTypeEntity> {
