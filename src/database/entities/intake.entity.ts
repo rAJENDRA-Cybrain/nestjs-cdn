@@ -192,6 +192,10 @@ export class IntakeEntity {
   @IsString({ each: true })
   public reasonForReferal: string[];
 
+  @Column('text', { array: true, nullable: true })
+  @IsString({ each: true })
+  public earlyStartService: string[];
+
   @Column({ nullable: true })
   @IsString()
   @Length(0, 200)

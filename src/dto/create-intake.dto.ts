@@ -150,8 +150,10 @@ export class CreateIntakeDto {
   @ApiPropertyOptional({ minLength: 0, maxLength: 100, default: [] })
   reasonForReferal: Array<string>;
 
-  @ApiProperty({ minLength: 0, maxLength: 100, default: '' })
-  earlyStartServices: string;
+  // Reason For Referrals
+  @IsArray()
+  @ApiProperty({ minLength: 0, maxLength: 100, default: [] })
+  earlyStartService: Array<string>;
 
   @IsString()
   @ApiPropertyOptional({ minLength: 0, maxLength: 500, default: '' })

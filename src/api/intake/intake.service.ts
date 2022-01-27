@@ -189,7 +189,7 @@ export class IntakeService {
       secondaryMailCity: updateIntakeDto.secondaryMailCity,
       secondaryMailZipcode: updateIntakeDto.secondaryMailZipcode,
       reasonForReferal: updateIntakeDto.reasonForReferal,
-      earlyStartServices: updateIntakeDto.earlyStartServices,
+      earlyStartService: updateIntakeDto.earlyStartService,
       otherRelevantInformation: updateIntakeDto.otherRelevantInformation,
       serviceCoordinator:
         updateIntakeDto.isReferal === 'Yes' ? serviceCoordinator : [],
