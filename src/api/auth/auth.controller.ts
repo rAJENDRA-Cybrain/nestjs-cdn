@@ -12,6 +12,7 @@ import {
   UnauthorizedException,
   Req,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -30,6 +31,7 @@ import { BadRequestException } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { IntakeService } from '../intake/intake.service';
 import { SmtpDetailsService } from '../smtp-details/smtp-details.service';
+import { NotificationService } from '../notification/notification.service';
 
 @Controller('auth')
 @ApiTags('Authentication APIs')
@@ -38,6 +40,7 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly roleService: RoleService,
     private readonly intakeService: IntakeService,
+    private readonly notificationService: NotificationService,
     private readonly smtpDetailsService: SmtpDetailsService,
   ) {}
 
@@ -114,7 +117,6 @@ export class AuthController {
     const isExist: UserEntity = await this.authService.isAccountExist(
       signUpDto,
     );
-    console.log(isExist);
     if (!isExist) {
       const findRole: RoleEntity = await this.roleService.isRoleExistById(
         signUpDto.roleId,
@@ -486,12 +488,43 @@ export class AuthController {
     @Param('userId', new ParseUUIDPipe({ version: '4' })) userId: string,
     @Body() dto: BulkReAssignIntakes,
   ) {
-    console.log(userId);
     const data = await this.authService.reAssignChildren(dto);
     if (data) {
       return {
         statusCode: 200,
         message: `Re-Assignment of efc employee has been updated succesfully.`,
+      };
+    }
+  }
+
+  @Get('notification')
+  @Version('1')
+  @ApiOperation({ summary: 'Get all user based notification' })
+  @ApiResponse({
+    status: 200,
+    description: 'successful operation',
+  })
+  public async findAllNotification(
+    @Query('userId') userId: string,
+    @Query('isRead') isRead: boolean,
+    @Query('isSeen') isSeen: boolean,
+  ) {
+    const data: any[] = await this.notificationService.findAllNotification(
+      userId,
+      isRead,
+      isSeen,
+    );
+    if (data.length > 0) {
+      return {
+        statusCode: 200,
+        message: `Success.`,
+        data: data,
+      };
+    } else {
+      return {
+        statusCode: 200,
+        message: 'No Data Found',
+        data: [],
       };
     }
   }

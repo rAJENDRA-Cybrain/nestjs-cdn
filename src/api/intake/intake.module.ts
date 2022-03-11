@@ -12,8 +12,10 @@ import {
   AdditionalChildrenEntity,
   SmtpDetailEntity,
   AgencyEntity,
+  NotificationEntity,
 } from 'src/database';
 import { AgencyService } from '../agency/agency.service';
+import { NotificationService } from '../notification/notification.service';
 
 @Module({
   imports: [
@@ -24,6 +26,7 @@ import { AgencyService } from '../agency/agency.service';
       AdditionalChildrenEntity,
       ServiceCoordinatorEntity,
       AgencyEntity,
+      NotificationEntity,
     ]),
     forwardRef(() => AuthModule),
   ],
@@ -33,6 +36,7 @@ import { AgencyService } from '../agency/agency.service';
     ServiceCoordinatorService,
     AgencyService,
     SmtpDetailsService,
+    NotificationService,
   ],
 })
 export class IntakeModule {}

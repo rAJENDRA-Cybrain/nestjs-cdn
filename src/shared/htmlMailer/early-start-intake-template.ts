@@ -2,111 +2,183 @@
 /* eslint-disable no-var */
 export var mailer = {
 
-  english: (content: any) => {
+    english: (content: any) => {
 
-    const Html = 
-        `<!doctype html>`+
-        `<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"`+
-        `    xmlns:o="urn:schemas-microsoft-com:office:office">`+
-        `<head>`+
-        `    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">`+
-        `</head>`+
-        `<body>`+
-        `    <div style="max-width: 1000px;margin: 0 auto; padding: 20px;">`+
-        `        <div class="" style="display: inline-block;width: 100%;border-bottom: 2px solid #0094df;padding-bottom: 20px;">`+
-        `            <div style="float: left;width: 270px;">`+
-        `                <img src="https://childcarecrm.cyberschoolmanager.com/assets/images/logo_family.png">`+
-        `            </div>`+
-        `            <div style="float: right; width: 68%;text-align: right;margin-top: 25px;">`+
-        `                <h3 style="color: #0094df;font-size: 28px;margin: 0;">Exceptional Family Resource Center</h3>`+
-        `                <p style="color: #0094df;line-height: 29px;font-size: 18px;margin-top: 0;">`+
-        `                    <i>A Center for Families of Children with Developmental Disabilities<br>`+
-        `                        A 501 © 3 Not-for-Profit Public Charitable Organization</i>`+
-        `                </p>`+
-        `            </div>`+
-        `        </div>`+
-        `        <div>`+
-        `            <h5 style="text-align: center;font-size: 24px;margin: 20px 0;">`+
-        `                Welcome to EFC Early Start Family Resource Center<br>Exceptional Family Center</h5>`+
-        `             ${content} `+
-        `            <p>Warm Regards,</p>`+
-        `            <p><img src="http://testwebsites.cybraintech.com/Childcare-CRM/assets/images/v-sign.jpg"></p>`+
-        `            <p>Executive Director<br>Exceptional Family Center/Early Start Family Resource Center</p>`+
-        `            <p style="color: #0094df;">`+
-        `                Kindness is the language where the deaf can hear and the blind can see...<strong> Mark Twain</strong>`+
-        `            </p>`+
-        `        </div>`+
-        `        <div>`+
-        `            <ul class="end-sat"`+
-        `                style="margin: 0;background: #0094df; padding: 20px;display: inline-block;width: 100%;font-size: 16px;">`+
-        `                <li style="color: #fff;list-style: square;float: left;margin-left: 20px;">`+
-        `                    3121 N. Sillect Avenue, Suite 303</li>`+
-        `                <li style="color: #fff;float: left;margin-left: 35px;list-style: square;">`+
-        `                    Bakersfield, CA, 93308`+
-        `                </li>`+
-        `                <li style="color: #fff;float: left;margin-left: 35px;list-style: square;">`+
-        `                    Office: 661-873-4973`+
-        `                </li>`+
-        `                <li style="color: #fff;float: left;margin-left: 35px;list-style: square;">www.kernefc.org</li>`+
-        `            </ul>`+
-        `        </div>`+
-        `    </div>`+
-        `</body>`+
+        const Html =
+            `<!doctype html>` +
+            `<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"` +
+            `    xmlns:o="urn:schemas-microsoft-com:office:office">` +
+            `<head>` +
+            `    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">` +
+            `</head>` +
+            `<body>` +
+            `    <div style="max-width: 1000px;margin: 0 auto; padding: 20px;">` +
+            `        <div class="" style="display: inline-block;width: 100%;border-bottom: 2px solid #0094df;padding-bottom: 20px;">` +
+            `            <div style="float: left;width: 270px;">` +
+            `                <img src="https://childcarecrm.cyberschoolmanager.com/assets/images/logo_family.png">` +
+            `            </div>` +
+            `            <div style="float: right; width: 68%;text-align: right;margin-top: 25px;">` +
+            `                <h3 style="color: #0094df;font-size: 28px;margin: 0;">Exceptional Family Resource Center</h3>` +
+            `                <p style="color: #0094df;line-height: 29px;font-size: 18px;margin-top: 0;">` +
+            `                    <i>A Center for Families of Children with Developmental Disabilities<br>` +
+            `                        A 501 © 3 Not-for-Profit Public Charitable Organization</i>` +
+            `                </p>` +
+            `            </div>` +
+            `        </div>` +
+            `        <div>` +
+            `            <h5 style="text-align: center;font-size: 24px;margin: 20px 0;">` +
+            `                Welcome to EFC Early Start Family Resource Center<br>Exceptional Family Center</h5>` +
+            `             ${content} ` +
+            `            <p>Warm Regards,</p>` +
+            `            <p><img src="http://testwebsites.cybraintech.com/Childcare-CRM/assets/images/v-sign.jpg"></p>` +
+            `            <p>Executive Director<br>Exceptional Family Center/Early Start Family Resource Center</p>` +
+            `            <p style="color: #0094df;">` +
+            `                Kindness is the language where the deaf can hear and the blind can see...<strong> Mark Twain</strong>` +
+            `            </p>` +
+            `        </div>` +
+            `        <div>` +
+            `            <ul class="end-sat"` +
+            `                style="margin: 0;background: #0094df; padding: 20px;display: inline-block;width: 100%;font-size: 16px;">` +
+            `                <li style="color: #fff;list-style: square;float: left;margin-left: 20px;">` +
+            `                    3121 N. Sillect Avenue, Suite 303</li>` +
+            `                <li style="color: #fff;float: left;margin-left: 35px;list-style: square;">` +
+            `                    Bakersfield, CA, 93308` +
+            `                </li>` +
+            `                <li style="color: #fff;float: left;margin-left: 35px;list-style: square;">` +
+            `                    Office: 661-873-4973` +
+            `                </li>` +
+            `                <li style="color: #fff;float: left;margin-left: 35px;list-style: square;">www.kernefc.org</li>` +
+            `            </ul>` +
+            `        </div>` +
+            `    </div>` +
+            `</body>` +
+            `</html>`;
+
+        return Html;
+    },
+    spanish: (content) => {
+
+        const Html =
+            `<!doctype html>` +
+            `<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"` +
+            `    xmlns:o="urn:schemas-microsoft-com:office:office">` +
+            `<head>` +
+            `    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">` +
+            `</head>` +
+            `<body>` +
+            `    <div style="max-width: 1000px;margin: 0 auto; padding: 20px;">` +
+            `        <div class="" style="display: inline-block;width: 100%;border-bottom: 2px solid #0094df;padding-bottom: 20px;">` +
+            `            <div style="float: left;width: 270px;">` +
+            `                <img src="https://childcarecrm.cyberschoolmanager.com/assets/images/logo_family.png">` +
+            `            </div>` +
+            `            <div style="float: right;width: 68%;text-align: right;margin-top: 25px;">` +
+            `                <h3 style="color: #0094df;font-size: 28px;margin: 0;">Exceptional Family Resource Center</h3>` +
+            `                <p style=" color: #0094df;line-height: 29px;font-size: 18px;margin-top: 0;"><i>A Center for Families of` +
+            `                        Children with Developmental Disabilities<br>` +
+            `                        A 501 © 3 Not-for-Profit Public Charitable Organization</i></p>` +
+            `            </div>` +
+            `        </div>` +
+            `        <div>` +
+            `            <h5 style="text-align: center;font-size: 24px;margin: 20px 0;">` +
+            `                Bienvenido al Centro de Recursos Familiares Early Start` +
+            `                <br>ExceptionalFamily Center` +
+            `            </h5>` +
+            `             ${content} ` +
+            `            <p>Saludos Cordiales</p>` +
+            `            <p><img src="http://testwebsites.cybraintech.com/Childcare-CRM/assets/images/v-sign.jpg"></p>` +
+            `            <p>Executive Director<br>Exceptional Family Center/Early Start Family Resource Center</p>` +
+            `            <p style="color: #0094df;">Kindness is the language where the deaf can hear and the blind can see...<strong>` +
+            `                    Mark Twain</strong>` +
+            `            </p>` +
+            `        </div>` +
+            `        <div>` +
+            `            <ul class="end-sat"` +
+            `                style="margin: 0;background: #0094df;padding: 20px;display: inline-block;width: 100%;font-size: 16px;">` +
+            `                <li style="color: #fff;list-style: square;float: left;margin-left: 20px;">3121 N. Sillect Avenue, Suite` +
+            `                    303</li>` +
+            `                <li style="color: #fff;float: left;margin-left: 35px;list-style: square;">Bakersfield, CA, 93308 </li>` +
+            `                <li style="color: #fff;float: left;margin-left: 35px;list-style: square;">Office: 661-873-4973</li>` +
+            `                <li style="color: #fff;float: left;margin-left: 35px;list-style: square;">www.kernefc.org</li>` +
+            `            </ul>` +
+            `        </div>` +
+            `    </div>` +
+            `</body>` +
+            `</html>`;
+
+        return Html;
+    },
+    serviceCoRef: (content) => {
+
+        const Html =
+        `<!doctype html>` +
+        `<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"` +
+        `	xmlns:o="urn:schemas-microsoft-com:office:office">` +
+        `<head>` +
+        `<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">` +
+        `</head>` +
+        `<body>` +
+        `<table style="background-color: #f3f4f4;" cellspacing="0" cellpadding="0" width="100%"` +
+        `  align="center" bgcolor="#F3F4F4">` +
+        `  <tbody>` +
+        `    <tr>` +
+        `      <td><br />` +
+        `      <table style="background-color: #d9dadb;" cellspacing="0" cellpadding="1" align="center"` +
+        `        bgcolor="#D9DADB">` +
+        `        <tbody>` +
+        `          <tr>` +
+        `            <td>` +
+        `            <table` +
+        `              style="font-family: arial, helvetica, sans-serif; font-size: 14px; line-height: 20px; background-color: #ffffff; font-color: black;"` +
+        `              cellspacing="0" cellpadding="0" width="600" align="center" bgcolor="#ffffff">` +
+        `              <tbody>` +
+        `                <tr>` +
+        `                  <td width="30"><img style="display: block;"` +
+        `                    src="http://d36cz9buwru1tt.cloudfront.net/blank.gif" border="0" alt="" width="1"` +
+        `                    height="1" /></td>` +
+        `                  <td` +
+        `                    style="font-family: arial, helvetica, sans-serif; font-size: 14px; line-height: 20px;">` +
+        `                  <p>` +
+        `                  <br /> <br />` +
+        `				  <b>Greetings from ${content.smtpDisplayName},</b><br />` +
+        `                  <br />` +
+        `				   A new referral is now assigned with you. To complete the early start process, Please click on the below link. <br/>` +
+        `                  ${content.redirect}`+
+        `				  <br />` +
+        `				  <br />` +
+        `				  Children Details:<br />` +
+        `				  =================================<br />` +
+        `				  Name :  ${content.childName}  ${content.childMiddleName}  ${content.childLastName}   <br />` +
+        `				  Parent :  ${content.parentName}  ${content.parentLastName}  <br />` +
+        `				  Relationship :  ${content.relationshipToChild} <br />` +
+        `				  =================================<br />` +
+        `                 <br />` +
+        `				  <br />` +
+        `                  Warm Regards,</p>` +
+        `                  <p>${content.smtpDisplayName} Team<br />` +
+        `` +
+        `                  <br />` +
+        `                  </p>` +
+        `                  </td>` +
+        `                  <td width="30"><img style="display: block;"` +
+        `                    src="http://d36cz9buwru1tt.cloudfront.net/blank.gif" border="0" alt="" width="1"` +
+        `                    height="1" /></td>` +
+        `                </tr>` +
+        `              </tbody>` +
+        `            </table>` +
+        `            </td>` +
+        `          </tr>` +
+        `        </tbody>` +
+        `      </table>` +
+        `      <br />` +
+        `      </td>` +
+        `    </tr>` +
+        `  </tbody>` +
+        `</table>` +
+        `</body>` +
         `</html>`;
 
-    return Html;
-  },
-  spanish: (content) => {
-  
-    const Html = 
-      `<!doctype html>`+
-      `<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"`+
-      `    xmlns:o="urn:schemas-microsoft-com:office:office">`+
-      `<head>`+
-      `    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">`+
-      `</head>`+
-      `<body>`+
-      `    <div style="max-width: 1000px;margin: 0 auto; padding: 20px;">`+
-      `        <div class="" style="display: inline-block;width: 100%;border-bottom: 2px solid #0094df;padding-bottom: 20px;">`+
-      `            <div style="float: left;width: 270px;">`+
-      `                <img src="https://childcarecrm.cyberschoolmanager.com/assets/images/logo_family.png">`+
-      `            </div>`+
-      `            <div style="float: right;width: 68%;text-align: right;margin-top: 25px;">`+
-      `                <h3 style="color: #0094df;font-size: 28px;margin: 0;">Exceptional Family Resource Center</h3>`+
-      `                <p style=" color: #0094df;line-height: 29px;font-size: 18px;margin-top: 0;"><i>A Center for Families of`+
-      `                        Children with Developmental Disabilities<br>`+
-      `                        A 501 © 3 Not-for-Profit Public Charitable Organization</i></p>`+
-      `            </div>`+
-      `        </div>`+
-      `        <div>`+
-      `            <h5 style="text-align: center;font-size: 24px;margin: 20px 0;">`+
-      `                Bienvenido al Centro de Recursos Familiares Early Start`+
-      `                <br>ExceptionalFamily Center`+
-      `            </h5>`+
-      `             ${content} `+
-      `            <p>Saludos Cordiales</p>`+
-      `            <p><img src="http://testwebsites.cybraintech.com/Childcare-CRM/assets/images/v-sign.jpg"></p>`+
-      `            <p>Executive Director<br>Exceptional Family Center/Early Start Family Resource Center</p>`+
-      `            <p style="color: #0094df;">Kindness is the language where the deaf can hear and the blind can see...<strong>`+
-      `                    Mark Twain</strong>`+
-      `            </p>`+
-      `        </div>`+
-      `        <div>`+
-      `            <ul class="end-sat"`+
-      `                style="margin: 0;background: #0094df;padding: 20px;display: inline-block;width: 100%;font-size: 16px;">`+
-      `                <li style="color: #fff;list-style: square;float: left;margin-left: 20px;">3121 N. Sillect Avenue, Suite`+
-      `                    303</li>`+
-      `                <li style="color: #fff;float: left;margin-left: 35px;list-style: square;">Bakersfield, CA, 93308 </li>`+
-      `                <li style="color: #fff;float: left;margin-left: 35px;list-style: square;">Office: 661-873-4973</li>`+
-      `                <li style="color: #fff;float: left;margin-left: 35px;list-style: square;">www.kernefc.org</li>`+
-      `            </ul>`+
-      `        </div>`+
-      `    </div>`+
-      `</body>`+
-      `</html>`;
-
-    return Html;
-  }
+        return Html;
+    }
 };
 
 

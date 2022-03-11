@@ -71,7 +71,7 @@ export class IntakeService {
       childLastName: createReferralsDto.childLastName,
       dateOfBirth: createReferralsDto.dateOfBirth,
       dateOfReceived: createReferralsDto.dateOfReceived,
-      dateOfIntake: createReferralsDto.dateOfIntake,
+      dateOfIntake: null,
       gender: createReferralsDto.gender,
       childDiagnosis: createReferralsDto.childDiagnosis,
       ethnicity: createReferralsDto.ethnicity,

@@ -7,6 +7,7 @@ import {
   RoleEntity,
   UserEntity,
   SmtpDetailEntity,
+  NotificationEntity,
 } from '../../database';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RoleService } from '../role/role.service';
@@ -15,6 +16,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
 import { IntakeService } from '../intake/intake.service';
 import { SmtpDetailsService } from '../smtp-details/smtp-details.service';
+import { NotificationService } from '../notification/notification.service';
 @Module({
   imports: [
     TypeOrmModule.forFeature([
@@ -23,6 +25,7 @@ import { SmtpDetailsService } from '../smtp-details/smtp-details.service';
       IntakeEntity,
       AdditionalChildrenEntity,
       SmtpDetailEntity,
+      NotificationEntity,
     ]),
     PassportModule,
     JwtModule.register({
@@ -37,6 +40,7 @@ import { SmtpDetailsService } from '../smtp-details/smtp-details.service';
     IntakeService,
     JwtStrategy,
     SmtpDetailsService,
+    NotificationService,
   ],
   exports: [AuthService],
 })

@@ -13,3 +13,4 @@ export * from './entities/email-template.entity';
 export * from './entities/email-template-attachments.entity';
 export * from './entities/email-logs.entity';
 export * from './entities/report.entity';
+export * from './entities/notification.entity';

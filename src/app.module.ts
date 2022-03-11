@@ -21,6 +21,7 @@ import { RecordConversationModule } from './api/record-conversation/record-conve
 import { ReportsModule } from './api/reports/reports.module';
 import { EmailTemplateModule } from './api/email-template/email-template.module';
 import { AgencyModule } from './api/agency/agency.module';
+import { NotificationModule } from './api/notification/notification.module';
 
 const production = false; // fasle : development env and true : production env
 
@@ -70,6 +71,7 @@ const production = false; // fasle : development env and true : production env
     ReportsModule,
     EmailTemplateModule,
     AgencyModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

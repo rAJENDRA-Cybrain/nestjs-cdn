@@ -289,7 +289,7 @@ export class IntakeEntity {
   @Column({ nullable: true, type: 'date' })
   epCompletedDate: Date;
 
-  @Column({ nullable: true, type: 'date' })
+  @Column({ nullable: true, type: 'date', default: null })
   dateOfIntake: Date;
 
   @Column({ default: true })

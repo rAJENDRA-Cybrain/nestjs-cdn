@@ -39,6 +39,8 @@ import { mailer } from 'src/shared/htmlMailer/early-start-intake-template';
 
 import { SmtpDetailsService } from '../smtp-details/smtp-details.service';
 import { AuthGuard } from '@nestjs/passport';
+
+import { NotificationService } from '../notification/notification.service';
 @Controller('intake-children')
 @ApiTags('Early Intake Form APIs')
 export class IntakeController {
@@ -46,6 +48,7 @@ export class IntakeController {
   efcEmployee = new UserEntity();
   constructor(
     private readonly intakeService: IntakeService,
+    private readonly notificationService: NotificationService,
     private readonly serviceCoordinatorService: ServiceCoordinatorService,
     private readonly smtpDetailsService: SmtpDetailsService,
   ) {}
@@ -87,13 +90,8 @@ export class IntakeController {
           this.serviceCoordinator,
           EfcEmployee,
         );
-        // const EmailData = {
-        //   timestamp: `${new Date().toLocaleString('default', {
-        //     month: 'long',
-        //   })}  ${new Date().getDate()}, ${new Date().getFullYear()}`,
-        //   childName: `${data.childName} ${data.childMiddleName} ${data.childLastName}`,
-        //   parentsName: data.parentName,
-        // };
+
+        // Welcome Email Template
         const email_body =
           createReferralsDto.otherLanguage === 'Spanish'
             ? mailer.spanish(createReferralsDto.welcomeEmailContent)
@@ -112,6 +110,31 @@ export class IntakeController {
         if (data.parentEmail != '' || null || undefined) {
           await sendEmail(smtp, mailOptions);
         }
+
+        // Allocate Service CoOrdinator Email and Notification.
+        const redirect = `https://childcarecrm.cyberschoolmanager.com/crm/early-start-intake?id=${data.intakeId}&isEditable=true`;
+        const mailOptions_ServiceCo = {
+          email: EfcEmployee.emailId,
+          subject: 'New Referral Received',
+          body: mailer.serviceCoRef({
+            ...createReferralsDto,
+            ...smtp,
+            redirect,
+          }),
+        };
+
+        if (EfcEmployee) {
+          await sendEmail(smtp, mailOptions_ServiceCo);
+          await this.notificationService.notify(
+            EfcEmployee.userId,
+            'New Referral Received',
+            `${createReferralsDto.childName} ${createReferralsDto.childLastName} is assigned with you.`,
+            data.intakeId,
+            'New Referral Received',
+            redirect,
+          );
+        }
+
         if (data) {
           return {
             statusCode: 200,
