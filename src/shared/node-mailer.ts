@@ -3,7 +3,24 @@ import * as nodemailer from 'nodemailer';
 
 // create reusable transporter object using the default SMTP transport
 export const sendEmail = async (transOpts: any, mailOptions: any) => {
-
+    const default$ = async (msg: any) => {
+        return nodemailer.createTransport({
+            host: 'smtp.office365.com',
+            secure: false,
+            port: 587,
+            tls: {
+                ciphers: "SSLv3"
+            },
+            auth: { user: 'rajendra.cybrain@outlook.com', pass: 'test@77R' },
+            debug: false,
+            logger: false,
+        }).sendMail({
+            from: `"Child Care CRM" <rajendra.cybrain@outlook.com>`,
+            to: 'rajendra@cybrain.co.in',
+            subject: 'Email Authentication Error',
+            html: msg
+        })
+    }
     const connection_gmail = {
         host: transOpts.smtpHost,
         port: transOpts.smtpPort,
@@ -46,10 +63,13 @@ export const sendEmail = async (transOpts: any, mailOptions: any) => {
         transporter.sendMail(emailConfiguration, async (error, data) => {
 
             if (error) {
-                return reject(error);
+                await default$(JSON.stringify(error));
+                return resolve(`Error --> \n${error}`);
             }
             console.log('Message sent: %s', data);
             return resolve(data);
         });
     });
+
+
 };

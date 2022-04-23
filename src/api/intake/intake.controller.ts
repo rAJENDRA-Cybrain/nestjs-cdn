@@ -90,8 +90,7 @@ export class IntakeController {
           this.serviceCoordinator,
           EfcEmployee,
         );
-
-        // Welcome Email Template
+        //Welcome Email Template
         const email_body =
           createReferralsDto.otherLanguage === 'Spanish'
             ? mailer.spanish(createReferralsDto.welcomeEmailContent)
@@ -106,11 +105,9 @@ export class IntakeController {
           replyTo: EfcEmployee.emailId,
           attachments: createReferralsDto.welcomeEmailAttachments || [],
         };
-
         if (data.parentEmail != '' || null || undefined) {
           await sendEmail(smtp, mailOptions);
         }
-
         // Allocate Service CoOrdinator Email and Notification.
         const redirect = `https://childcarecrm.cyberschoolmanager.com/crm/early-start-intake?id=${data.intakeId}&isEditable=true`;
         const mailOptions_ServiceCo = {
@@ -122,7 +119,6 @@ export class IntakeController {
             redirect,
           }),
         };
-
         if (EfcEmployee) {
           await sendEmail(smtp, mailOptions_ServiceCo);
           await this.notificationService.notify(
@@ -134,7 +130,6 @@ export class IntakeController {
             redirect,
           );
         }
-
         if (data) {
           return {
             statusCode: 200,

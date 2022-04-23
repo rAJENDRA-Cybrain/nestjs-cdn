@@ -316,12 +316,15 @@ export class ManageChildService {
               ? JSON.parse(email_log[i]['emailLogAttachments'] as any)
               : [],
         };
-        await sendEmail(smtp, mailOptions);
+        const email = await sendEmail(smtp, mailOptions);
+        console.log(email);
         await this.updateEmailLogsStatus(email_log[i]['emailLogId']);
       }
     } else {
       await this.stopCronJob('bulk-email');
     }
+
+    await this.stopCronJob('bulk-email');
   }
 
   async triggerCronJob(id: string) {
