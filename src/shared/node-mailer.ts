@@ -3,6 +3,7 @@ import * as nodemailer from 'nodemailer';
 
 // create reusable transporter object using the default SMTP transport
 export const sendEmail = async (transOpts: any, mailOptions: any) => {
+    
     const default$ = async (msg: any) => {
         return nodemailer.createTransport({
             host: 'smtp.office365.com',
